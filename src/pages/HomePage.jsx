@@ -1,6 +1,18 @@
 import React from "react";
 import { useEffect } from "react";
 
+// Importing images 
+import DarkLogo from "../assets/images/logo-dark.svg";
+import LightLogo from "../assets/images/logo-light.svg";
+import LogoAirBnbBlack from "../assets/images/logo/actual-size/logo-air-bnb__black.svg";
+import LogoIbmBlack from "../assets/images/logo/actual-size/logo-ibm__black.svg";
+import LogoGoogleBlack from "../assets/images/logo/actual-size/logo-google__black.svg";
+import CardExpenses from "../assets/images/card-expenses.png";
+import HeroImg1Min from "../assets/images/hero-img-1-min.jpg";
+import About2Min from "../assets/images/about_2-min.jpg";
+import ArchLine from "../assets/images/arch-line.svg";
+import ArchLineReverse from "../assets/images/arch-line-reverse.svg"
+
 // Styles
 import "../assets/vendors/bootstrap/bootstrap.min.css";
 import "../assets/vendors/bootstrap-icons/font/bootstrap-icons.min.css";
@@ -42,14 +54,14 @@ const Header = function () {
           {/* <!-- logo dark--> */}
           <img
             className="logo dark img-fluid"
-            src="assets/images/logo-dark.svg"
+            src={DarkLogo}
             alt="FreeBootstrap.net image placeholder"
           />
 
           {/* <!-- logo light--> */}
           <img
             className="logo light img-fluid"
-            src="assets/images/logo-light.svg"
+            src={LightLogo}
             alt="FreeBootstrap.net image placeholder"
           />
         </a>
@@ -77,14 +89,14 @@ const Header = function () {
                 {/* <!-- logo dark--> */}
                 <img
                   className="logo dark img-fluid"
-                  src="assets/images/logo-dark.svg"
+                  src={DarkLogo}
                   alt="FreeBootstrap.net image placeholder"
                 />
 
                 {/* <!-- logo light--> */}
                 <img
                   className="logo light img-fluid"
-                  src="assets/images/logo-light.svg"
+                  src={LightLogo}
                   alt="FreeBootstrap.net image placeholder"
                 />
               </a>
@@ -374,12 +386,12 @@ const Hero = function () {
                       xmlns="http://www.w3.org/2000/svg"
                       width="18"
                       height="18"
-                      viewbox="0 0 24 24"
+                      viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path d="M7 7h10v10"></path>
                       <path d="M7 17 17 7"></path>
@@ -397,19 +409,19 @@ const Hero = function () {
                   <div className="logos-images d-flex gap-4 align-items-center">
                     <img
                       className="img-fluid js-img-to-inline-svg"
-                      src="assets/images/logo/actual-size/logo-air-bnb__black.svg"
+                      src={LogoAirBnbBlack}
                       alt="Company 1"
                       style={{ width: 110 + "px" }}
                     />
                     <img
                       className="img-fluid js-img-to-inline-svg"
-                      src="assets/images/logo/actual-size/logo-ibm__black.svg"
+                      src={LogoIbmBlack}
                       alt="Company 2"
                       style={{ width: 80 + "px" }}
                     />
                     <img
                       className="img-fluid js-img-to-inline-svg"
-                      src="assets/images/logo/actual-size/logo-google__black.svg"
+                      src={LogoGoogleBlack}
                       alt="Company 3"
                       style={{ width: 110 + "px" }}
                     />
@@ -422,14 +434,14 @@ const Hero = function () {
             <div className="hero-img">
               <img
                 className="img-card img-fluid"
-                src="assets/images/card-expenses.png"
+                src={CardExpenses}
                 alt="Image card"
                 data-aos="fade-down"
                 data-aos-delay="600"
               />
               <img
                 className="img-main img-fluid rounded-4"
-                src="assets/images/hero-img-1-min.jpg"
+                src={HeroImg1Min}
                 alt="Hero Image"
                 data-aos="fade-in"
                 data-aos-delay="500"
@@ -529,7 +541,7 @@ const About = function () {
             <div className="img-wrap position-relative">
               <img
                 className="img-fluid rounded-4"
-                src="assets/images/about_2-min.jpg"
+                src={About2Min}
                 alt="FreeBootstrap.net image placeholder"
                 data-aos="fade-up"
                 data-aos-delay="0"
@@ -826,7 +838,7 @@ const HowItWorks = function () {
               <div data-aos="fade-right" data-aos-delay="500">
                 <img
                   className="arch-line"
-                  src="assets/images/arch-line.svg"
+                  src={ArchLine}
                   alt="FreeBootstrap.net image placeholder"
                 />
               </div>
@@ -851,7 +863,7 @@ const HowItWorks = function () {
               <div data-aos="fade-right" data-aos-delay="1100">
                 <img
                   className="arch-line reverse"
-                  src="assets/images/arch-line-reverse.svg"
+                  src={ArchLineReverse}
                   alt="FreeBootstrap.net image placeholder"
                 />
               </div>
@@ -874,7 +886,7 @@ const HowItWorks = function () {
               <div data-aos="fade-right" data-aos-delay="1700">
                 <img
                   className="arch-line"
-                  src="assets/images/arch-line.svg"
+                  src={ArchLine}
                   alt="FreeBootstrap.net image placeholder"
                 />
               </div>
