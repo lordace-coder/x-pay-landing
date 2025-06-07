@@ -1662,23 +1662,23 @@ const Contact = function() {
                   <form id="contactForm">
                     <div className="row gap-3 mb-3">
                       <div className="col-md-12">
-                        <label className="mb-2" for="name">Name</label>
+                        <label className="mb-2" htmlFor="name">Name</label>
                         <input className="form-control" id="name" type="text" name="name" required="" />
                       </div>
                       <div className="col-md-12">
-                        <label className="mb-2" for="email">Email</label>
+                        <label className="mb-2" htmlFor="email">Email</label>
                         <input className="form-control" id="email" type="email" name="email" required="" />
                       </div>
                     </div>
                     <div className="row gap-3 mb-3">
                       <div className="col-md-12">
-                        <label className="mb-2" for="subject">Subject</label>
+                        <label className="mb-2" htmlFor="subject">Subject</label>
                         <input className="form-control" id="subject" type="text" name="subject" />
                       </div>
                     </div>
                     <div className="row gap-3 gap-md-0 mb-3">
                       <div className="col-md-12">
-                        <label className="mb-2" for="message">Message</label>
+                        <label className="mb-2" htmlFor="message">Message</label>
                         <textarea className="form-control" id="message" name="message" rows="5" required=""></textarea>
                       </div>
                     </div>
@@ -1767,6 +1767,12 @@ const Footer = function() {
     }
             {/* <!-- End Footer--> */}
 
+// <!-- ======= Back to Top =======-->
+const ButtonToTop = function () {
+  return <button id="back-to-top"><i className="bi bi-arrow-up-short"></i></button>
+}
+// <!-- End Back to top-->
+
 export default function HomePage() {
   useEffect(() => {
     AOS.init();
@@ -1788,6 +1794,7 @@ export default function HomePage() {
         <Contact />
         <Footer />
       </main>
+      <ButtonToTop />
     </div>
   );
 }
