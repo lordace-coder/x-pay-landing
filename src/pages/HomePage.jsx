@@ -20,13 +20,14 @@ import PersonSq7Min from "../assets/images/person-sq-7-min.jpg";
 import PersonSq8Min from "../assets/images/person-sq-8-min.jpg";
 
 // Styles
-import "../assets/css/style.css";
 
 import "../assets/vendors/bootstrap/bootstrap.min.css";
 import "../assets/vendors/bootstrap-icons/font/bootstrap-icons.min.css";
 import "../assets/vendors/glightbox/glightbox.min.css";
 import "../assets/vendors/swiper/swiper-bundle.min.css";
 import "../assets/vendors/aos/aos.css";
+import "../assets/css/style.css";
+
 // End styles
 // Javascript and libraries
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
