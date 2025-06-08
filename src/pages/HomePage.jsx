@@ -12,21 +12,22 @@ import HeroImg1Min from "../assets/images/hero-img-1-min.jpg";
 import About2Min from "../assets/images/about_2-min.jpg";
 import ArchLine from "../assets/images/arch-line.svg";
 import ArchLineReverse from "../assets/images/arch-line-reverse.svg";
-import PersonSq2Min from "../assets/images/person-sq-2-min.jpg"
-import PersonSq1Min from "../assets/images/person-sq-1-min.jpg"
-import PersonSq5Min from "../assets/images/person-sq-5-min.jpg"
-import PersonSq3Min from "../assets/images/person-sq-3-min.jpg"
-import PersonSq7Min from "../assets/images/person-sq-7-min.jpg"
-import PersonSq8Min from "../assets/images/person-sq-8-min.jpg"
+import PersonSq2Min from "../assets/images/person-sq-2-min.jpg";
+import PersonSq1Min from "../assets/images/person-sq-1-min.jpg";
+import PersonSq5Min from "../assets/images/person-sq-5-min.jpg";
+import PersonSq3Min from "../assets/images/person-sq-3-min.jpg";
+import PersonSq7Min from "../assets/images/person-sq-7-min.jpg";
+import PersonSq8Min from "../assets/images/person-sq-8-min.jpg";
 
 // Styles
+import "../assets/css/style.css";
+
 import "../assets/vendors/bootstrap/bootstrap.min.css";
 import "../assets/vendors/bootstrap-icons/font/bootstrap-icons.min.css";
 import "../assets/vendors/glightbox/glightbox.min.css";
 import "../assets/vendors/swiper/swiper-bundle.min.css";
 import "../assets/vendors/aos/aos.css";
 // End styles
-
 // Javascript and libraries
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { gsap } from "gsap";
@@ -42,7 +43,6 @@ import "aos/dist/aos.css";
 import PureCounter from "@srexi/purecounterjs";
 // end of javascript and libraries
 
-
 // <!-- ======= Javascripts =======-->
 import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
 // import "../assets/vendors/gsap/gsap.min.js";
@@ -54,7 +54,7 @@ import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
 // import "../assets/vendors/purecounter/purecounter.js";
 // import "../assets/js/custom.js"
 // import "../assets/js/send_email.js";
-  // <!-- End JavaScripts-->
+// <!-- End JavaScripts-->
 
 // HEADER
 const Header = function () {
@@ -1579,212 +1579,313 @@ const Testimonials = function () {
   /* <!-- Testimonials--> */
 }
 
-// <!-- ======= FAQ =======-->
-const FAQ = function () {
-  return (
-        <section className="section faq__v2" id="faq">
-          <div className="container">
-            <div className="row mb-4">
-              <div className="col-md-6 col-lg-7 mx-auto text-center"><span className="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">FAQ</span>
-                <h2 className="h2 fw-bold mb-3" data-aos="fade-up" data-aos-delay="0">Frequently Asked Questions</h2>
-                <p data-aos="fade-up" data-aos-delay="100">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-8 mx-auto" data-aos="fade-up" data-aos-delay="200">
-                <div className="faq-content">
-                  <div className="accordion custom-accordion" id="accordionPanelsStayOpenExample">
-                    <div className="accordion-item">
-                      <h2 className="accordion-header">
-                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne"> What services does your web agency offer? </button>
-                      </h2>
-                      <div className="accordion-collapse collapse show" id="panelsStayOpen-collapseOne">
-                        <div className="accordion-body">Our web agency offers a comprehensive range of services including web design and development, e-commerce solutions, SEO optimization, content creation, website maintenance, and digital marketing strategies. We tailor our services to meet the unique needs of each client, ensuring a customized approach to every project.</div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo"> How much does it cost to build a website? </button>
-                      </h2>
-                      <div className="accordion-collapse collapse" id="panelsStayOpen-collapseTwo">
-                        <div className="accordion-body">The cost of building a website can vary widely depending on the complexity, features, and specific requirements of your project. We offer several pricing packages to accommodate different budgets and needs. After an initial consultation, we can provide a detailed quote based on your specific goals and objectives.</div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree"> How long does it take to design and develop a website? </button>
-                      </h2>
-                      <div className="accordion-collapse collapse" id="panelsStayOpen-collapseThree">
-                        <div className="accordion-body">The timeline for designing and developing a website depends on the project&apos;s complexity and scope. Typically, a standard business website takes about 4-6 weeks to complete, while more complex projects like e-commerce sites or custom applications may take longer. We work closely with our clients to establish a realistic timeline and keep you informed throughout the process.</div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour"> Will my website be mobile-friendly? </button>
-                      </h2>
-                      <div className="accordion-collapse collapse" id="panelsStayOpen-collapseFour">
-                        <div className="accordion-body">Absolutely! All the websites we design and develop are fully responsive, meaning they are optimized to work seamlessly across all devices, including desktops, tablets, and smartphones. Ensuring a great user experience on mobile devices is a top priority in our development process.</div>
-                      </div>
-                    </div>
-                    <div className="accordion-item">
-                      <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive"> Do you provide ongoing support and maintenance for websites? </button>
-                      </h2>
-                      <div className="accordion-collapse collapse" id="panelsStayOpen-collapseFive">
-                        <div className="accordion-body">Yes, we offer ongoing support and maintenance services to ensure your website remains up-to-date, secure, and functioning smoothly. Our maintenance packages can include regular updates, security monitoring, backups, and technical support to address any issues that may arise. We&apos;re here to help you keep your website running efficiently long after it&apos;s launched.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* <!-- End FAQ--> */}
-        </section>
-      )
-    }
-        // <!-- End FAQ-->
-
 // <!-- ======= Contact =======-->
-const Contact = function() {
+const Contact = function () {
   return (
-        <section className="section contact__v2" id="contact">
-          <div className="container">
-            <div className="row mb-5">
-              <div className="col-md-6 col-lg-7 mx-auto text-center"><span className="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Contact</span>
-                <h2 className="h2 fw-bold mb-3" data-aos="fade-up" data-aos-delay="0">Contact Us</h2>
-                <p data-aos="fade-up" data-aos-delay="100">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <div className="d-flex gap-5 flex-column">
-                  <div className="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="0">
-                    <div className="icon d-block"><i className="bi bi-telephone"></i></div><span> <span className="d-block">Phone</span><strong>+(01 234 567 890)</strong></span>
-                  </div>
-                  <div className="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="100">
-                    <div className="icon d-block"><i className="bi bi-send"></i></div><span> <span className="d-block">Email</span><strong>info@mydomain.com</strong></span>
-                  </div>
-                  <div className="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="200">
-                    <div className="icon d-block"><i className="bi bi-geo-alt"></i></div><span> <span className="d-block">Address</span>
-                      <address className="fw-bold">123 Main Street Apt 4B Springfield, <br /> IL 62701 United States</address></span>
-                  </div>
+    <section className="section contact__v2" id="contact">
+      <div className="container">
+        <div className="row mb-5">
+          <div className="col-md-6 col-lg-7 mx-auto text-center">
+            <span
+              className="subtitle text-uppercase mb-3"
+              data-aos="fade-up"
+              data-aos-delay="0"
+            >
+              Contact
+            </span>
+            <h2
+              className="h2 fw-bold mb-3"
+              data-aos="fade-up"
+              data-aos-delay="0"
+            >
+              Contact Us
+            </h2>
+            <p data-aos="fade-up" data-aos-delay="100">
+              Utilize our tools to develop your concepts and bring your vision
+              to life. Once complete, effortlessly share your creations.
+            </p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <div className="d-flex gap-5 flex-column">
+              <div
+                className="d-flex align-items-start gap-3"
+                data-aos="fade-up"
+                data-aos-delay="0"
+              >
+                <div className="icon d-block">
+                  <i className="bi bi-telephone"></i>
                 </div>
+                <span>
+                  {" "}
+                  <span className="d-block">Phone</span>
+                  <strong>+(01 234 567 890)</strong>
+                </span>
               </div>
-              <div className="col-md-6">
-                <div className="form-wrapper" data-aos="fade-up" data-aos-delay="300">
-                  <form id="contactForm">
-                    <div className="row gap-3 mb-3">
-                      <div className="col-md-12">
-                        <label className="mb-2" htmlFor="name">Name</label>
-                        <input className="form-control" id="name" type="text" name="name" required="" />
-                      </div>
-                      <div className="col-md-12">
-                        <label className="mb-2" htmlFor="email">Email</label>
-                        <input className="form-control" id="email" type="email" name="email" required="" />
-                      </div>
-                    </div>
-                    <div className="row gap-3 mb-3">
-                      <div className="col-md-12">
-                        <label className="mb-2" htmlFor="subject">Subject</label>
-                        <input className="form-control" id="subject" type="text" name="subject" />
-                      </div>
-                    </div>
-                    <div className="row gap-3 gap-md-0 mb-3">
-                      <div className="col-md-12">
-                        <label className="mb-2" htmlFor="message">Message</label>
-                        <textarea className="form-control" id="message" name="message" rows="5" required=""></textarea>
-                      </div>
-                    </div>
-                    <button className="btn btn-primary fw-semibold" type="submit">Send Message</button>
-                  </form>
-                  <div className="mt-3 d-none alert alert-success" id="successMessage">Message sent successfully!</div>
-                  <div className="mt-3 d-none alert alert-danger" id="errorMessage">Message sending failed. Please try again later.</div>
+              <div
+                className="d-flex align-items-start gap-3"
+                data-aos="fade-up"
+                data-aos-delay="100"
+              >
+                <div className="icon d-block">
+                  <i className="bi bi-send"></i>
                 </div>
+                <span>
+                  {" "}
+                  <span className="d-block">Email</span>
+                  <strong>info@mydomain.com</strong>
+                </span>
+              </div>
+              <div
+                className="d-flex align-items-start gap-3"
+                data-aos="fade-up"
+                data-aos-delay="200"
+              >
+                <div className="icon d-block">
+                  <i className="bi bi-geo-alt"></i>
+                </div>
+                <span>
+                  {" "}
+                  <span className="d-block">Address</span>
+                  <address className="fw-bold">
+                    123 Main Street Apt 4B Springfield, <br /> IL 62701 United
+                    States
+                  </address>
+                </span>
               </div>
             </div>
           </div>
-        </section>
-      )
-    }
-        {/* <!-- End Contact--> */}
+          <div className="col-md-6">
+            <div
+              className="form-wrapper"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <form id="contactForm">
+                <div className="row gap-3 mb-3">
+                  <div className="col-md-12">
+                    <label className="mb-2" htmlFor="name">
+                      Name
+                    </label>
+                    <input
+                      className="form-control"
+                      id="name"
+                      type="text"
+                      name="name"
+                      required=""
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <label className="mb-2" htmlFor="email">
+                      Email
+                    </label>
+                    <input
+                      className="form-control"
+                      id="email"
+                      type="email"
+                      name="email"
+                      required=""
+                    />
+                  </div>
+                </div>
+                <div className="row gap-3 mb-3">
+                  <div className="col-md-12">
+                    <label className="mb-2" htmlFor="subject">
+                      Subject
+                    </label>
+                    <input
+                      className="form-control"
+                      id="subject"
+                      type="text"
+                      name="subject"
+                    />
+                  </div>
+                </div>
+                <div className="row gap-3 gap-md-0 mb-3">
+                  <div className="col-md-12">
+                    <label className="mb-2" htmlFor="message">
+                      Message
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="message"
+                      name="message"
+                      rows="5"
+                      required=""
+                    ></textarea>
+                  </div>
+                </div>
+                <button className="btn btn-primary fw-semibold" type="submit">
+                  Send Message
+                </button>
+              </form>
+              <div
+                className="mt-3 d-none alert alert-success"
+                id="successMessage"
+              >
+                Message sent successfully!
+              </div>
+              <div className="mt-3 d-none alert alert-danger" id="errorMessage">
+                Message sending failed. Please try again later.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+{
+  /* <!-- End Contact--> */
+}
 
 // <!-- ======= Footer =======-->
-const Footer = function() {
+const Footer = function () {
   return (
-        <footer className="footer pt-5 pb-5">
-          <div className="container">
-            <div className="row mb-5 pb-4">
-              <div className="col-md-7">
-                <h2 className="fs-5">Join our newsletter</h2>
-                <p>Stay updated with our latest templates and offers—join our newsletter today!</p>
+    <footer className="footer pt-5 pb-5">
+      <div className="container">
+        <div className="row mb-5 pb-4">
+          <div className="col-md-7">
+            <h2 className="fs-5">Join our newsletter</h2>
+            <p>
+              Stay updated with our latest templates and offers—join our
+              newsletter today!
+            </p>
+          </div>
+          <div className="col-md-5">
+            <form className="d-flex gap-2">
+              <input
+                className="form-control"
+                type="email"
+                placeholder="Email your email"
+                required=""
+              />
+              <button className="btn btn-primary fs-6" type="submit">
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+        <div className="row justify-content-between mb-5 g-xl-5">
+          <div className="col-md-4 mb-5 mb-lg-0">
+            <h3 className="mb-3">About</h3>
+            <p className="mb-4">
+              Utilize our tools to develop your concepts and bring your vision
+              to life. Once complete, effortlessly share your creations.
+            </p>
+          </div>
+          <div className="col-md-7">
+            <div className="row g-2">
+              <div className="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <h3 className="mb-3">Company</h3>
+                <ul className="list-unstyled">
+                  <li>
+                    <a href="page-about.html">Leadership</a>
+                  </li>
+                  <li>
+                    <a href="page-careers.html">
+                      Careers <span className="badge ms-1">we're hiring</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="page-case-studies.html">Case Studies</a>
+                  </li>
+                  <li>
+                    <a href="page-terms-conditions.html">
+                      Terms &amp; Conditions
+                    </a>
+                  </li>
+                  <li>
+                    <a href="page-privacy-policy.html">Privacy Policy</a>
+                  </li>
+                  <li>
+                    <a href="page-404.html">404 page</a>
+                  </li>
+                </ul>
               </div>
-              <div className="col-md-5">
-                <form className="d-flex gap-2">
-                  <input className="form-control" type="email" placeholder="Email your email" required="" />
-                  <button className="btn btn-primary fs-6" type="submit">Subscribe</button>
-                </form>
+              <div className="col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <h3 className="mb-3">Accounts</h3>
+                <ul className="list-unstyled">
+                  <li>
+                    <a href="page-signup.html">Register</a>
+                  </li>
+                  <li>
+                    <a href="page-signin.html">Sign in</a>
+                  </li>
+                  <li>
+                    <a href="page-forgot-password.html">Fogot Password</a>
+                  </li>
+                  <li>
+                    <a href="page-coming-soon.html">Coming soon</a>
+                  </li>
+                  <li>
+                    <a href="page-portfolio-masonry.html">Portfolio Masonry</a>
+                  </li>
+                </ul>
+              </div>
+              <div className="col-md-6 col-lg-4 mb-4 mb-lg-0 quick-contact">
+                <h3 className="mb-3">Contact</h3>
+                <p className="d-flex mb-3">
+                  <i className="bi bi-geo-alt-fill me-3"></i>
+                  <span>
+                    123 Main Street Apt 4B Springfield, <br /> IL 62701 United
+                    States
+                  </span>
+                </p>
+                <a className="d-flex mb-3" href="mailto:info@mydomain.com">
+                  <i className="bi bi-envelope-fill me-3"></i>
+                  <span>info@mydomain.com</span>
+                </a>
+                <a className="d-flex mb-3" href="tel://+123456789900">
+                  <i className="bi bi-telephone-fill me-3"></i>
+                  <span>+1 (234) 5678 9900</span>
+                </a>
+                <a className="d-flex mb-3" href="https://freebootstrap.net">
+                  <i className="bi bi-globe me-3"></i>
+                  <span>FreeBootstrap.net</span>
+                </a>
               </div>
             </div>
-            <div className="row justify-content-between mb-5 g-xl-5">
-              <div className="col-md-4 mb-5 mb-lg-0">
-                <h3 className="mb-3">About</h3>
-                <p className="mb-4">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
-              </div>
-              <div className="col-md-7">
-                <div className="row g-2">
-                  <div className="col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <h3 className="mb-3">Company</h3>
-                    <ul className="list-unstyled">
-                      <li><a href="page-about.html">Leadership</a></li>
-                      <li><a href="page-careers.html">Careers <span className="badge ms-1">we're hiring</span></a></li>
-                      <li><a href="page-case-studies.html">Case Studies</a></li>
-                      <li><a href="page-terms-conditions.html">Terms &amp; Conditions</a></li>
-                      <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                      <li><a href="page-404.html">404 page</a></li>
-                    </ul>
-                  </div>
-                  <div className="col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <h3 className="mb-3">Accounts</h3>
-                    <ul className="list-unstyled">
-                      <li><a href="page-signup.html">Register</a></li>
-                      <li><a href="page-signin.html">Sign in</a></li>
-                      <li><a href="page-forgot-password.html">Fogot Password</a></li>
-                      <li><a href="page-coming-soon.html">Coming soon</a></li>
-                      <li><a href="page-portfolio-masonry.html">Portfolio Masonry</a></li>
-                    </ul>
-                  </div>
-                  <div className="col-md-6 col-lg-4 mb-4 mb-lg-0 quick-contact">
-                    <h3 className="mb-3">Contact</h3>
-                    <p className="d-flex mb-3"><i className="bi bi-geo-alt-fill me-3"></i><span>123 Main Street Apt 4B Springfield, <br /> IL 62701 United States</span></p><a className="d-flex mb-3" href="mailto:info@mydomain.com"><i className="bi bi-envelope-fill me-3"></i><span>info@mydomain.com</span></a><a className="d-flex mb-3" href="tel://+123456789900"><i className="bi bi-telephone-fill me-3"></i><span>+1 (234) 5678 9900</span></a><a className="d-flex mb-3" href="https://freebootstrap.net"><i className="bi bi-globe me-3"></i><span>FreeBootstrap.net</span></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row credits pt-3">
-              <div className="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
-                {/* <!--
+          </div>
+        </div>
+        <div className="row credits pt-3">
+          <div className="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
+            {/* <!--
                 Note:
                 =>>> Please keep all the footer links intact. <<<=
                 =>>> You can only remove the links if you buy the pro version. <<<=
                 =>>> Buy the pro version, which includes a functional PHP/AJAX contact form and many additional features.: https://freebootstrap.net/template/vertex-pro-bootstrap-website-template-for-portfolio/ <<<=
                 -->  */}
-                &copy;
-                <script>document.write(new Date().getFullYear());</script> Nova. 
-                 All rights reserved. Designed with <i className="bi bi-heart-fill text-danger"></i> by <a href="https://freebootstrap.net">FreeBootstrap.net</a>
-              </div>
-              <div className="col-xl-4 justify-content-start justify-content-xl-end quick-links d-flex flex-column flex-xl-row text-center text-xl-start gap-1">Distributed by<a href="https://themewagon.com" target="_blank">ThemeWagon</a></div>
-            </div>
+            &copy;
+            <script>document.write(new Date().getFullYear());</script> Nova. All
+            rights reserved. Designed with{" "}
+            <i className="bi bi-heart-fill text-danger"></i> by{" "}
+            <a href="https://freebootstrap.net">FreeBootstrap.net</a>
           </div>
-        </footer>
-      )
-    }
-            {/* <!-- End Footer--> */}
+          <div className="col-xl-4 justify-content-start justify-content-xl-end quick-links d-flex flex-column flex-xl-row text-center text-xl-start gap-1">
+            Distributed by
+            <a href="https://themewagon.com" target="_blank">
+              ThemeWagon
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+{
+  /* <!-- End Footer--> */
+}
 
 // <!-- ======= Back to Top =======-->
 const ButtonToTop = function () {
-  return <button id="back-to-top"><i className="bi bi-arrow-up-short"></i></button>
-}
+  return (
+    <button id="back-to-top">
+      <i className="bi bi-arrow-up-short"></i>
+    </button>
+  );
+};
 // <!-- End Back to top-->
 
 export default function HomePage() {
@@ -1804,7 +1905,6 @@ export default function HomePage() {
         <Stats />
         <Services />
         <Testimonials />
-        <FAQ />
         <Contact />
         <Footer />
       </main>
