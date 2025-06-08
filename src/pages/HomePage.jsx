@@ -28,7 +28,7 @@ import "../assets/vendors/aos/aos.css";
 // End styles
 
 // Javascript and libraries
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { gsap } from "gsap";
 import imagesLoaded from "imagesloaded";
 import Isotope from "isotope-layout";
@@ -41,6 +41,20 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import PureCounter from "@srexi/purecounterjs";
 // end of javascript and libraries
+
+
+// <!-- ======= Javascripts =======-->
+import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
+// import "../assets/vendors/gsap/gsap.min.js";
+// import "../assets/vendors/imagesloaded/imagesloaded.pkgd.min.js";
+// import "../assets/vendors/isotope/isotope.pkgd.min.js";
+// import "../assets/vendors/glightbox/glightbox.min.js";
+// import "../assets/vendors/swiper/swiper-bundle.min.js";
+// import "../assets/vendors/aos/aos.js";
+// import "../assets/vendors/purecounter/purecounter.js";
+// import "../assets/js/custom.js"
+// import "../assets/js/send_email.js";
+  // <!-- End JavaScripts-->
 
 // HEADER
 const Header = function () {
