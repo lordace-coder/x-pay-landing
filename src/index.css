@@ -5,8 +5,8 @@ Author website: https://freebootstrap.net/
 License: https://freebootstrap.net/license
 Buy Pro
 */
-:root,
-[data-bs-theme=light] {
+
+#root{
   --bs-body-bg: #ffffff;
   --bs-body-color: #494B5B;
   --bs-primary: #215C5C;

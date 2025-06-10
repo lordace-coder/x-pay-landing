@@ -45,7 +45,7 @@ import PureCounter from "@srexi/purecounterjs";
 // end of javascript and libraries
 
 // <!-- ======= Javascripts =======-->
-import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
+// import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
 // import "../assets/vendors/gsap/gsap.min.js";
 // import "../assets/vendors/imagesloaded/imagesloaded.pkgd.min.js";
 // import "../assets/vendors/isotope/isotope.pkgd.min.js";
