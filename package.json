@@ -17,6 +17,7 @@
     "gsap": "^3.13.0",
     "imagesloaded": "^5.0.0",
     "isotope-layout": "^3.0.6",
+    "lucide-react": "^0.513.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.2",

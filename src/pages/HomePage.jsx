@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-
+import { Link, useNavigate } from "react-router-dom";
 // Importing images
 import DarkLogo from "../assets/images/logo-dark.svg";
 import LightLogo from "../assets/images/logo-light.svg";
@@ -307,9 +307,9 @@ const Header = function () {
 
         <div className="ms-auto w-auto">
           <div className="header-social d-flex align-items-center gap-1">
-            <a className="btn btn-primary py-2" href="#">
+            <Link className="btn btn-primary py-2" to={'/login'}>
               Get Started
-            </a>
+            </Link>
 
             <button
               className="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto"
@@ -397,9 +397,9 @@ const Hero = function () {
                   data-aos="fade-up"
                   data-aos-delay="300"
                 >
-                  <a className="btn" href="#">
+                  <Link className="btn" to={'/login'}>
                     Get Started Now
-                  </a>
+                  </Link>
                   <a className="btn btn-white-outline" href="#">
                     Learn More
                     <svg
@@ -762,9 +762,9 @@ const Pricing = function () {
                 <span>/ month</span>
               </div>
               <div>
-                <a className="btn" href="#">
+                <Link className="btn" to={"/login"}>
                   Get Started
-                </a>
+                </Link>
               </div>
             </div>
           </div>
