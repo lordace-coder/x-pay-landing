@@ -9,7 +9,10 @@ import {
   CheckCircle,
 } from "lucide-react";
 import logo from "../assets/img/xpay-logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BASEURL } from "../utils/utils";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,13 +23,39 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const handleSubmit = async () => {
     setIsLoading(true);
-    // Simulate signup process
-    setTimeout(() => {
+    const data = {
+      email,
+      full_name: fullName,
+      password,
+    };
+    try {
+      const res = await fetch(BASEURL + "/auth/", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.ok) {
+        const completed = await login(email, password);
+        if (completed) {
+          navigate("/dashboard");
+        } else {
+          navigate("/login");
+        }
+      } else {
+        const err = await res.json();
+        toast("An Error occured please try again. " + err.detail, {
+          type: "error",
+        });
+      }
+    } catch (error) {
+      toast("An Error occured " + error, { type: "error" });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const isFormValid =

@@ -19,25 +19,19 @@ import {
   Target,
   Award,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function XPayDashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedPeriod, setSelectedPeriod] = useState("7d");
+  const { user: userData, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const userData = {
-    name: "John Smith",
-    capital: 25000,
-    profits: 3847.5,
-    totalEarnings: 28847.5,
-    dailyEarnings: 245.3,
-    videosWatched: 127,
-    availableVideos: 8,
-  };
 
   const videos = [
     {
@@ -116,14 +110,14 @@ export default function XPayDashboard() {
                 <Bell className="h-5 w-5" />
               </button>
               <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                <Settings className="h-5 w-5" />
+                <LogOut className="h-5 w-5" onClick={logout} />
               </button>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                   <User className="h-4 w-4 text-white" />
                 </div>
                 <span className="text-sm font-medium text-gray-700">
-                  {userData.name}
+                  {userData.full_name}
                 </span>
               </div>
             </div>
@@ -135,7 +129,7 @@ export default function XPayDashboard() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {userData.name.split(" ")[0]}!
+            Welcome back, {userData.full_name.split(" ")[0]}!
           </h2>
           <p className="text-gray-600">
             Here's what's happening with your investments today.
@@ -155,10 +149,10 @@ export default function XPayDashboard() {
             <div className="text-2xl font-bold text-gray-900 mb-1">
               ${userData.capital.toLocaleString()}
             </div>
-            <p className="text-xs text-green-600 flex items-center">
+            {/* <p className="text-xs text-green-600 flex items-center">
               <TrendingUp className="h-3 w-3 mr-1" />
               +2.5% from last month
-            </p>
+            </p> */}
           </div>
 
           {/* Profits Card */}
@@ -170,11 +164,11 @@ export default function XPayDashboard() {
               <span className="text-sm text-gray-500">Profits</span>
             </div>
             <div className="text-2xl font-bold text-gray-900 mb-1">
-              ${userData.profits.toLocaleString()}
+              ${userData.balance.toLocaleString()}
             </div>
             <p className="text-xs text-green-600 flex items-center">
               <TrendingUp className="h-3 w-3 mr-1" />
-              +15.4% this week
+              Earn up to 55.4% this week
             </p>
           </div>
 
@@ -186,9 +180,7 @@ export default function XPayDashboard() {
               </div>
               <span className="text-sm text-gray-500">Today's Earnings</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">
-              ${userData.dailyEarnings}
-            </div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">$0</div>
             <p className="text-xs text-purple-600 flex items-center">
               <Play className="h-3 w-3 mr-1" />
               From 12 videos watched
@@ -203,12 +195,9 @@ export default function XPayDashboard() {
               </div>
               <span className="text-sm text-gray-500">Videos Watched</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">
-              {userData.videosWatched}
-            </div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">0</div>
             <p className="text-xs text-orange-600 flex items-center">
-              <Eye className="h-3 w-3 mr-1" />
-              {userData.availableVideos} new available
+              <Eye className="h-3 w-3 mr-1" />2 videos left
             </p>
           </div>
         </div>
@@ -265,11 +254,6 @@ export default function XPayDashboard() {
                   </div>
                 ))}
               </div>
-
-              <button className="w-full mt-6 bg-gray-50 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center">
-                View All Videos
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </button>
             </div>
 
             {/* Investment Overview Chart */}
@@ -366,7 +350,12 @@ export default function XPayDashboard() {
                 ))}
               </div>
 
-              <button className="w-full mt-4 text-gray-600 text-sm hover:text-gray-900 transition-colors flex items-center justify-center">
+              <button
+                className="w-full mt-4 text-gray-600 text-sm hover:text-gray-900 transition-colors flex items-center justify-center"
+                onClick={() => {
+                  navigate("/notifications");
+                }}
+              >
                 View All Transactions
                 <ChevronRight className="h-4 w-4 ml-1" />
               </button>

@@ -1,12 +1,13 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASEURL } from "../utils/utils";
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-const API_BASE = "https://your-fastapi-url.com";
+const API_BASE = BASEURL;
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -24,42 +25,47 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-const fetchProfile = async (token) => {
-  try {
-    const res = await fetch(`${API_BASE}/auth/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const fetchProfile = async (token) => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/current-user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!res.ok) {
-      if (res.status === 401) {
-        throw new Error("Unauthorized");
-      } else {
-        throw new Error("Failed to fetch profile");
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Unauthorized");
+        } else {
+          throw new Error("Failed to fetch profile");
+        }
       }
-    }
 
-    const data = await res.json();
-    setUser(data);
-  } catch (err) {
-    if (err.name === "TypeError") {
-      // TypeError is usually thrown by fetch when there’s a network issue
-      console.error("Connectivity issue or server not reachable:", err.message);
-    } else {
-      console.error("Auth error:", err.message);
+      const data = await res.json();
+      setUser(data);
+    } catch (err) {
+      if (err.name === "TypeError") {
+        // TypeError is usually thrown by fetch when there’s a network issue
+        console.error(
+          "Connectivity issue or server not reachable:",
+          err.message
+        );
+      } else {
+        console.error("Auth error:", err.message);
+      }
+      logout();
+    } finally {
+      setLoading(false);
     }
-    logout();
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const login = async (email, password) => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ username: email, password }),
       });
       if (!res.ok) throw new Error("Login failed");
       const data = await res.json();

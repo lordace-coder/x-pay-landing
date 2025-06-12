@@ -1,6 +1,7 @@
 import React from "react";
 import AppRouter from "./AppRouter";
 import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
   useEffect(() => {
@@ -10,6 +11,7 @@ function App() {
   return (
     <div>
       <AppRouter />
+      <ToastContainer />
     </div>
   );
 }

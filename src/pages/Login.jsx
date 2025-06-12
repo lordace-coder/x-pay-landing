@@ -1,20 +1,32 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ArrowRight, Mail, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/img/xpay-logo.png";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     setIsLoading(true);
     // Simulate login process
-    setTimeout(() => {
+    try {
+      const res = await login(email, password);
+      if (!res) {
+        toast("Invalid email or password", { type: "error" });
+      }
+      navigate("/dashboard");
+    } catch (error) {
+      toadt("An Error occured " + error);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
