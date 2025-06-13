@@ -42,21 +42,7 @@ import "swiper/css/pagination";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import PureCounter from "@srexi/purecounterjs";
-// end of javascript and libraries
-
-// <!-- ======= Javascripts =======-->
-// import "../assets/vendors/bootstrap/bootstrap.bundle.min.js";
-// import "../assets/vendors/gsap/gsap.min.js";
-// import "../assets/vendors/imagesloaded/imagesloaded.pkgd.min.js";
-// import "../assets/vendors/isotope/isotope.pkgd.min.js";
-// import "../assets/vendors/glightbox/glightbox.min.js";
-// import "../assets/vendors/swiper/swiper-bundle.min.js";
-// import "../assets/vendors/aos/aos.js";
-// import "../assets/vendors/purecounter/purecounter.js";
-// import "../assets/js/custom.js"
-// import "../assets/js/send_email.js";
-// <!-- End JavaScripts-->
-
+import logo from "../assets/img/xpay-logo.png";
 // HEADER
 const Header = function () {
   return (
@@ -73,16 +59,11 @@ const Header = function () {
           {/* <!-- If you plan to use an image logo, uncomment this if it is commented--> */}
 
           {/* <!-- logo dark--> */}
-          <img
-            className="logo dark img-fluid"
-            src={DarkLogo}
-            alt="FreeBootstrap.net image placeholder"
-          />
 
           {/* <!-- logo light--> */}
           <img
-            className="logo light img-fluid"
-            src={LightLogo}
+            className="logo  img-fluid w-[100px]"
+            src={logo}
             alt="FreeBootstrap.net image placeholder"
           />
         </a>
@@ -307,7 +288,7 @@ const Header = function () {
 
         <div className="ms-auto w-auto">
           <div className="header-social d-flex align-items-center gap-1">
-            <Link className="btn btn-primary py-2" to={'/login'}>
+            <Link className="btn btn-primary py-2" to={"/login"}>
               Get Started
             </Link>
 
@@ -375,29 +356,34 @@ const Hero = function () {
                   data-aos="fade-up"
                   data-aos-delay="0"
                 >
-                  Innovative Fintech Solutions
+                  Welcome to X-Pay
                 </span>
                 <h1
                   className="hero-title mb-3"
                   data-aos="fade-up"
                   data-aos-delay="100"
                 >
-                  Secure, Efficient, and User-Friendly Financial Services
+                  Turn Attention into Earnings with X-Pay Tokens
                 </h1>
                 <p
                   className="hero-description mb-4 mb-lg-5"
                   data-aos="fade-up"
                   data-aos-delay="200"
                 >
-                  Experience the future of finance with our secure, efficient,
-                  and user-friendly financial services.
+                  Your gateway to daily passive income. Purchase X-Pay Tokens,
+                  watch engaging videos, earn daily rewards, and even advertise
+                  your own content.
+                  <p className="pt-6">
+                    ✓ Trusted by thousands ✓ Transparent & Secure ✓ Multiple
+                    earning opportunities
+                  </p>
                 </p>
                 <div
                   className="cta d-flex gap-2 mb-4 mb-lg-5"
                   data-aos="fade-up"
                   data-aos-delay="300"
                 >
-                  <Link className="btn" to={'/login'}>
+                  <Link className="btn" to={"/login"}>
                     Get Started Now
                   </Link>
                   <a className="btn btn-white-outline" href="#">
@@ -496,20 +482,17 @@ const About = function () {
                   About us
                 </span>
                 <h2 className="mb-4" data-aos="fade-up" data-aos-delay="100">
-                  Experience the future of finance with our secure, efficient,
-                  and user-friendly financial services
+                  The Future of Investment Meets Entertainment
                 </h2>
                 <div data-aos="fade-up" data-aos-delay="200">
                   <p>
-                    Founded with the vision of revolutionizing the financial
-                    industry, we are a leading fintech company dedicated to
-                    providing innovative and secure financial solutions.
+                    X-Pay is an innovative fintech-investment platform designed
+                    to make earning money simple, accessible, and fun.
                   </p>
                   <p>
-                    Our cutting-edge platform ensures your transactions are
-                    safe, streamlined, and easy to manage, empowering you to
-                    take control of your financial journey with confidence and
-                    convenience.
+                    With X-Pay, your attention becomes valuable. By purchasing
+                    X-Pay Tokens, you turn your capital into an
+                    income-generating asset simply by watching videos every day.
                   </p>
                 </div>
                 <h4
@@ -540,7 +523,7 @@ const About = function () {
                     <span className="icon rounded-circle text-center">
                       <i className="bi bi-check"></i>
                     </span>
-                    <span className="text">User-Centric Design </span>
+                    <span className="text">Digital Investment</span>
                   </li>
                   <li className="d-flex align-items-center gap-2">
                     <span className="icon rounded-circle text-center">
@@ -578,9 +561,9 @@ const About = function () {
                 <div>
                   <h3 className="text-uppercase fw-bold">Mission Statement</h3>
                   <p className="fs-5 mb-0">
-                    Our mission is to empower individuals and businesses by
-                    delivering secure, efficient, and user-friendly financial
-                    services.
+                    To empower users financially by converting their time and
+                    attention into real value, while offering creators and
+                    advertisers a powerful platform to grow.
                   </p>
                 </div>
               </div>
@@ -652,12 +635,10 @@ const Features = function () {
                           <div className="icon text-center mb-4">
                             <i className="bi bi-person-check fs-4"></i>
                           </div>
-                          <h3 className="fs-6 fw-bold mb-3">
-                            User-Friendly Interface
-                          </h3>
+                          <h3 className="fs-6 fw-bold mb-3">Daily Earnings</h3>
                           <p>
-                            Easy navigation with responsive design for various
-                            devices.
+                            Watch videos every day and earn a fixed percentage
+                            of your capital.
                           </p>
                         </div>
                         <div
@@ -668,12 +649,10 @@ const Features = function () {
                           <div className="icon text-center mb-4">
                             <i className="bi bi-graph-up fs-4"></i>
                           </div>
-                          <h3 className="fs-6 fw-bold mb-3">
-                            Financial Analytics
-                          </h3>
+                          <h3 className="fs-6 fw-bold mb-3">Easy Start</h3>
                           <p>
-                            Budget tracking, expense categorization, and
-                            personalized insights.
+                            Just purchase X-Pay Tokens and begin earning
+                            instantly.
                           </p>
                         </div>
                         <div
@@ -685,11 +664,11 @@ const Features = function () {
                             <i className="bi bi-headset fs-4"></i>
                           </div>
                           <h3 className="fs-6 fw-bold mb-3">
-                            Customer Support
+                            Advertise Your Business
                           </h3>
                           <p>
-                            24/7 service via chat, email, phone, and a detailed
-                            help center.
+                            Reach a wide audience with targeted, affordable
+                            video ads.
                           </p>
                         </div>
                         <div
@@ -700,12 +679,10 @@ const Features = function () {
                           <div className="icon text-center mb-4">
                             <i className="bi bi-shield-lock fs-4"></i>
                           </div>
-                          <h3 className="fs-6 fw-bold mb-3">
-                            Security Features
-                          </h3>
+                          <h3 className="fs-6 fw-bold mb-3">Secure Platform</h3>
                           <p>
-                            Data encryption, fraud detection, and prevention
-                            mechanisms.
+                            Backed by strong encryption, anti-fraud systems, and
+                            transparent transactions.
                           </p>
                         </div>
                       </div>
@@ -867,11 +844,8 @@ const HowItWorks = function () {
                 1
               </span>
               <div>
-                <h3 className="fs-5 mb-4">Sign Up</h3>
-                <p>
-                  Visit our website or download our app to sign up. Provide
-                  basic information to set up your secure account.
-                </p>
+                <h3 className="fs-5 mb-4">Purchase X-Pay Tokens </h3>
+                <p>Buy tokens using USDT.</p>
               </div>
             </div>
           </div>
@@ -891,11 +865,8 @@ const HowItWorks = function () {
               <span className="step-number rounded-circle text-center fw-bold mb-5 mx-auto">
                 2
               </span>
-              <h3 className="fs-5 mb-4">Set Up Your Profile</h3>
-              <p>
-                Add your personal or business details to tailor the platform to
-                your specific needs.
-              </p>
+              <h3 className="fs-5 mb-4">Watch Daily Videos </h3>
+              <p>Log in and watch 2 short videos daily.</p>
             </div>
           </div>
           <div
@@ -914,11 +885,8 @@ const HowItWorks = function () {
               <span className="step-number rounded-circle text-center fw-bold mb-5 mx-auto">
                 3
               </span>
-              <h3 className="fs-5 mb-4">Explore Features</h3>
-              <p>
-                Access your dashboard for a summary of your finances: balances,
-                recent transactions, and insights.
-              </p>
+              <h3 className="fs-5 mb-4">Earn Daily Returns - </h3>
+              <p>Earn a percentage of your capital each day.</p>
             </div>
           </div>
           <div
@@ -931,11 +899,8 @@ const HowItWorks = function () {
                 4
               </span>
               <div>
-                <h3 className="fs-5 mb-4">Invest and Grow</h3>
-                <p>
-                  Discover a variety of investment opportunities tailored to
-                  your financial goals.
-                </p>
+                <h3 className="fs-5 mb-4">Advertise or Upload </h3>
+                <p>Submit content for review and start promoting or earning.</p>
               </div>
             </div>
           </div>
@@ -1417,10 +1382,8 @@ const Testimonials = function () {
           >
             <div className="testimonial rounded-4 p-4">
               <blockquote className="mb-3">
-                &ldquo; This platform has completely transformed the way I
-                manage my business finances. The real-time transaction tracking
-                and seamless payment options have saved me so much time and
-                effort! &rdquo;
+                &ldquo;X-Pay gave me daily earnings just by watching videos.
+                It’s now my side income!&rdquo;
               </blockquote>
               <div className="testimonial-author d-flex gap-3 align-items-center">
                 <div className="author-img">
@@ -1432,7 +1395,7 @@ const Testimonials = function () {
                 </div>
                 <div className="lh-base">
                   <strong className="d-block">John Davis</strong>
-                  <span>Small Business Owner</span>
+                  <span>College Student</span>
                 </div>
               </div>
             </div>
@@ -1444,10 +1407,8 @@ const Testimonials = function () {
           >
             <div className="testimonial rounded-4 p-4">
               <blockquote className="mb-3">
-                &ldquo; As a freelancer, managing my finances can be
-                overwhelming. The budgeting tools and personalized insights have
-                made it so much easier to stay on top of my expenses and plan
-                for the future. &rdquo;
+                &ldquo; I advertised my boutique on X-Pay and saw immediate
+                customer responses. &rdquo;
               </blockquote>
               <div className="testimonial-author d-flex gap-3 align-items-center">
                 <div className="author-img">
@@ -1459,7 +1420,7 @@ const Testimonials = function () {
                 </div>
                 <div className="lh-base">
                   <strong className="d-block">Emily Smith</strong>
-                  <span>Freelancer</span>
+                  <span>Entrepreneur</span>
                 </div>
               </div>
             </div>
@@ -1471,12 +1432,8 @@ const Testimonials = function () {
           >
             <div className="testimonial rounded-4 p-4">
               <blockquote className="mb-3">
-                &ldquo; The investment options and portfolio management tools on
-                this platform are top-notch. The variety of choices caters to
-                all types of investors, from conservative to aggressive. I
-                especially appreciate how the tailored recommendations align
-                perfectly with my financial goals. It’s a game-changer for
-                anyone serious about growing their wealth. &rdquo;
+                &ldquo;As a content creator, uploading on X-Pay gave me a fresh
+                revenue stream. &rdquo;
               </blockquote>
               <div className="testimonial-author d-flex gap-3 align-items-center">
                 <div className="author-img">
@@ -1500,9 +1457,9 @@ const Testimonials = function () {
           >
             <div className="testimonial rounded-4 p-4">
               <blockquote className="mb-3">
-                &ldquo; I never thought managing money could be this simple! The
+                &ldquo; I never thought an investment could be this simple! The
                 user-friendly interface and secure transaction process give me
-                the confidence to handle my finances independently. &rdquo;
+                the confidence to handle my transactions independently. &rdquo;
               </blockquote>
               <div className="testimonial-author d-flex gap-3 align-items-center">
                 <div className="author-img">
@@ -1514,7 +1471,7 @@ const Testimonials = function () {
                 </div>
                 <div className="lh-base">
                   <strong className="d-block">Sarah Lee</strong>
-                  <span>College Student</span>
+                  <span>Real Estate Manager </span>
                 </div>
               </div>
             </div>

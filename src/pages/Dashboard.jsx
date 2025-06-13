@@ -18,6 +18,7 @@ import {
   Wallet,
   Target,
   Award,
+  Video,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -49,22 +50,6 @@ export default function XPayDashboard() {
       earning: 12.0,
       thumbnail: "📈",
       views: "1.8k",
-    },
-    {
-      id: 3,
-      title: "Investment Strategies",
-      duration: "15:20",
-      earning: 18.75,
-      thumbnail: "💼",
-      views: "3.2k",
-    },
-    {
-      id: 4,
-      title: "Market Trends 2024",
-      duration: "10:15",
-      earning: 14.25,
-      thumbnail: "🎯",
-      views: "1.5k",
     },
   ];
 
@@ -369,30 +354,30 @@ export default function XPayDashboard() {
 
               <div className="space-y-3">
                 <button className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group">
-                  <div className="flex items-center">
-                    <Target className="h-5 w-5 text-gray-600 mr-3" />
+                  <div
+                    className="flex items-center"
+                    onClick={() => {
+                      navigate("/withdraw");
+                    }}
+                  >
+                    <DollarSign className="h-5 w-5 text-gray-600 mr-3" />
                     <span className="font-medium text-gray-900">
-                      Set Investment Goal
+                      Make Withdrawal
                     </span>
                   </div>
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                 </button>
 
                 <button className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group">
-                  <div className="flex items-center">
-                    <Award className="h-5 w-5 text-gray-600 mr-3" />
+                  <div
+                    className="flex items-center"
+                    onClick={() => {
+                      navigate("/ads");
+                    }}
+                  >
+                    <Video className="h-5 w-5 text-gray-600 mr-3" />
                     <span className="font-medium text-gray-900">
-                      View Achievements
-                    </span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
-                </button>
-
-                <button className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group">
-                  <div className="flex items-center">
-                    <PieChart className="h-5 w-5 text-gray-600 mr-3" />
-                    <span className="font-medium text-gray-900">
-                      Portfolio Analysis
+                      Upload Video Ads
                     </span>
                   </div>
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />

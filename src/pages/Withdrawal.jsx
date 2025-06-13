@@ -13,6 +13,7 @@ import {
   Clock,
   Loader2,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function WithdrawalPage() {
   const [step, setStep] = useState(1);
@@ -23,7 +24,7 @@ export default function WithdrawalPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
-
+  const navigate = useNavigate();
   const balance = 2847.5;
   const minWithdrawal = 10;
   const maxWithdrawal = 5000;
@@ -86,7 +87,7 @@ export default function WithdrawalPage() {
             <div className="flex items-center">
               <button
                 className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors mr-2"
-                onClick={() => alert("Navigate back")}
+                onClick={() => navigate("/dashboard")}
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>

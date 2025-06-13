@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import WithdrawalPage from "./pages/Withdrawal";
 import AuthProvider from "./context/AuthContext";
 import NotFound from "./pages/NotFound";
+import UploadAds from "./pages/UploadAds";
 
 export default function AppRouter() {
   return (
@@ -35,12 +36,19 @@ export default function AppRouter() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/withdraw"
             element={
               <PrivateRoute>
                 <WithdrawalPage />
+              </PrivateRoute>
+            }
+          />{" "}
+          <Route
+            path="/ads"
+            element={
+              <PrivateRoute>
+                <UploadAds />
               </PrivateRoute>
             }
           />
