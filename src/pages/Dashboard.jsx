@@ -22,14 +22,18 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import WatchEarnComponent from "../components/WatchAndEarn";
+import { BASEURL } from "../utils/utils";
 
 export default function XPayDashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedPeriod, setSelectedPeriod] = useState("7d");
-  const { user: userData, logout } = useAuth();
+  const [videosWatched, setVideosWatched] = useState({});
+  const { user: userData, logout, authFetch } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    getVideosLeft();
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -74,6 +78,12 @@ export default function XPayDashboard() {
     },
     { type: "Bonus", amount: 50.0, time: "3 days ago", status: "completed" },
   ];
+
+  const getVideosLeft = async () => {
+    const res = await authFetch(BASEURL + "/videos/remaining");
+    const data = await res.json();
+    setVideosWatched(data);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -168,7 +178,11 @@ export default function XPayDashboard() {
             <div className="text-2xl font-bold text-gray-900 mb-1">$0</div>
             <p className="text-xs text-purple-600 flex items-center">
               <Play className="h-3 w-3 mr-1" />
-              From 12 videos watched
+              From{" "}
+              {(videosWatched.watched_today ?? 0) == 1
+                ? "video"
+                : "videos"}{" "}
+              watched
             </p>
           </div>
 
@@ -180,104 +194,25 @@ export default function XPayDashboard() {
               </div>
               <span className="text-sm text-gray-500">Videos Watched</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">0</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {videosWatched.watched_today ?? 0}
+            </div>
             <p className="text-xs text-orange-600 flex items-center">
-              <Eye className="h-3 w-3 mr-1" />2 videos left
+              <Eye className="h-3 w-3 mr-1" />
+              {videosWatched.remaining_today ?? 0}{" "}
+              {(videosWatched.remaining_today ?? 0) == 1 ? "video" : "videos"}{" "}
+              left
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Available Videos */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
-                  Watch & Earn
-                </h3>
-                <span className="bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">
-                  {userData.availableVideos} New
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {videos.map((video) => (
-                  <div
-                    key={video.id}
-                    className="group border border-gray-200 rounded-xl p-4 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer"
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-2xl">
-                        {video.thumbnail}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
-                          {video.title}
-                        </h4>
-                        <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                          <span className="flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {video.duration}
-                          </span>
-                          <span className="flex items-center">
-                            <Eye className="h-3 w-3 mr-1" />
-                            {video.views}
-                          </span>
-                        </div>
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="text-green-600 font-semibold text-sm">
-                            +${video.earning}
-                          </span>
-                          <button className="bg-gray-900 text-white px-3 py-1 rounded-lg text-xs hover:bg-gray-800 transition-colors flex items-center">
-                            <Play className="h-3 w-3 mr-1" />
-                            Watch
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Investment Overview Chart */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
-                  Investment Overview
-                </h3>
-                <div className="flex space-x-2">
-                  {["7d", "30d", "90d"].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setSelectedPeriod(period)}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                        selectedPeriod === period
-                          ? "bg-gray-900 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      }`}
-                    >
-                      {period}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Simplified Chart Placeholder */}
-              <div className="h-48 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500 text-sm">
-                    Portfolio Performance Chart
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    +12.5% growth this period
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <WatchEarnComponent
+            onRefresh={getVideosLeft}
+            availableVideos={videosWatched.remaining_today ?? 0}
+          
+          />
 
           {/* Right Column */}
           <div className="space-y-6">
