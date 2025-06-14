@@ -100,19 +100,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center">
-              <label className="flex items-center text-gray-600 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  className="mr-3 w-4 h-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2"
-                />
-                <span className="text-base group-hover:text-gray-900 transition-colors">
-                  Remember me
-                </span>
-              </label>
-            </div>
-
             {/* Submit Button */}
             <button
               onClick={handleSubmit}

@@ -43,8 +43,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import PureCounter from "@srexi/purecounterjs";
 import logo from "../assets/img/xpay-logo.png";
+import Pricing from "../components/PricingSection";
+import { useAuth } from "../context/AuthContext";
 // HEADER
 const Header = function () {
+  const { user } = useAuth();
   return (
     <header
       className="fbs__net-navbar navbar navbar-expand-lg dark"
@@ -288,8 +291,11 @@ const Header = function () {
 
         <div className="ms-auto w-auto">
           <div className="header-social d-flex align-items-center gap-1">
-            <Link className="btn btn-primary py-2" to={"/login"}>
-              Get Started
+            <Link
+              className="btn btn-primary py-2"
+              to={user ? "/dashboard" : "/login"}
+            >
+              {user ? "Dashboard" : "Get Started"}
             </Link>
 
             <button
@@ -700,107 +706,7 @@ const Features = function () {
 // <!-- End Features-->
 
 // <!-- ======= Pricing =======-->
-const Pricing = function () {
-  return (
-    <section className="section pricing__v2" id="pricing">
-      <div className="container">
-        <div className="row mb-5">
-          <div className="col-md-5 mx-auto text-center">
-            <span
-              className="subtitle text-uppercase mb-3"
-              data-aos="fade-up"
-              data-aos-delay="0"
-            >
-              Pricing
-            </span>
-            <h2 className="mb-3" data-aos="fade-up" data-aos-delay="100">
-              Plan for every budget
-            </h2>
-            <p data-aos="fade-up" data-aos-delay="200">
-              Experience the future of finance with our secure, efficient, and
-              user-friendly financial services
-            </p>
-          </div>
-        </div>
-        <div className="row">
-          <div
-            className="col-md-4 mb-4 mb-md-0"
-            data-aos="fade-up"
-            data-aos-delay="300"
-          >
-            <div className="p-5 rounded-4 price-table h-100">
-              <h3>Personal</h3>
-              <p>
-                Choose a plan that fits your personal financial needs and start
-                managing your finances more effectively.
-              </p>
-              <div className="price mb-4">
-                <strong>$7</strong>
-                <span>/ month</span>
-              </div>
-              <div>
-                <Link className="btn" to={"/login"}>
-                  Get Started
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-8" data-aos="fade-up" data-aos-delay="400">
-            <div className="p-5 rounded-4 price-table popular h-100">
-              <div className="row">
-                <div className="col-md-6">
-                  <h3 className="mb-3">Business</h3>
-                  <p>
-                    Optimize your business financial operations with our
-                    tailored business plans.
-                  </p>
-                  <div className="price mb-4">
-                    <strong className="me-1">$29</strong>
-                    <span>/ month</span>
-                  </div>
-                  <div>
-                    <a className="btn btn-white hover-outline" href="#">
-                      Get Started
-                    </a>
-                  </div>
-                </div>
-                <div className="col-md-6 pricing-features">
-                  <h4 className="text-uppercase fw-bold mb-3">Features</h4>
-                  <ul className="list-unstyled d-flex flex-column gap-3">
-                    <li className="d-flex gap-2 align-items-start mb-0">
-                      <span className="icon rounded-circle position-relative mt-1">
-                        <i className="bi bi-check"></i>
-                      </span>
-                      <span>Personalized financial insights and reports</span>
-                    </li>
-                    <li className="d-flex gap-2 align-items-start mb-0">
-                      <span className="icon rounded-circle position-relative mt-1">
-                        <i className="bi bi-check"></i>
-                      </span>
-                      <span>Priority customer support</span>
-                    </li>
-                    <li className="d-flex gap-2 align-items-start mb-0">
-                      <span className="icon rounded-circle position-relative mt-1">
-                        <i className="bi bi-check"></i>
-                      </span>
-                      <span>Access to exclusive investment opportunities</span>
-                    </li>
-                    <li className="d-flex gap-2 align-items-start mb-0">
-                      <span className="icon rounded-circle position-relative mt-1">
-                        <i className="bi bi-check"></i>
-                      </span>
-                      <span>AI-driven financial recommendations</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+
 // <!-- End Pricing-->
 
 //  <!-- ======= How it works =======-->
@@ -1703,34 +1609,14 @@ const Footer = function () {
   return (
     <footer className="footer pt-5 pb-5">
       <div className="container">
-        <div className="row mb-5 pb-4">
-          <div className="col-md-7">
-            <h2 className="fs-5">Join our newsletter</h2>
-            <p>
-              Stay updated with our latest templates and offers—join our
-              newsletter today!
-            </p>
-          </div>
-          <div className="col-md-5">
-            <form className="d-flex gap-2">
-              <input
-                className="form-control"
-                type="email"
-                placeholder="Email your email"
-                required=""
-              />
-              <button className="btn btn-primary fs-6" type="submit">
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
         <div className="row justify-content-between mb-5 g-xl-5">
           <div className="col-md-4 mb-5 mb-lg-0">
             <h3 className="mb-3">About</h3>
             <p className="mb-4">
-              Utilize our tools to develop your concepts and bring your vision
-              to life. Once complete, effortlessly share your creations.
+              The Future of Investment Meets Entertainment X-Pay is an
+              innovative fintech-investment platform designed to make earning
+              money simple, accessible, and fun. With X-Pay, your attention
+              becomes valuable.
             </p>
           </div>
           <div className="col-md-7">
@@ -1782,50 +1668,15 @@ const Footer = function () {
                   </li>
                 </ul>
               </div>
-              <div className="col-md-6 col-lg-4 mb-4 mb-lg-0 quick-contact">
-                <h3 className="mb-3">Contact</h3>
-                <p className="d-flex mb-3">
-                  <i className="bi bi-geo-alt-fill me-3"></i>
-                  <span>
-                    123 Main Street Apt 4B Springfield, <br /> IL 62701 United
-                    States
-                  </span>
-                </p>
-                <a className="d-flex mb-3" href="mailto:info@mydomain.com">
-                  <i className="bi bi-envelope-fill me-3"></i>
-                  <span>info@mydomain.com</span>
-                </a>
-                <a className="d-flex mb-3" href="tel://+123456789900">
-                  <i className="bi bi-telephone-fill me-3"></i>
-                  <span>+1 (234) 5678 9900</span>
-                </a>
-                <a className="d-flex mb-3" href="https://freebootstrap.net">
-                  <i className="bi bi-globe me-3"></i>
-                  <span>FreeBootstrap.net</span>
-                </a>
-              </div>
             </div>
           </div>
         </div>
         <div className="row credits pt-3">
           <div className="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
-            {/* <!--
-                Note:
-                =>>> Please keep all the footer links intact. <<<=
-                =>>> You can only remove the links if you buy the pro version. <<<=
-                =>>> Buy the pro version, which includes a functional PHP/AJAX contact form and many additional features.: https://freebootstrap.net/template/vertex-pro-bootstrap-website-template-for-portfolio/ <<<=
-                -->  */}
             &copy;
-            <script>document.write(new Date().getFullYear());</script> Nova. All
-            rights reserved. Designed with{" "}
-            <i className="bi bi-heart-fill text-danger"></i> by{" "}
-            <a href="https://freebootstrap.net">FreeBootstrap.net</a>
-          </div>
-          <div className="col-xl-4 justify-content-start justify-content-xl-end quick-links d-flex flex-column flex-xl-row text-center text-xl-start gap-1">
-            Distributed by
-            <a href="https://themewagon.com" target="_blank">
-              ThemeWagon
-            </a>
+            <script>document.write(new Date().getFullYear());</script> X-Pay.
+            All rights reserved <i className="bi bi-heart-fill text-danger"></i>{" "}
+            by{" "}
           </div>
         </div>
       </div>
