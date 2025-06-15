@@ -1,79 +1,81 @@
-import React, { useState } from "react";
-import {
-  Bell,
-  DollarSign,
-  TrendingUp,
-  Play,
-  Clock,
-  ArrowUpRight,
-  Calendar,
-  MoreVertical,
-  ArrowLeft,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useDashboardContext } from "../context/DashboardContext";
+import { BASEURL } from "../utils/utils";
+
+// Helper to get "time ago" string
+function formatTimeAgo(inputTime) {
+  const now = new Date();
+  const time = new Date(inputTime);
+  const diff = Math.floor((now - time) / 1000); // in seconds
+
+  if (diff < 60) return `${diff} second${diff === 1 ? "" : "s"} ago`;
+  if (diff < 3600)
+    return `${Math.floor(diff / 60)} minute${
+      Math.floor(diff / 60) === 1 ? "" : "s"
+    } ago`;
+  if (diff < 86400)
+    return `${Math.floor(diff / 3600)} hour${
+      Math.floor(diff / 3600) === 1 ? "" : "s"
+    } ago`;
+  if (diff < 604800)
+    return `${Math.floor(diff / 86400)} day${
+      Math.floor(diff / 86400) === 1 ? "" : "s"
+    } ago`;
+  return time.toLocaleDateString();
+}
 
 export default function XPayNotifications() {
-  const [activeTab, setActiveTab] = useState("notifications");
+  const navigate = useNavigate();
+  const { authFetch } = useAuth();
+  const { getDashboardData, setDashboardData } = useDashboardContext();
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const notifications = [
-    {
-      id: 1,
-      type: "earning",
-      icon: <Play className="h-5 w-5" />,
-      title: "Video Earning",
-      message: 'You earned $15.50 from watching "Crypto Market Analysis"',
-      time: "2 minutes ago",
-      color: "bg-green-100 text-green-600",
-    },
-    {
-      id: 2,
-      type: "investment",
-      icon: <TrendingUp className="h-5 w-5" />,
-      title: "Investment Update",
-      message: "Your portfolio gained 3.2% today. Total profit: $2,847.50",
-      time: "1 hour ago",
-      color: "bg-blue-100 text-blue-600",
-    },
-  ];
+  useEffect(() => {
+    // Check if transactions are already cached
+    const cachedTransactions = getDashboardData("transactions");
 
-  const transactions = [
-    {
-      id: 1,
-      type: "earning",
-      title: "Video Earning",
-      description: "Crypto Market Analysis",
-      amount: 15.5,
-      status: "completed",
-      time: "2 minutes ago",
-      icon: <ArrowUpRight className="h-4 w-4" />,
-      color: "text-green-600",
-    },
-    {
-      id: 2,
-      type: "investment",
-      title: "Investment Return",
-      description: "Portfolio Daily Return",
-      amount: 125.0,
-      status: "completed",
-      time: "1 hour ago",
-      icon: <ArrowUpRight className="h-4 w-4" />,
-      color: "text-green-600",
-    },
-  ];
+    if (cachedTransactions && cachedTransactions.length > 0) {
+      // Use cached data
+      setTransactions(cachedTransactions);
+    } else {
+      // Fetch fresh data
+      setLoading(true);
+      authFetch(BASEURL + "/tokens/transactions")
+        .then((e) => e.json())
+        .then((data) => {
+          setTransactions(data);
+          // Cache the fetched data
+          setDashboardData("transactions", data);
+        })
+        .catch((error) => {
+          console.error("Error fetching transactions:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [authFetch, getDashboardData, setDashboardData]);
 
-  const getStatusBadge = (status) => {
-    const styles = {
-      completed: "bg-green-100 text-green-800",
-      pending: "bg-orange-100 text-orange-800",
-      failed: "bg-red-100 text-red-800",
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status]}`}
-      >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
+  // Function to refresh transactions data
+  const refreshTransactions = () => {
+    setLoading(true);
+    authFetch(BASEURL + "/tokens/transactions")
+      .then((e) => e.json())
+      .then((data) => {
+        setTransactions(data);
+        // Update cached data
+        setDashboardData("transactions", data);
+      })
+      .catch((error) => {
+        console.error("Error refreshing transactions:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -86,213 +88,110 @@ export default function XPayNotifications() {
               <button
                 className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors mr-2"
                 onClick={() => {
-                  alert("Navigate to dashboard");
+                  navigate("/dashboard");
                 }}
               >
-                <ArrowLeft className="h-5 w-5" />
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
               </button>
-              <div className="flex items-center justify-center w-10 h-10 bg-black rounded-xl mr-4">
-                <span className="text-xl font-bold text-white">X</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Notifications
-                </h1>
-              </div>
+              <h1 className="text-xl font-bold text-gray-900">Transactions</h1>
             </div>
+
+            {/* Refresh button */}
+            <button
+              onClick={refreshTransactions}
+              disabled={loading}
+              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+              title="Refresh transactions"
+            >
+              <svg
+                className={`h-5 w-5 ${loading ? "animate-spin" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="flex border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab("notifications")}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors relative ${
-                activeTab === "notifications"
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-2">
-                <Bell className="h-4 w-4" />
-                <span>Notifications</span>
-              </div>
-              {activeTab === "notifications" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900"></div>
-              )}
-            </button>
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          {loading && transactions.length === 0 && (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-500">Loading transactions...</p>
+            </div>
+          )}
 
-            <button
-              onClick={() => setActiveTab("transactions")}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors relative ${
-                activeTab === "transactions"
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-2">
-                <DollarSign className="h-4 w-4" />
-                <span>Transactions</span>
-              </div>
-              {activeTab === "transactions" && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900"></div>
-              )}
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="p-6">
-            {activeTab === "notifications" && (
-              <div>
-                {/* Notifications List */}
-                <div className="space-y-4">
-                  {notifications.map((notification) => (
-                    <div
-                      key={notification.id}
-                      className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
+          <div className="space-y-4">
+            {transactions.map((transaction) => (
+              <div
+                key={transaction.id}
+                className="p-4 bg-gray-50 hover:bg-white rounded-xl border border-gray-200 transition-all duration-200"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="space-y-0.5">
+                    <h4 className="text-base font-semibold text-gray-900">
+                      {transaction.title}
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                      {transaction.description}
+                    </p>
+                    <div className="flex items-center mt-1 text-xs text-gray-500">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {formatTimeAgo(transaction.timestamp)}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p
+                      className={`text-lg font-bold ${
+                        transaction.amount > 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
                     >
-                      <div className="flex items-start space-x-4">
-                        <div className={`p-2 rounded-xl ${notification.color}`}>
-                          {notification.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h4 className="font-semibold text-gray-900">
-                              {notification.title}
-                            </h4>
-                            <button className="p-1 text-gray-400 hover:text-gray-600 rounded">
-                              <MoreVertical className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <p className="text-gray-600 text-sm mb-2">
-                            {notification.message}
-                          </p>
-                          <div className="flex items-center text-xs text-gray-500">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {notification.time}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {notifications.length === 0 && (
-                  <div className="text-center py-12">
-                    <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      No notifications
-                    </h3>
-                    <p className="text-gray-500">No notifications to show</p>
+                      {transaction.amount > 0 ? "+" : "-"}$
+                      {Math.abs(transaction.amount).toFixed(2)}
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
-            )}
+            ))}
 
-            {activeTab === "transactions" && (
-              <div>
-                {/* Transaction Summary */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-green-600 text-sm font-medium">
-                          Total Earned
-                        </p>
-                        <p className="text-2xl font-bold text-green-700">
-                          $140.50
-                        </p>
-                      </div>
-                      <ArrowUpRight className="h-8 w-8 text-green-600" />
-                    </div>
-                  </div>
-
-                  <div className="bg-orange-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-orange-600 text-sm font-medium">
-                          Pending
-                        </p>
-                        <p className="text-2xl font-bold text-orange-700">
-                          $0.00
-                        </p>
-                      </div>
-                      <Clock className="h-8 w-8 text-orange-600" />
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-blue-600 text-sm font-medium">
-                          This Month
-                        </p>
-                        <p className="text-2xl font-bold text-blue-700">
-                          $650.00
-                        </p>
-                      </div>
-                      <Calendar className="h-8 w-8 text-blue-600" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Transactions List */}
-                <div className="space-y-3">
-                  {transactions.map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="p-4 bg-white rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div
-                            className={`p-2 rounded-xl bg-gray-100 ${transaction.color}`}
-                          >
-                            {transaction.icon}
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-gray-900">
-                              {transaction.title}
-                            </h4>
-                            <p className="text-sm text-gray-500">
-                              {transaction.description}
-                            </p>
-                            <div className="flex items-center mt-1">
-                              <Clock className="h-3 w-3 text-gray-400 mr-1" />
-                              <span className="text-xs text-gray-500">
-                                {transaction.time}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="text-right">
-                          <div
-                            className={`text-lg font-bold ${
-                              transaction.amount > 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {transaction.amount > 0 ? "+" : ""}$
-                            {Math.abs(transaction.amount).toFixed(2)}
-                          </div>
-                          <div className="mt-1">
-                            {getStatusBadge(transaction.status)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            {!loading && transactions.length === 0 && (
+              <div className="text-center py-12">
+                <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No transactions
+                </h3>
+                <p className="text-gray-500">
+                  No transaction history available.
+                </p>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

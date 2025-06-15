@@ -11,51 +11,56 @@ import WithdrawalPage from "./pages/Withdrawal";
 import AuthProvider from "./context/AuthContext";
 import NotFound from "./pages/NotFound";
 import UploadAds from "./pages/UploadAds";
+import PurchaseTokens from "./pages/PurchaseTokens";
+import { DashboardProvider } from "./context/DashboardContext";
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Signup />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <XPayDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/notifications"
-            element={
-              <PrivateRoute>
-                <XPayNotifications />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/withdraw"
-            element={
-              <PrivateRoute>
-                <WithdrawalPage />
-              </PrivateRoute>
-            }
-          />{" "}
-          <Route
-            path="/ads"
-            element={
-              <PrivateRoute>
-                <UploadAds />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/policies" element={<PrivacyPolicy />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <DashboardProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/purchase-tokens" element={<PurchaseTokens />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Signup />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <XPayDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <PrivateRoute>
+                  <XPayNotifications />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/withdraw"
+              element={
+                <PrivateRoute>
+                  <WithdrawalPage />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/ads"
+              element={
+                <PrivateRoute>
+                  <UploadAds />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/policies" element={<PrivacyPolicy />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </DashboardProvider>
       </AuthProvider>
     </BrowserRouter>
   );

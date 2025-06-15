@@ -36,6 +36,7 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
       }
     } catch (error) {
       console.error("Error fetching video:", error);
+      toast("Error fetching video ,Please try again", { type: "error" });
       setIsLoading(false);
     }
   };

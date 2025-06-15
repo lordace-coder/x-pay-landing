@@ -4,86 +4,96 @@ import {
   DollarSign,
   Play,
   Eye,
-  Clock,
   Bell,
-  Settings,
   LogOut,
   User,
-  PieChart,
-  BarChart3,
-  Calendar,
-  Gift,
-  Star,
-  ChevronRight,
   Wallet,
-  Target,
-  Award,
+  Gift,
+  ChevronRight,
   Video,
+  RefreshCw,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useDashboardContext } from "../context/DashboardContext";
 import { useNavigate } from "react-router-dom";
 import WatchEarnComponent from "../components/WatchAndEarn";
+import RecentActivity from "../components/RecentActivity";
 import { BASEURL } from "../utils/utils";
 
 export default function XPayDashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedPeriod, setSelectedPeriod] = useState("7d");
   const [videosWatched, setVideosWatched] = useState({});
+  const [loading, setLoading] = useState(false);
   const { user: userData, logout, authFetch } = useAuth();
+  const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getVideosLeft();
+    // Initialize videos data on mount
+    const initializeData = async () => {
+      const cachedVideosData = getDashboardData("videosWatched");
+
+      if (cachedVideosData) {
+        setVideosWatched(cachedVideosData);
+      } else {
+        await getVideosLeft();
+      }
+    };
+
+    initializeData();
+
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, []); // Empty dependency array to run only on mount
 
-  const videos = [
-    {
-      id: 1,
-      title: "Crypto Market Analysis",
-      duration: "12:45",
-      earning: 15.5,
-      thumbnail: "📊",
-      views: "2.1k",
-    },
-    {
-      id: 2,
-      title: "Stock Trading Basics",
-      duration: "08:30",
-      earning: 12.0,
-      thumbnail: "📈",
-      views: "1.8k",
-    },
-  ];
+  // Separate useEffect for caching user data
+  useEffect(() => {
+    if (userData) {
+      setDashboardData("userData", userData);
+    }
+  }, [userData]); // Only depend on userData
 
-  const recentTransactions = [
-    {
-      type: "Video Earning",
-      amount: 15.5,
-      time: "2 hours ago",
-      status: "completed",
-    },
-    {
-      type: "Investment Return",
-      amount: 125.0,
-      time: "1 day ago",
-      status: "completed",
-    },
-    {
-      type: "Video Earning",
-      amount: 12.0,
-      time: "2 days ago",
-      status: "completed",
-    },
-    { type: "Bonus", amount: 50.0, time: "3 days ago", status: "completed" },
-  ];
+  const getVideosLeft = async (forceRefresh = false) => {
+    try {
+      setLoading(true);
 
-  const getVideosLeft = async () => {
-    const res = await authFetch(BASEURL + "/videos/remaining");
-    const data = await res.json();
-    setVideosWatched(data);
+      // If not forcing refresh, check cache first
+      if (!forceRefresh) {
+        const cachedData = getDashboardData("videosWatched");
+        const lastFetch = getDashboardData("videosLastFetch");
+        const now = Date.now();
+
+        // Use cached data if it's less than 5 minutes old
+        if (cachedData && lastFetch && now - lastFetch < 5 * 60 * 1000) {
+          setVideosWatched(cachedData);
+          setLoading(false);
+          return;
+        }
+      }
+
+      const res = await authFetch(BASEURL + "/videos/remaining");
+      const data = await res.json();
+
+      setVideosWatched(data);
+
+      // Cache the data with timestamp
+      setDashboardData("videosWatched", data);
+      setDashboardData("videosLastFetch", Date.now());
+    } catch (err) {
+      console.error("Failed to fetch videos left:", err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Function to refresh all dashboard data
+  const refreshDashboardData = async () => {
+    await getVideosLeft(true);
+    // You can add other data refresh calls here
+  };
+
+  // Remove this useEffect that was causing re-renders
+  // Videos data will be cached when it's fetched in getVideosLeft
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -92,20 +102,33 @@ export default function XPayDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="flex items-center justify-center w-10 h-10 bg-black rounded-xl mr-4">
-                <span className="text-xl font-bold text-white">X</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-              </div>
+              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
 
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+              {/* Refresh button */}
+              <button
+                onClick={refreshDashboardData}
+                disabled={loading}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                title="Refresh dashboard data"
+              >
+                <RefreshCw
+                  className={`h-5 w-5 ${loading ? "animate-spin" : ""}`}
+                />
+              </button>
+
+              <button
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => navigate("/notifications")}
+              >
                 <Bell className="h-5 w-5" />
               </button>
-              <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                <LogOut className="h-5 w-5" onClick={logout} />
+              <button
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={logout}
+              >
+                <LogOut className="h-5 w-5" />
               </button>
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
@@ -120,8 +143,9 @@ export default function XPayDashboard() {
         </div>
       </header>
 
+      {/* Body */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
+        {/* Welcome */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back, {userData.full_name.split(" ")[0]}!
@@ -131,9 +155,9 @@ export default function XPayDashboard() {
           </p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Capital Card */}
+          {/* Capital */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <div className="p-2 bg-blue-100 rounded-xl">
@@ -144,13 +168,9 @@ export default function XPayDashboard() {
             <div className="text-2xl font-bold text-gray-900 mb-1">
               ${userData.capital.toLocaleString()}
             </div>
-            {/* <p className="text-xs text-green-600 flex items-center">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +2.5% from last month
-            </p> */}
           </div>
 
-          {/* Profits Card */}
+          {/* Profits */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <div className="p-2 bg-green-100 rounded-xl">
@@ -167,27 +187,39 @@ export default function XPayDashboard() {
             </p>
           </div>
 
-          {/* Daily Earnings Card */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          {/* Today Earnings */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative">
+            {loading && (
+              <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
+                <RefreshCw className="h-4 w-4 animate-spin text-purple-600" />
+              </div>
+            )}
             <div className="flex items-center justify-between mb-4">
               <div className="p-2 bg-purple-100 rounded-xl">
                 <DollarSign className="h-6 w-6 text-purple-600" />
               </div>
               <span className="text-sm text-gray-500">Today's Earnings</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">$0</div>
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              ${videosWatched.earned_today ?? 0}
+            </div>
             <p className="text-xs text-purple-600 flex items-center">
               <Play className="h-3 w-3 mr-1" />
               From{" "}
-              {(videosWatched.watched_today ?? 0) == 1
+              {(videosWatched.watched_today ?? 0) === 1
                 ? "video"
                 : "videos"}{" "}
               watched
             </p>
           </div>
 
-          {/* Videos Watched Card */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          {/* Videos Watched */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative">
+            {loading && (
+              <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
+                <RefreshCw className="h-4 w-4 animate-spin text-orange-600" />
+              </div>
+            )}
             <div className="flex items-center justify-between mb-4">
               <div className="p-2 bg-orange-100 rounded-xl">
                 <Play className="h-6 w-6 text-orange-600" />
@@ -200,23 +232,22 @@ export default function XPayDashboard() {
             <p className="text-xs text-orange-600 flex items-center">
               <Eye className="h-3 w-3 mr-1" />
               {videosWatched.remaining_today ?? 0}{" "}
-              {(videosWatched.remaining_today ?? 0) == 1 ? "video" : "videos"}{" "}
+              {(videosWatched.remaining_today ?? 0) === 1 ? "video" : "videos"}{" "}
               left
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column */}
+          {/* Watch and Earn */}
           <WatchEarnComponent
-            onRefresh={getVideosLeft}
+            onRefresh={() => getVideosLeft(true)}
             availableVideos={videosWatched.remaining_today ?? 0}
-          
           />
 
-          {/* Right Column */}
+          {/* Sidebar Content */}
           <div className="space-y-6">
-            {/* Custom Banner Ad */}
+            {/* Promo Banner */}
             <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
               <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
@@ -227,59 +258,22 @@ export default function XPayDashboard() {
                     Special Offer
                   </span>
                 </div>
-                <h4 className="text-xl font-bold mb-2">Premium Upgrade</h4>
+                <h4 className="text-xl font-bold mb-2">Earn More Tokens</h4>
                 <p className="text-sm opacity-90 mb-4">
-                  Get 50% more earnings from videos and exclusive investment
-                  insights.
+                  Purchase extra X-Pay tokens to boost your daily profit and
+                  earn more.
                 </p>
-                <button className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-100 transition-colors">
-                  Upgrade Now
+                <button
+                  className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-100 transition-colors"
+                  onClick={() => navigate("/purchase-tokens")}
+                >
+                  Purchase Now
                 </button>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
-                Recent Activity
-              </h3>
-
-              <div className="space-y-4">
-                {recentTransactions.map((transaction, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <DollarSign className="h-4 w-4 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 text-sm">
-                          {transaction.type}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {transaction.time}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-green-600 font-semibold text-sm">
-                      +${transaction.amount}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                className="w-full mt-4 text-gray-600 text-sm hover:text-gray-900 transition-colors flex items-center justify-center"
-                onClick={() => {
-                  navigate("/notifications");
-                }}
-              >
-                View All Transactions
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </button>
-            </div>
+            <RecentActivity />
 
             {/* Quick Actions */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -288,13 +282,11 @@ export default function XPayDashboard() {
               </h3>
 
               <div className="space-y-3">
-                <button className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group">
-                  <div
-                    className="flex items-center"
-                    onClick={() => {
-                      navigate("/withdraw");
-                    }}
-                  >
+                <button
+                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
+                  onClick={() => navigate("/withdraw")}
+                >
+                  <div className="flex items-center">
                     <DollarSign className="h-5 w-5 text-gray-600 mr-3" />
                     <span className="font-medium text-gray-900">
                       Make Withdrawal
@@ -303,13 +295,11 @@ export default function XPayDashboard() {
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                 </button>
 
-                <button className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group">
-                  <div
-                    className="flex items-center"
-                    onClick={() => {
-                      navigate("/ads");
-                    }}
-                  >
+                <button
+                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
+                  onClick={() => navigate("/ads")}
+                >
+                  <div className="flex items-center">
                     <Video className="h-5 w-5 text-gray-600 mr-3" />
                     <span className="font-medium text-gray-900">
                       Upload Video Ads

@@ -14,7 +14,7 @@ const VideoAdComponent = forwardRef((props, ref) => {
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [canClose, setCanClose] = useState(false);
+  const [canClose] = useState(true);
   const videoRef = useRef(null);
 
   // Get video URL from props or use default
@@ -41,9 +41,6 @@ const VideoAdComponent = forwardRef((props, ref) => {
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
       // Allow closing after 70% of video is watched
-      if (video.currentTime / video.duration > 0.7) {
-        setCanClose(true);
-      }
     };
 
     const handleLoadedMetadata = () => {
@@ -52,7 +49,6 @@ const VideoAdComponent = forwardRef((props, ref) => {
 
     const handleEnded = () => {
       setIsPlaying(false);
-      setCanClose(true);
       // Call onAdComplete callback if provided
       if (props.onAdComplete) {
         props.onAdComplete();
@@ -72,7 +68,6 @@ const VideoAdComponent = forwardRef((props, ref) => {
 
   const openPopup = () => {
     setIsPopupOpen(true);
-    setCanClose(false);
     setCurrentTime(0);
     // Call onAdStart callback if provided
     if (props.onAdStart) {
@@ -88,13 +83,10 @@ const VideoAdComponent = forwardRef((props, ref) => {
   };
 
   const closePopup = () => {
-    toast("Complete the video to earn full reward", { type: "error" });
-
     if (canClose) {
       setIsPopupOpen(false);
       setIsPlaying(false);
       setCurrentTime(0);
-      setCanClose(false);
       if (videoRef.current) {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
@@ -140,7 +132,12 @@ const VideoAdComponent = forwardRef((props, ref) => {
           <div className="bg-black rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative">
             {/* Close Button - Only enabled after 70% watched */}
             <button
-              onClick={closePopup}
+              onClick={() => {
+                closePopup();
+                toast("Complete the video to earn full reward", {
+                  type: "error",
+                });
+              }}
               className={`absolute top-3 right-3 z-20 p-2 rounded-full transition-all duration-200 ${
                 canClose
                   ? "bg-red-600 hover:bg-red-700 text-white"
