@@ -14,8 +14,12 @@ import {
   Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { BASEURL } from "../utils/utils";
+import { toast } from "react-toastify";
 
 export default function WithdrawalPage() {
+  const { user, authFetch } = useAuth();
   const [step, setStep] = useState(1);
   const [amount, setAmount] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
@@ -25,8 +29,8 @@ export default function WithdrawalPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
-  const balance = 2847.5;
-  const minWithdrawal = 10;
+
+  const minWithdrawal = 1;
   const maxWithdrawal = 5000;
 
   useEffect(() => {
@@ -43,25 +47,22 @@ export default function WithdrawalPage() {
     }
   };
 
-  const sendOTP = () => {
+  const sendOTP = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setOtpSent(true);
-      setCountdown(60);
+    const req = await authFetch(BASEURL + "/withdrawals/request-otp", {
+      method: "POST",
+    });
+    const res = await req.json();
+    if (!req.ok) {
+      toast("Error sending OTP ", {
+        type: "error",
+      });
       setIsLoading(false);
-    }, 2000);
-  };
-
-  const verifyOTP = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      if (otp === "123456") {
-        setStep(4);
-      } else {
-        alert("Invalid OTP. Try again.");
-      }
-      setIsLoading(false);
-    }, 1500);
+      return;
+    }
+    setOtpSent(true);
+    setCountdown(60);
+    setIsLoading(false);
   };
 
   const processWithdrawal = () => {
@@ -75,7 +76,7 @@ export default function WithdrawalPage() {
   const isValidAmount =
     amount &&
     parseFloat(amount) >= minWithdrawal &&
-    parseFloat(amount) <= Math.min(maxWithdrawal, balance);
+    parseFloat(amount) <= Math.min(maxWithdrawal, user.balance);
   const isValidAddress = usdtAddress.length >= 26 && usdtAddress.length <= 62;
 
   return (
@@ -155,7 +156,7 @@ export default function WithdrawalPage() {
                 <div className="bg-gray-50 rounded-xl p-4 text-center">
                   <p className="text-sm text-gray-600">Available Balance</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    ${balance.toFixed(2)}
+                    ${user.balance.toFixed(2)}
                   </p>
                 </div>
 
@@ -177,7 +178,7 @@ export default function WithdrawalPage() {
                   </div>
                   <div className="flex justify-between text-xs text-gray-500 mt-2">
                     <span>Min: ${minWithdrawal}</span>
-                    <span>Max: ${Math.min(maxWithdrawal, balance)}</span>
+                    <span>Max: ${Math.min(maxWithdrawal, user.balance)}</span>
                   </div>
                 </div>
 
@@ -417,9 +418,6 @@ export default function WithdrawalPage() {
                     className="block w-full py-4 text-center text-2xl font-bold tracking-widest border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     maxLength={6}
                   />
-                  <p className="text-xs text-gray-500 text-center mt-2">
-                    Demo: Use 123456 for testing
-                  </p>
                 </div>
 
                 <div className="flex space-x-4">
@@ -430,18 +428,11 @@ export default function WithdrawalPage() {
                     Back
                   </button>
                   <button
-                    onClick={verifyOTP}
+                    onClick={() => setStep(5)}
                     disabled={otp.length !== 6 || isLoading}
                     className="flex-1 bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                        Verifying...
-                      </>
-                    ) : (
-                      "Verify & Continue"
-                    )}
+                    Continue
                   </button>
                 </div>
               </div>
@@ -489,7 +480,7 @@ export default function WithdrawalPage() {
               </div>
 
               <button
-                onClick={() => alert("Navigate to dashboard")}
+                onClick={() => navigate("/dashboard")}
                 className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
               >
                 Back to Dashboard

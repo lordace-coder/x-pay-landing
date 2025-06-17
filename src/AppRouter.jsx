@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import UploadAds from "./pages/UploadAds";
 import PurchaseTokens from "./pages/PurchaseTokens";
 import { DashboardProvider } from "./context/DashboardContext";
+import HowItWorksPage from "./pages/DocumentationPage";
 
 export default function AppRouter() {
   return (
@@ -24,6 +25,7 @@ export default function AppRouter() {
             <Route path="/purchase-tokens" element={<PurchaseTokens />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Signup />} />
+            <Route path="/docs" element={<HowItWorksPage />} />
             <Route
               path="/dashboard"
               element={

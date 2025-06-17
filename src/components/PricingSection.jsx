@@ -17,7 +17,7 @@ export const Pricing = function () {
   const [purchasing, setPurchasing] = useState(false);
   const [availableSupply, setAvailableSupply] = useState(15750);
   const [totalSupply] = useState(50000);
-  const [tokenAmount, setTokenAmount] = useState(25);
+  const [tokenAmount, setTokenAmount] = useState(10);
   const [isSliding, setIsSliding] = useState(false);
   const { user, authFetch } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export const Pricing = function () {
   };
 
   const handleInputChange = (e) => {
-    const value = Math.max(25, parseInt(e.target.value) || 25);
+    const value = Math.max(10, parseInt(e.target.value) || 10);
     setTokenAmount(value);
   };
 
@@ -70,70 +70,6 @@ export const Pricing = function () {
               Secure your X-Tokens now while supplies last. Each token equals $1
               USD and unlocks access to our premium financial services.
             </p>
-          </div>
-
-          {/* Supply Status */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-              <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-                <div className="flex items-center gap-4 mb-4 md:mb-0">
-                  <div
-                    className={`p-3 rounded-full ${
-                      tokenSaleActive
-                        ? "bg-green-50 text-green-600"
-                        : "bg-red-50 text-red-600"
-                    }`}
-                  >
-                    <Coins className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
-                        tokenSaleActive
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-red-50 text-red-700 border border-red-200"
-                      }`}
-                    >
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          tokenSaleActive ? "bg-green-500" : "bg-red-500"
-                        }`}
-                      ></div>
-                      {tokenSaleActive ? "SALE ACTIVE" : "SALE ENDED"}
-                    </div>
-                    <h3 className="text-gray-900 font-semibold mt-2">
-                      Available Supply
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-4xl font-bold text-gray-900">
-                    {availableSupply.toLocaleString()}
-                  </div>
-                  <div className="text-gray-500">
-                    of {totalSupply.toLocaleString()} tokens
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-teal-600 to-teal-700 rounded-full transition-all duration-1000 ease-out"
-                    style={{ width: `${soldPercentage}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-gray-500 text-sm">
-                    {Math.round(soldPercentage)}% sold
-                  </span>
-                  <span className="text-gray-500 text-sm">
-                    {(100 - soldPercentage).toFixed(1)}% remaining
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Token Purchase Section */}
@@ -193,7 +129,7 @@ export const Pricing = function () {
                     </div>
                     <p className="text-gray-600">
                       Choose how many tokens you want to purchase. Minimum
-                      purchase is 25 tokens.
+                      purchase is 10 tokens.
                     </p>
                   </div>
 
@@ -227,12 +163,12 @@ export const Pricing = function () {
                   {/* Slider */}
                   <div className="mb-8">
                     <label className="block text-gray-700 font-medium mb-4">
-                      Token Amount (25 - 1000)
+                      Token Amount (10 - 1000)
                     </label>
                     <div className="relative">
                       <input
                         type="range"
-                        min="25"
+                        min="10"
                         max="1000"
                         value={tokenAmount}
                         onChange={handleSliderChange}
@@ -240,14 +176,14 @@ export const Pricing = function () {
                         className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer custom-slider"
                         style={{
                           background: `linear-gradient(to right, #0f766e 0%, #0f766e ${
-                            ((tokenAmount - 25) / (1000 - 25)) * 100
+                            ((tokenAmount - 10) / (1000 - 10)) * 100
                           }%, #e5e7eb ${
-                            ((tokenAmount - 25) / (1000 - 25)) * 100
+                            ((tokenAmount - 10) / (1000 - 10)) * 100
                           }%, #e5e7eb 100%)`,
                         }}
                       />
                       <div className="flex justify-between text-sm text-gray-500 mt-2">
-                        <span>25</span>
+                        <span>10</span>
                         <span>500</span>
                         <span>1000</span>
                       </div>
@@ -265,18 +201,18 @@ export const Pricing = function () {
                           type="number"
                           value={tokenAmount}
                           onChange={handleInputChange}
-                          min="25"
+                          min="10"
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                           placeholder="Enter token amount"
                           disabled={!tokenSaleActive}
                         />
                       </div>
                       <button
-                        onClick={() => setTokenAmount(25)}
+                        onClick={() => setTokenAmount(10)}
                         className="px-4 py-3 text-sm text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={!tokenSaleActive}
                       >
-                        Min (25)
+                        Min (10)
                       </button>
                     </div>
                   </div>
@@ -330,7 +266,7 @@ export const Pricing = function () {
                     <div className="text-sm text-gray-500">Token to Dollar</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">25</div>
+                    <div className="text-2xl font-bold text-gray-900">10</div>
                     <div className="text-sm text-gray-500">
                       Minimum Purchase
                     </div>
