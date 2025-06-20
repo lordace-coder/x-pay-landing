@@ -32,6 +32,7 @@ import "../assets/css/style.css";
 // Javascript and libraries
 
 import "../assets/vendors/bootstrap/bs-darkmode";
+import "../assets/vendors/bootstrap/bootstrap.bundle.min";
 import { gsap } from "gsap";
 import imagesLoaded from "imagesloaded";
 import Isotope from "isotope-layout";
