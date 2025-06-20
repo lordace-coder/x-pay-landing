@@ -30,14 +30,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-1 py-2 md:px-4">
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,0,0,0.02),transparent)]"></div>
 
       {/* Login Card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-white rounded-3xl p-12 shadow-xl border border-gray-100/50 backdrop-blur-sm">
+        <div className="bg-white rounded-3xl p-3 shadow-xl border border-gray-100/50 backdrop-blur-sm">
           {/* Logo & Header */}
           <div className="text-center mb-12">
             <img src={logo} className="w-28 mx-auto" />

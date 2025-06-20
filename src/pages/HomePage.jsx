@@ -138,6 +138,11 @@ const Header = function () {
                   Services
                 </a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link scroll-link" href="/login">
+                  Login Now
+                </a>
+              </li>
             </ul>
           </div>
         </div>
