@@ -30,7 +30,7 @@ export default function WithdrawalPage() {
   const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
 
-  const minWithdrawal = 1;
+  const minWithdrawal = 10;
   const maxWithdrawal = 5000;
 
   useEffect(() => {
@@ -65,12 +65,33 @@ export default function WithdrawalPage() {
     setIsLoading(false);
   };
 
-  const processWithdrawal = () => {
+  const processWithdrawal = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setStep(5);
+    try {
+      await authFetch(BASEURL + "/withdrawals/?otp_data=" + otp, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          usdt_wallet_address: usdtAddress,
+        }),
+      });
+    setIsLoading(false);
+      setStep(5); // Move to success step
+      toast("Withdrawal request submitted successfully!", {
+        type: "success",
+      });
+      navigate("/dashboard");
+      return;
+    } catch (error) {
+      toast("Error processing withdrawal: " + error.message, {
+        type: "error",
+      });
       setIsLoading(false);
-    }, 3000);
+      return;
+    }
   };
 
   const isValidAmount =
@@ -428,7 +449,7 @@ export default function WithdrawalPage() {
                     Back
                   </button>
                   <button
-                    onClick={() => setStep(5)}
+                    onClick={() => processWithdrawal()}
                     disabled={otp.length !== 6 || isLoading}
                     className="flex-1 bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                   >

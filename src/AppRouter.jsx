@@ -14,6 +14,7 @@ import UploadAds from "./pages/UploadAds";
 import PurchaseTokens from "./pages/PurchaseTokens";
 import { DashboardProvider } from "./context/DashboardContext";
 import HowItWorksPage from "./pages/DocumentationPage";
+import RefPage from "./pages/RefPage";
 
 export default function AppRouter() {
   return (
@@ -39,6 +40,14 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <XPayNotifications />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/ref"
+              element={
+                <PrivateRoute>
+                  <RefPage />
                 </PrivateRoute>
               }
             />

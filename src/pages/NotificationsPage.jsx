@@ -47,9 +47,13 @@ export default function XPayNotifications() {
       authFetch(BASEURL + "/tokens/transactions")
         .then((e) => e.json())
         .then((data) => {
-          setTransactions(data);
-          // Cache the fetched data
-          setDashboardData("transactions", data);
+          if (data && Array.from(data).length === 0) {
+            console.warn("No transactions found in the response.");
+          } else {
+            setTransactions(data);
+            // Cache the fetched data
+            setDashboardData("transactions", data);
+          }
         })
         .catch((error) => {
           console.error("Error fetching transactions:", error);

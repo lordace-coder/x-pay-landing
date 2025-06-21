@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Video,
   RefreshCw,
+  User2Icon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
@@ -294,7 +295,18 @@ export default function XPayDashboard() {
                   </div>
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                 </button>
-
+                <button
+                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
+                  onClick={() => navigate("/ref")}
+                >
+                  <div className="flex items-center">
+                    <User2Icon className="h-5 w-5 text-gray-600 mr-3" />
+                    <span className="font-medium text-gray-900">
+                      Check Referrals
+                    </span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
+                </button>
                 <button
                   className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
                   onClick={() => navigate("/ads")}
