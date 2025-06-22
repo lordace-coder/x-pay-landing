@@ -9,7 +9,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import logo from "../assets/img/xpay-logo.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -25,14 +25,21 @@ export default function Signup() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [searchParams] = useSearchParams();
+  const ref = searchParams.get("ref");
+
   const handleSubmit = async () => {
     setIsLoading(true);
+    
     const data = {
       email,
       full_name: fullName,
       password,
     };
     try {
+      if (ref) {
+        data.ref = ref;
+      }
       const res = await fetch(BASEURL + "/auth/", {
         method: "POST",
         body: JSON.stringify(data),
@@ -66,6 +73,10 @@ export default function Signup() {
     agreeToTerms &&
     password === confirmPassword;
 
+  const handleRef = () => {
+    const ref = params.get("ref");
+    return ref;
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center py-4 md:px-4 px-0 sm:p-6 lg:p-8">
       {/* Animated Background Elements */}

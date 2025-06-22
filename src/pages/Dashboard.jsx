@@ -8,11 +8,14 @@ import {
   LogOut,
   User,
   Wallet,
+  Check,
   Gift,
   ChevronRight,
   Video,
   RefreshCw,
   User2Icon,
+  Copy,
+  UsersIcon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
@@ -20,14 +23,42 @@ import { useNavigate } from "react-router-dom";
 import WatchEarnComponent from "../components/WatchAndEarn";
 import RecentActivity from "../components/RecentActivity";
 import { BASEURL } from "../utils/utils";
+import ReferralModal from "../components/RefModal";
+import { toast } from "react-toastify";
 
 export default function XPayDashboard() {
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [videosWatched, setVideosWatched] = useState({});
   const [loading, setLoading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [showRef, setShowRef] = useState(false);
   const { user: userData, logout, authFetch } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
+
+  const refUrl = window.location.origin + "/register?ref=" + userData.id;
+  // Enhanced copy functionality
+  const copyReferralLink = async () => {
+    try {
+      await navigator.clipboard.writeText(refUrl);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 3000);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = refUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 3000);
+      } catch (fallbackErr) {
+        console.error("Fallback copy failed: ", fallbackErr);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
 
   useEffect(() => {
     // Initialize videos data on mount
@@ -42,17 +73,30 @@ export default function XPayDashboard() {
     };
 
     initializeData();
-
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
   }, []); // Empty dependency array to run only on mount
 
   // Separate useEffect for caching user data
   useEffect(() => {
     if (userData) {
       setDashboardData("userData", userData);
+      getReferralData();
     }
   }, [userData]); // Only depend on userData
+
+  // Function to fetch videos left
+
+  const getReferralData = async () => {
+    try {
+      setLoading(true);
+      const res = await authFetch(BASEURL + "/auth/my-referrals");
+      const data = await res.json();
+      setDashboardData("referralData", data);
+    } catch (err) {
+      toast.error("Failed to fetch referral data. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getVideosLeft = async (forceRefresh = false) => {
     try {
@@ -93,9 +137,9 @@ export default function XPayDashboard() {
     // You can add other data refresh calls here
   };
 
-  // Remove this useEffect that was causing re-renders
-  // Videos data will be cached when it's fetched in getVideosLeft
-
+  const showReferalModal = () => {
+    setShowRef(true);
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -151,8 +195,39 @@ export default function XPayDashboard() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome back, {userData.full_name.split(" ")[0]}!
           </h2>
-          <p className="text-gray-600">
-            Here's what's happening with your investments today.
+        </div>
+        <div className="bg-white rounded-2xl p-2 md:p-6 shadow-sm border border-gray-100 mb-8">
+          <h4 className=" font-semibold text-gray-900 mb-4">
+            Your Referral Link
+          </h4>
+          <div className="flex gap-2 items-center flex-col md:flex-row space-x-3 ">
+            <div className="flex-1 bg-gray-50 rounded-lg px-2 md:px-3 md:py-4 border border-gray-200">
+              <p className="text-sm text-gray-600 font-mono break-all">
+                {refUrl}
+              </p>
+            </div>
+            <button
+              onClick={copyReferralLink}
+              disabled={copySuccess}
+              className="px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full md:w-auto"
+            >
+              {copySuccess ? <Check size={16} /> : <Copy size={16} />}
+              <span>{copySuccess ? "Copied!" : "Copy"}</span>
+            </button>
+
+            <button
+              onClick={showReferalModal}
+              className="px-4 mx-1 py-3 rounded-lg font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full md:w-auto"
+            >
+              <UsersIcon /> View Referrals
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-3">
+            Share this link with friends and earn 5% commission on their
+            investments.
+            {navigator.share
+              ? " Use the share button to send via your preferred app."
+              : " Copy the link to share it manually."}
           </p>
         </div>
 
@@ -295,18 +370,7 @@ export default function XPayDashboard() {
                   </div>
                   <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                 </button>
-                <button
-                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
-                  onClick={() => navigate("/ref")}
-                >
-                  <div className="flex items-center">
-                    <User2Icon className="h-5 w-5 text-gray-600 mr-3" />
-                    <span className="font-medium text-gray-900">
-                      Check Referrals
-                    </span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
-                </button>
+
                 <button
                   className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
                   onClick={() => navigate("/ads")}
@@ -324,6 +388,7 @@ export default function XPayDashboard() {
           </div>
         </div>
       </div>
+      <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
     </div>
   );
 }

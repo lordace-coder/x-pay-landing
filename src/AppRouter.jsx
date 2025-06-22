@@ -44,14 +44,6 @@ export default function AppRouter() {
               }
             />
             <Route
-              path="/ref"
-              element={
-                <PrivateRoute>
-                  <RefPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
               path="/withdraw"
               element={
                 <PrivateRoute>

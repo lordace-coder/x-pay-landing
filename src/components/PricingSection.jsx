@@ -11,18 +11,17 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
+import { toast } from "react-toastify";
 
 export const Pricing = function () {
   const [tokenSaleActive, setTokenSaleActive] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
-  const [availableSupply, setAvailableSupply] = useState(15750);
-  const [totalSupply] = useState(50000);
   const [tokenAmount, setTokenAmount] = useState(10);
   const [isSliding, setIsSliding] = useState(false);
   const { user, authFetch } = useAuth();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const soldPercentage = ((totalSupply - availableSupply) / totalSupply) * 100;
   const totalCost = tokenAmount;
 
   const handleSliderChange = (e) => {
@@ -45,9 +44,19 @@ export const Pricing = function () {
     setPurchasing(true);
     const res = await authFetch(BASEURL + "/tokens/buy-tokens?id=" + user.id, {
       body: JSON.stringify({ amount: tokenAmount }),
-      method: "post",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     console.log(res);
+    // open url in new tab
+    if (res.status === 200) {
+      const data = await res.json();
+      window.open(data.url, "_blank");
+    } else {
+      toast.error("Error purchasing tokens. Please try again.");
+    }
 
     setPurchasing(false);
   };
@@ -241,8 +250,15 @@ export const Pricing = function () {
                         className="w-full py-4 px-8 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors duration-200 flex items-center justify-center gap-2 group"
                         onClick={handleTokensPurchase}
                       >
-                        Purchase {tokenAmount} Tokens for ${totalCost}
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {purchasing ? (
+                          "Purchasing Tokens..."
+                        ) : (
+                          <>
+                            {" "}
+                            Purchase {tokenAmount} Tokens for ${totalCost}
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </>
+                        )}
                       </button>
                     ) : (
                       <div className="w-full py-4 px-8 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed flex items-center justify-center gap-2">

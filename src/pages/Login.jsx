@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, EyeOff, ArrowRight, Mail, Lock } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import logo from "../assets/img/xpay-logo.png";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -11,8 +16,10 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const [params, setParams] = useSearchParams();
 
   const navigate = useNavigate();
+
   const handleSubmit = async () => {
     setIsLoading(true);
     // Simulate login process
@@ -23,12 +30,24 @@ export default function Login() {
       }
       navigate("/dashboard");
     } catch (error) {
-      toadt("An Error occured " + error);
+      toast("An Error occured " + error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    handleRef();
+  }, []);
+
+  const handleRef = () => {
+    const ref = params.get("ref");
+    if (ref) {
+      // Handle referral logic here, e.g., save to local storage or state
+      localStorage.setItem("referralCode", ref);
+      toast(`Referral code ${ref} applied!`, { type: "success" });
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-1 py-2 md:px-4">
       {/* Subtle Background Pattern */}

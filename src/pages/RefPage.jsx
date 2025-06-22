@@ -319,18 +319,6 @@ const ReferralTrackingPage = () => {
               {copySuccess ? <Check size={16} /> : <Copy size={16} />}
               <span>{copySuccess ? "Copied!" : "Copy"}</span>
             </button>
-            <button
-              onClick={shareReferralLink}
-              disabled={shareSuccess}
-              className={`px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center ${
-                shareSuccess
-                  ? "bg-blue-100 text-blue-700 border border-blue-200"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
-              }`}
-            >
-              {shareSuccess ? <Check size={16} /> : <Share2 size={16} />}
-              <span>{shareSuccess ? "Shared!" : "Share"}</span>
-            </button>
           </div>
           <p className="text-xs text-gray-500 mt-3">
             Share this link with friends and earn 5% commission on their
