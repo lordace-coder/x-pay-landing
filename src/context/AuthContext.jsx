@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASEURL } from "../utils/utils";
 import LoadingComponent from "../components/Loading";
+import AdminChatPopup from "../components/AdminChat";
 
 const AuthContext = createContext();
 
@@ -121,6 +122,7 @@ const AuthProvider = ({ children }) => {
     >
       {loading && <LoadingComponent />}
       {!loading && children}
+      {user && <AdminChatPopup />}
     </AuthContext.Provider>
   );
 };

@@ -13,10 +13,12 @@ import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
 
+export const MIN_TOKEN_AMOUNT = 1;
+
 export const Pricing = function () {
   const [tokenSaleActive, setTokenSaleActive] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
-  const [tokenAmount, setTokenAmount] = useState(10);
+  const [tokenAmount, setTokenAmount] = useState(MIN_TOKEN_AMOUNT);
   const [isSliding, setIsSliding] = useState(false);
   const { user, authFetch } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -31,7 +33,10 @@ export const Pricing = function () {
   };
 
   const handleInputChange = (e) => {
-    const value = Math.max(10, parseInt(e.target.value) || 10);
+    const value = Math.max(
+      MIN_TOKEN_AMOUNT,
+      parseInt(e.target.value) || MIN_TOKEN_AMOUNT
+    );
     setTokenAmount(value);
   };
 
@@ -172,12 +177,12 @@ export const Pricing = function () {
                   {/* Slider */}
                   <div className="mb-8">
                     <label className="block text-gray-700 font-medium mb-4">
-                      Token Amount (10 - 1000)
+                      Token Amount ({MIN_TOKEN_AMOUNT} - 1000)
                     </label>
                     <div className="relative">
                       <input
                         type="range"
-                        min="10"
+                        min={MIN_TOKEN_AMOUNT}
                         max="1000"
                         value={tokenAmount}
                         onChange={handleSliderChange}
@@ -185,14 +190,18 @@ export const Pricing = function () {
                         className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer custom-slider"
                         style={{
                           background: `linear-gradient(to right, #0f766e 0%, #0f766e ${
-                            ((tokenAmount - 10) / (1000 - 10)) * 100
+                            ((tokenAmount - MIN_TOKEN_AMOUNT) /
+                              (1000 - MIN_TOKEN_AMOUNT)) *
+                            100
                           }%, #e5e7eb ${
-                            ((tokenAmount - 10) / (1000 - 10)) * 100
+                            ((tokenAmount - MIN_TOKEN_AMOUNT) /
+                              (1000 - MIN_TOKEN_AMOUNT)) *
+                            100
                           }%, #e5e7eb 100%)`,
                         }}
                       />
                       <div className="flex justify-between text-sm text-gray-500 mt-2">
-                        <span>10</span>
+                        <span>{MIN_TOKEN_AMOUNT}</span>
                         <span>500</span>
                         <span>1000</span>
                       </div>
@@ -210,18 +219,18 @@ export const Pricing = function () {
                           type="number"
                           value={tokenAmount}
                           onChange={handleInputChange}
-                          min="10"
+                          min={MIN_TOKEN_AMOUNT}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent"
                           placeholder="Enter token amount"
                           disabled={!tokenSaleActive}
                         />
                       </div>
                       <button
-                        onClick={() => setTokenAmount(10)}
+                        onClick={() => setTokenAmount(MIN_TOKEN_AMOUNT)}
                         className="px-4 py-3 text-sm text-teal-600 border border-teal-200 rounded-lg hover:bg-teal-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={!tokenSaleActive}
                       >
-                        Min (10)
+                        Min ({MIN_TOKEN_AMOUNT})
                       </button>
                     </div>
                   </div>
