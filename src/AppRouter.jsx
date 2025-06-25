@@ -22,7 +22,14 @@ export default function AppRouter() {
         <DashboardProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/purchase-tokens" element={<PurchaseTokens />} />
+            <Route
+              path="/purchase-tokens"
+              element={
+                <PrivateRoute>
+                  <PurchaseTokens />
+                </PrivateRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Signup />} />
             <Route path="/docs" element={<HowItWorksPage />} />

@@ -10,37 +10,18 @@ import {
   User,
   Shield,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { BASEURL } from "../utils/utils";
 
 const AdminChatPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: "Hello! How can I help you today?",
-      isAdmin: true,
-      timestamp: new Date(Date.now() - 300000),
-      copied: false,
-    },
-    {
-      id: 2,
-      text: "I need help with my account settings. Can you check https://example.com/settings for me?",
-      isAdmin: false,
-      timestamp: new Date(Date.now() - 240000),
-      copied: false,
-    },
-    {
-      id: 3,
-      text: "I'll help you with that right away! Please visit https://support.example.com/account-help for detailed instructions.",
-      isAdmin: true,
-      timestamp: new Date(Date.now() - 180000),
-      copied: false,
-    },
-  ]);
+  const [messages, setMessages] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const { authFetch } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -133,6 +114,9 @@ const AdminChatPopup = () => {
     });
   };
 
+  const fetchMessages = async () => {
+    const res = await(await authFetch(BASEURL+"/chats/")).json()
+  };
   return (
     <>
       {/* Chat Toggle Button */}
