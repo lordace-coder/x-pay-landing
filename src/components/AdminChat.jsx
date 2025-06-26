@@ -12,16 +12,17 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
+import { toast } from "react-toastify";
 
 const AdminChatPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [copiedId, setCopiedId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  const { authFetch } = useAuth();
+  const { authFetch, user } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,6 +35,9 @@ const AdminChatPopup = () => {
     }
   }, [messages, isOpen, isMinimized]);
 
+  useEffect(() => {
+    if (messages.length == 0) fetchMessages();
+  }, []);
   const openChat = () => {
     setIsOpen(true);
     setIsMinimized(false);
@@ -53,7 +57,7 @@ const AdminChatPopup = () => {
     if (message.trim()) {
       const newMessage = {
         id: messages.length + 1,
-        text: message,
+        message: message,
         isAdmin: false,
         timestamp: new Date(),
         copied: false,
@@ -62,10 +66,11 @@ const AdminChatPopup = () => {
       setMessage("");
 
       // Simulate admin response
+      sendMessage();
       setTimeout(() => {
         const adminResponse = {
           id: messages.length + 2,
-          text: "Thanks for your message! I'll get back to you shortly.",
+          message: "Thanks for your message! I'll get back to you shortly.",
           isAdmin: true,
           timestamp: new Date(),
           copied: false,
@@ -86,6 +91,9 @@ const AdminChatPopup = () => {
   };
 
   const renderMessageContent = (text) => {
+    if (!text) {
+      return;
+    }
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(urlRegex);
 
@@ -107,15 +115,39 @@ const AdminChatPopup = () => {
     });
   };
 
-  const formatTime = (timestamp) => {
-    return timestamp.toLocaleTimeString([], {
+  const formatTime = (timestampStr) => {
+    const date = new Date(timestampStr);
+
+    if (isNaN(date)) {
+      console.error("Invalid timestamp:", timestampStr);
+      return "Invalid time";
+    }
+
+    return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
   const fetchMessages = async () => {
-    const res = await(await authFetch(BASEURL+"/chats/")).json()
+    const res = await (await authFetch(BASEURL + "/chats/")).json();
+    console.log(res);
+
+    if (!res) return;
+    setMessages(res);
+  };
+
+  const sendMessage = async () => {
+    const res = await authFetch(BASEURL + "/chats/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: message }),
+    });
+    if (!res.ok) {
+      toast.error("Error sending message");
+    }
   };
   return (
     <>
@@ -123,14 +155,14 @@ const AdminChatPopup = () => {
       {!isOpen && (
         <div
           onClick={openChat}
-          className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 hover:shadow-blue-500/25"
+          className="fixed bottom-6 right-6 z-[9999]  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 hover:shadow-blue-500/25 "
         >
           <MessageCircle size={24} />
         </div>
       )}{" "}
       {/* Chat Popup */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           {/* Backdrop */}
           <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" />
 
@@ -202,7 +234,7 @@ const AdminChatPopup = () => {
                           )}
                           <div className="flex-1">
                             <div className="text-sm leading-relaxed">
-                              {renderMessageContent(msg.text)}
+                              {renderMessageContent(msg.message)}
                             </div>
                             <div
                               className={`text-xs mt-2 ${

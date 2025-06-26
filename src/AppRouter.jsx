@@ -14,6 +14,7 @@ import UploadAds from "./pages/UploadAds";
 import PurchaseTokens from "./pages/PurchaseTokens";
 import { DashboardProvider } from "./context/DashboardContext";
 import HowItWorksPage from "./pages/DocumentationPage";
+import ChangePasswordPage from "./pages/ChangePassword";
 
 export default function AppRouter() {
   return (
@@ -38,6 +39,14 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <XPayDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/password-reset"
+              element={
+                <PrivateRoute>
+                  <ChangePasswordPage />
                 </PrivateRoute>
               }
             />

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
+import AdUploadSuccess from "../components/AdsUploadSuccess";
 
 const AdUploadPage = () => {
   const [formData, setFormData] = useState({
@@ -312,6 +313,7 @@ const AdUploadPage = () => {
     </div>
   );
 
+  if (uploadStatus == "success") return <AdUploadSuccess />;
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">

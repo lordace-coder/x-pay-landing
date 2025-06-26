@@ -16,15 +16,17 @@ import {
   BookA,
   Bell,
   UploadCloud,
+  Cog,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
-
+  const { user,logout } = useAuth();
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     {
@@ -47,6 +49,7 @@ const Navigation = () => {
       href: "/withdraw",
     },
     { id: "ads", label: "Upload Adverts", icon: UploadCloud, href: "/ads" },
+    { id: "password", label: "Settings", icon: Cog, href: "/password-reset" },
   ];
 
   const NavItem = ({ item, collapsed = false }) => {
@@ -61,7 +64,7 @@ const Navigation = () => {
           setSidebarOpen(false);
         }}
         className={`
-          w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-all duration-200
+          w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200
           ${
             isActive
               ? "bg-emerald-50 text-emerald-700"
@@ -150,30 +153,28 @@ const Navigation = () => {
         </nav>
 
         {/* User section */}
-        <div className="border-t border-gray-50 p-4">
+        <div className="border-t border-gray-50 p-2">
           <div
             className={`flex items-center ${
               sidebarCollapsed ? "justify-center" : "space-x-3"
             }`}
           >
-            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-8 h-5 bg-gray-100 rounded-full flex items-center justify-center">
               <User className="h-4 w-4 text-gray-500" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  John Doe
+                  {user.full_name}
                 </p>
-                <p className="text-xs text-gray-400 truncate">
-                  john@example.com
-                </p>
+                <p className="text-xs text-gray-400 truncate">{user.email}</p>
               </div>
             )}
           </div>
 
           {!sidebarCollapsed && (
             <button className="mt-3 w-full flex items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors">
-              <LogOut className="h-4 w-4 mr-3" />
+              <LogOut onClick={logout} className="h-4 w-4 mr-3" />
               Sign out
             </button>
           )}
