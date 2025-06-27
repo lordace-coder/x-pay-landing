@@ -13,7 +13,7 @@ import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
 
-export const MIN_TOKEN_AMOUNT = 1;
+export const MIN_TOKEN_AMOUNT = 15;
 
 export const Pricing = function () {
   const [tokenSaleActive, setTokenSaleActive] = useState(true);

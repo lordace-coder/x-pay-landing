@@ -1412,7 +1412,6 @@ export default function HomePage() {
         <HowItWorks />
         <Stats />
         <Services />
-        <Testimonials />
         <Footer />
       </main>
       <ButtonToTop />
