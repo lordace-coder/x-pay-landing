@@ -25,10 +25,12 @@ export default function Login() {
     // Simulate login process
     try {
       const res = await login(email, password);
+      console.log(res);
       if (!res) {
         toast("Invalid email or password", { type: "error" });
+      } else {
+        navigate("/dashboard");
       }
-      navigate("/dashboard");
     } catch (error) {
       toast("An Error occured " + error);
     } finally {
