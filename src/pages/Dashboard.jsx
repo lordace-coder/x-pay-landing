@@ -25,6 +25,7 @@ import RecentActivity from "../components/RecentActivity";
 import { BASEURL } from "../utils/utils";
 import ReferralModal from "../components/RefModal";
 import { toast } from "react-toastify";
+import BannerAdSlider from "../components/BannerAdSlider";
 
 export default function XPayDashboard() {
   const [videosWatched, setVideosWatched] = useState({});
@@ -192,9 +193,7 @@ export default function XPayDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {userData.full_name.split(" ")[0]}!
-          </h2>
+          <BannerAdSlider />
         </div>
         <div className="bg-white rounded-2xl p-2 md:p-6 shadow-sm border border-gray-100 mb-8">
           <h4 className=" font-semibold text-gray-900 mb-4">
