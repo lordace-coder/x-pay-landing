@@ -148,6 +148,14 @@ export default function Login() {
               Create one
             </Link>
           </p>
+          <p className="text-center text-gray-500 mt-4 text-base">
+            <Link
+              to="/reset-password"
+              className="text-gray-900 hover:text-gray-700 transition-colors font-medium underline underline-offset-4"
+            >
+              Forgot password?
+            </Link>
+          </p>
         </div>
 
         {/* Subtle Decorative Elements */}

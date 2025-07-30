@@ -15,6 +15,7 @@ import PurchaseTokens from "./pages/PurchaseTokens";
 import { DashboardProvider } from "./context/DashboardContext";
 import HowItWorksPage from "./pages/DocumentationPage";
 import ChangePasswordPage from "./pages/ChangePassword";
+import ForgotPasswordPage from "./pages/ForgotPassword";
 
 export default function AppRouter() {
   return (
@@ -23,6 +24,7 @@ export default function AppRouter() {
         <DashboardProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route
               path="/purchase-tokens"
               element={
