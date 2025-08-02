@@ -23,10 +23,10 @@ import { useAuth } from "../context/AuthContext";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
-  const { user,logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigationItems = [
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     {

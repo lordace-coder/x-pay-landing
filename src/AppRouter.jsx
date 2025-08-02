@@ -16,6 +16,7 @@ import { DashboardProvider } from "./context/DashboardContext";
 import HowItWorksPage from "./pages/DocumentationPage";
 import ChangePasswordPage from "./pages/ChangePassword";
 import ForgotPasswordPage from "./pages/ForgotPassword";
+import WithdrawalHistory from "./pages/WithdrawalHistory";
 
 export default function AppRouter() {
   return (
@@ -65,6 +66,14 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <WithdrawalPage />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/withdrawal-history"
+              element={
+                <PrivateRoute>
+                  <WithdrawalHistory />
                 </PrivateRoute>
               }
             />{" "}
