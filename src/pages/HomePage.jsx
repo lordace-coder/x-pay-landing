@@ -1406,6 +1406,81 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero />
+        {/* X-PAY Introduction Section */}
+        <section className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center text-blue-700 mb-4">
+            Introducing X-PAY: A Secure Investment Platform Championed by
+            Professional Traders
+          </h1>
+          <p className="text-lg text-gray-700 text-center mb-6">
+            X-PAY is a revolutionary investment platform designed to provide a
+            secure and transparent environment for investors to grow their
+            wealth. Founded by a team of experienced professional traders with
+            expertise in futures, stocks, and forex, X-PAY aims to tackle the
+            chaos of scams in the investment industry.
+          </p>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            Our Mission
+          </h2>
+          <p className="text-gray-700 mb-6">
+            X-PAY is committed to providing a reliable and trustworthy platform
+            for investors to achieve their financial goals. We strive to create
+            a community of informed and empowered investors who can make
+            data-driven decisions with confidence.
+          </p>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            Key Features:
+          </h2>
+          <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <li>
+              Expert-led trading insights: Gain access to exclusive trading
+              insights and analysis from our team of professional traders.
+            </li>
+            <li>
+              Robust security measures: Our platform employs state-of-the-art
+              security protocols to protect your investments and personal data.
+            </li>
+            <li>
+              Video and banner advertising: Increase your visibility and reach a
+              wider audience with our innovative video and banner advertising
+              solutions.
+            </li>
+          </ul>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            Advertise with X-PAY:
+          </h2>
+          <p className="text-gray-700 mb-4">
+            Reach a targeted audience of investors and traders by advertising on
+            our platform. Our video and banner ads offer a unique opportunity to
+            increase brand awareness, drive website traffic, and generate leads.
+          </p>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            Benefits of Advertising on X-PAY:
+          </h2>
+          <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <li>
+              Targeted audience: Reach a highly engaged audience of investors
+              and traders who are interested in financial services and
+              investment opportunities.
+            </li>
+            <li>
+              Increased brand visibility: Elevate your brand's profile and
+              increase awareness among our community of investors.
+            </li>
+            <li>
+              Measurable results: Track the performance of your ads and measure
+              the effectiveness of your marketing campaigns.
+            </li>
+          </ul>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            Join the X-PAY Community Today
+          </h2>
+          <p className="text-gray-700 mb-6">
+            Be part of a secure and transparent investment ecosystem that
+            prioritizes your financial well-being. Sign up for X-PAY today and
+            experience the future of investing.
+          </p>
+        </section>
         <About />
         <Features />
         <Pricing />
