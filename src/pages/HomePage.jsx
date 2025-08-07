@@ -1375,7 +1375,7 @@ const Footer = function () {
             &copy;
             <script>document.write(new Date().getFullYear());</script> X-Pay.
             All rights reserved <i className="bi bi-heart-fill text-danger"></i>{" "}
-            by{" "}
+            by X-Pay
           </div>
         </div>
       </div>
