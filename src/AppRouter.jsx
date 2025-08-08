@@ -17,6 +17,7 @@ import HowItWorksPage from "./pages/DocumentationPage";
 import ChangePasswordPage from "./pages/ChangePassword";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import WithdrawalHistory from "./pages/WithdrawalHistory";
+import EmergencyWithdrawal from "./pages/emergency-withdrawal";
 
 export default function AppRouter() {
   return (
@@ -74,6 +75,14 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <WithdrawalHistory />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/emergency-withdrawal"
+              element={
+                <PrivateRoute>
+                  <EmergencyWithdrawal />
                 </PrivateRoute>
               }
             />{" "}

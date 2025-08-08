@@ -30,6 +30,10 @@ import {
   PartyPopper,
   CheckCircle,
   Banknote,
+  AlertTriangle,
+  X,
+  Info,
+  MinusCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
@@ -48,6 +52,8 @@ export default function XPayDashboard() {
   const [batchLoading, setBatchLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [showRef, setShowRef] = useState(false);
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState(null);
   const { user: userData, logout, authFetch } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
@@ -197,52 +203,101 @@ export default function XPayDashboard() {
   const showReferalModal = () => {
     setShowRef(true);
   };
+  // Component for active batch card
+  const ActiveBatchCard = ({ batch }) => {
+    const canWithdraw = batch.days_remaining <= 15 && batch.videos_watched > 30;
+    const isEmergency = batch.days_remaining > 15;
 
-  // Handle withdrawal navigation
-  const handleWithdrawBatch = (batchUuid) => {
-    navigate(`/withdraw`);
-  };
+    return (
+      <div className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors bg-white">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-3 h-3 rounded-full bg-green-400" />
+            <span className="font-medium text-gray-900">
+              ${batch.invested_amount.toLocaleString()} Investment
+            </span>
+            <span className="px-2 py-1 text-xs rounded-full font-medium bg-green-100 text-green-700">
+              {batch.status}
+            </span>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-medium text-gray-900">
+              ${batch.total_value.toFixed(2)}
+            </div>
+            <div className="text-xs text-green-600">
+              +${batch.current_interest.toFixed(2)} interest
+            </div>
+          </div>
+        </div>
 
-  // Calculate totals from batch data
-  const calculateTotals = () => {
-    if (!batchData || !batchData.batches) {
-      return {
-        totalInvestment: 0,
-        totalCurrentInterest: 0,
-        totalValue: 0,
-        activeBatches: 0,
-        completedBatches: 0,
-        totalVideosWatched: 0,
-        totalVideosRequired: 0,
-      };
-    }
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div>
+            <span className="text-gray-500">Progress</span>
+            <div className="font-medium">
+              {batch.completion_percentage.toFixed(1)}%
+            </div>
+          </div>
+          <div>
+            <span className="text-gray-500">Videos</span>
+            <div className="font-medium">
+              {batch.videos_watched}/{batch.total_videos_required}
+            </div>
+          </div>
+          <div>
+            <span className="text-gray-500">Days Left</span>
+            <div className="font-medium">{batch.days_remaining}</div>
+          </div>
+          <div>
+            <span className="text-gray-500">Rate</span>
+            <div className="font-medium">{batch.interest_rate}%</div>
+          </div>
+        </div>
 
-    return batchData.batches.reduce(
-      (totals, batch) => ({
-        totalInvestment: totals.totalInvestment + batch.invested_amount,
-        totalCurrentInterest:
-          totals.totalCurrentInterest + batch.current_interest,
-        totalValue: totals.totalValue + batch.total_value,
-        activeBatches:
-          totals.activeBatches + (batch.status === "active" ? 1 : 0),
-        completedBatches:
-          totals.completedBatches + (batch.status === "completed" ? 1 : 0),
-        totalVideosWatched: totals.totalVideosWatched + batch.videos_watched,
-        totalVideosRequired:
-          totals.totalVideosRequired + batch.total_videos_required,
-      }),
-      {
-        totalInvestment: 0,
-        totalCurrentInterest: 0,
-        totalValue: 0,
-        activeBatches: 0,
-        completedBatches: 0,
-        totalVideosWatched: 0,
-        totalVideosRequired: 0,
-      }
+        {/* Progress bar */}
+        <div className="mt-3">
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-[var(--bs-primary)] h-2 rounded-full transition-all duration-300"
+              style={{ width: `${batch.completion_percentage}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Withdrawal options for active batches */}
+        <div className="mt-4 space-y-2">
+          {canWithdraw && (
+            <button
+              onClick={() => handleWithdrawBatch(batch)}
+              className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+            >
+              <MinusCircle className="h-4 w-4" />
+              <span>Early Withdrawal (20% Interest)</span>
+            </button>
+          )}
+
+          {isEmergency && (
+            <button
+              onClick={() => handleWithdrawBatch(batch)}
+              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+            >
+              <AlertTriangle className="h-4 w-4" />
+              <span>Emergency Withdrawal (Principal Only)</span>
+            </button>
+          )}
+
+          {!canWithdraw && !isEmergency && (
+            <div className="text-center py-2 text-sm text-gray-500">
+              Complete more videos or wait to unlock withdrawal options
+            </div>
+          )}
+        </div>
+      </div>
     );
   };
-
+  // Handle withdrawal navigation - UPDATED to show modal
+  const handleWithdrawBatch = (batch) => {
+    navigate("/emergency-withdrawal")
+  };
   // Component for completed batch card
   const CompletedBatchCard = ({ batch }) => {
     const isWithdrawn = batch.withdrawn;
@@ -407,7 +462,7 @@ export default function XPayDashboard() {
           {/* Conditional button rendering */}
           {!isWithdrawn ? (
             <button
-              onClick={() => handleWithdrawBatch(batch.batch_uuid)}
+              onClick={() => handleWithdrawBatch(batch)}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
             >
               <Download className="h-5 w-5" />
@@ -425,63 +480,184 @@ export default function XPayDashboard() {
       </div>
     );
   };
-  // Component for active batch card
-  const ActiveBatchCard = ({ batch }) => (
-    <div className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors bg-white">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-3">
-          <div className="w-3 h-3 rounded-full bg-green-400" />
-          <span className="font-medium text-gray-900">
-            ${batch.invested_amount.toLocaleString()} Investment
-          </span>
-          <span className="px-2 py-1 text-xs rounded-full font-medium bg-green-100 text-green-700">
-            {batch.status}
-          </span>
-        </div>
-        <div className="text-right">
-          <div className="text-sm font-medium text-gray-900">
-            ${batch.total_value.toFixed(2)}
-          </div>
-          <div className="text-xs text-green-600">
-            +${batch.current_interest.toFixed(2)} interest
-          </div>
-        </div>
-      </div>
+  // Proceed with withdrawal
+  const proceedWithWithdrawal = () => {
+    setShowWithdrawalModal(false);
+    navigate(`/withdraw`);
+  };
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-        <div>
-          <span className="text-gray-500">Progress</span>
-          <div className="font-medium">
-            {batch.completion_percentage.toFixed(1)}%
-          </div>
-        </div>
-        <div>
-          <span className="text-gray-500">Videos</span>
-          <div className="font-medium">
-            {batch.videos_watched}/{batch.total_videos_required}
-          </div>
-        </div>
-        <div>
-          <span className="text-gray-500">Days Left</span>
-          <div className="font-medium">{batch.days_remaining}</div>
-        </div>
-        <div>
-          <span className="text-gray-500">Rate</span>
-          <div className="font-medium">{batch.interest_rate}%</div>
-        </div>
-      </div>
+  // Calculate withdrawal consequences
+  const getWithdrawalInfo = (batch) => {
+    if (!batch) return null;
 
-      {/* Progress bar */}
-      <div className="mt-3">
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className="bg-[var(--bs-primary)] h-2 rounded-full transition-all duration-300"
-            style={{ width: `${batch.completion_percentage}%` }}
-          />
+    const isCompleted =
+      batch.status === "completed" || batch.can_request_withdrawal;
+    const daysRemaining = batch.days_remaining;
+    const videosCompleted = batch.videos_watched > 30;
+
+    let withdrawalType,
+      principalAmount,
+      interestAmount,
+      chargeAmount,
+      netAmount,
+      consequences;
+
+    const withdrawalCharge = 0.05; // 5%
+
+    if (isCompleted) {
+      // Completed withdrawal
+      withdrawalType = "Completed Withdrawal";
+      principalAmount = batch.invested_amount;
+      interestAmount = batch.current_interest;
+      const grossAmount = principalAmount + interestAmount;
+      chargeAmount = grossAmount * withdrawalCharge;
+      netAmount = grossAmount - chargeAmount;
+      consequences = [
+        "✅ You will receive your full investment plus earned interest",
+        "💰 Standard 5% withdrawal processing fee applies",
+        "🎉 No penalties for completed investments",
+      ];
+    } else if (daysRemaining <= 15 && videosCompleted) {
+      // Early withdrawal with reduced interest
+      withdrawalType = "Early Withdrawal (≤15 days remaining)";
+      principalAmount = batch.invested_amount;
+      interestAmount = batch.current_interest * 0.2; // Only 20%
+      const grossAmount = principalAmount + interestAmount;
+      chargeAmount = grossAmount * withdrawalCharge;
+      netAmount = grossAmount - chargeAmount;
+      consequences = [
+        "⚠️ You will lose 80% of your earned interest",
+        `💸 Interest penalty: -$${(batch.current_interest * 0.8).toFixed(2)}`,
+        "💰 5% withdrawal processing fee applies",
+        "📹 At least 30 videos completed requirement met",
+      ];
+    } else {
+      // Emergency withdrawal
+      withdrawalType = "Emergency Withdrawal (>15 days remaining)";
+      principalAmount = batch.invested_amount;
+      interestAmount = 0; // No interest
+      chargeAmount = principalAmount * withdrawalCharge;
+      netAmount = principalAmount - chargeAmount;
+      consequences = [
+        "🚨 ALL earned interest will be forfeited",
+        `💸 Interest lost: -$${batch.current_interest.toFixed(2)}`,
+        "💰 5% withdrawal processing fee applies",
+        "⏰ Investment period terminated early",
+      ];
+    }
+
+    return {
+      withdrawalType,
+      principalAmount,
+      interestAmount,
+      chargeAmount,
+      netAmount,
+      consequences,
+      isEmergency: !isCompleted && daysRemaining > 15,
+      isEarly: !isCompleted && daysRemaining <= 15,
+    };
+  };
+
+  // Calculate totals from batch data
+  const calculateTotals = () => {
+    if (!batchData || !batchData.batches) {
+      return {
+        totalInvestment: 0,
+        totalCurrentInterest: 0,
+        totalValue: 0,
+        activeBatches: 0,
+        completedBatches: 0,
+        totalVideosWatched: 0,
+        totalVideosRequired: 0,
+      };
+    }
+
+    return batchData.batches.reduce(
+      (totals, batch) => ({
+        totalInvestment: totals.totalInvestment + batch.invested_amount,
+        totalCurrentInterest:
+          totals.totalCurrentInterest + batch.current_interest,
+        totalValue: totals.totalValue + batch.total_value,
+        activeBatches:
+          totals.activeBatches + (batch.status === "active" ? 1 : 0),
+        completedBatches:
+          totals.completedBatches + (batch.status === "completed" ? 1 : 0),
+        totalVideosWatched: totals.totalVideosWatched + batch.videos_watched,
+        totalVideosRequired:
+          totals.totalVideosRequired + batch.total_videos_required,
+      }),
+      {
+        totalInvestment: 0,
+        totalCurrentInterest: 0,
+        totalValue: 0,
+        activeBatches: 0,
+        completedBatches: 0,
+        totalVideosWatched: 0,
+        totalVideosRequired: 0,
+      }
+    );
+  };
+
+  // Withdrawal Warning Modal
+  const WithdrawalModal = () => {
+    if (!selectedBatch || !showWithdrawalModal) return null;
+
+    const withdrawalInfo = getWithdrawalInfo(selectedBatch);
+    if (!withdrawalInfo) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            {/* Progress bar */}
+            <div className="mt-3">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-[var(--bs-primary)] h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${selectedBatch.completion_percentage}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Withdrawal options for active batches */}
+            <div className="mt-4 space-y-2">
+              {withdrawalInfo.isEarly && (
+                <button
+                  onClick={proceedWithWithdrawal}
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <MinusCircle className="h-4 w-4" />
+                  <span>Early Withdrawal (20% Interest)</span>
+                </button>
+              )}
+
+              {withdrawalInfo.isEmergency && (
+                <button
+                  onClick={()=>{
+                    navigate("/emergency-withdrawal")
+                  }}
+                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>Emergency Withdrawal (Principal Only)</span>
+                </button>
+              )}
+
+              {!withdrawalInfo.isEarly && !withdrawalInfo.isEmergency && (
+                <button
+                  onClick={proceedWithWithdrawal}
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Complete Withdrawal</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const totals = calculateTotals();
 
@@ -813,6 +989,9 @@ export default function XPayDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Withdrawal Modal */}
+      <WithdrawalModal />
       <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
     </div>
   );
