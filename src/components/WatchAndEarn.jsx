@@ -19,10 +19,10 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
       setIsLoading(true);
 
       // Fetch video URL from backend
-      const fetchedVideoUrl = await onFetchVideo();
+      const fetchedAd = await onFetchVideo();
 
-      if (fetchedVideoUrl) {
-        setVideoUrl(fetchedVideoUrl);
+      if (fetchedAd) {
+        setVideoUrl(fetchedAd);
 
         // Small delay to ensure video URL is set
         setTimeout(() => {
@@ -48,7 +48,7 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
   const onFetchVideo = async (_) => {
     const data = await (await authFetch(BASEURL + "/videos/today")).json();
     setVideoId(data.video_id);
-    return data.video_url;
+    return data
   };
 
   const markVideoComplete = async () => {
