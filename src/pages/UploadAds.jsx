@@ -9,10 +9,11 @@ import {
   Clock,
   RefreshCw,
 } from "lucide-react";
-import { BASEURL } from "../utils/utils";
+// import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 import AdUploadSuccess from "../components/AdsUploadSuccess";
 
+const BASEURL = "https://xpay-api.fly.dev";
 const AdUploadPage = () => {
   const [formData, setFormData] = useState({
     advertiser_name: "",
