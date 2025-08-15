@@ -209,7 +209,7 @@ export default function XPayDashboard() {
     const isEmergency = batch.days_remaining > 15;
 
     return (
-      <div className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors bg-white">
+      <div className="border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors bg-slate-50">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-3">
             <div className="w-3 h-3 rounded-full bg-green-400" />
@@ -268,7 +268,7 @@ export default function XPayDashboard() {
           {canWithdraw && (
             <button
               onClick={() => handleWithdrawBatch(batch)}
-              className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r  from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <MinusCircle className="h-4 w-4" />
               <span>Early Withdrawal (20% Interest)</span>
@@ -278,7 +278,7 @@ export default function XPayDashboard() {
           {isEmergency && (
             <button
               onClick={() => handleWithdrawBatch(batch)}
-              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded transition-all duration-300 flex items-center justify-center space-x-2"
             >
               <AlertTriangle className="h-4 w-4" />
               <span>Emergency Withdrawal (Principal Only)</span>
@@ -296,7 +296,7 @@ export default function XPayDashboard() {
   };
   // Handle withdrawal navigation - UPDATED to show modal
   const handleWithdrawBatch = (batch) => {
-    navigate("/emergency-withdrawal")
+    navigate("/emergency-withdrawal");
   };
   // Component for completed batch card
   const CompletedBatchCard = ({ batch }) => {
@@ -380,7 +380,7 @@ export default function XPayDashboard() {
           </div>
 
           <div
-            className={`backdrop-blur-sm rounded-lg p-4 mb-4 ${
+            className={`backdrop-blur-sm rounded p-4 mb-4 ${
               isWithdrawn
                 ? "bg-white/50 border border-gray-200/50"
                 : "bg-white/70 border border-yellow-200/50"
@@ -422,19 +422,19 @@ export default function XPayDashboard() {
           </div>
 
           <div className="grid grid-cols-3 gap-3 text-xs mb-4">
-            <div className="text-center bg-white/50 rounded-lg p-2">
+            <div className="text-center bg-white/50 rounded p-2">
               <div className="font-bold text-gray-900">
                 {batch.videos_watched}
               </div>
               <div className="text-gray-600">Videos Watched</div>
             </div>
-            <div className="text-center bg-white/50 rounded-lg p-2">
+            <div className="text-center bg-white/50 rounded p-2">
               <div className="font-bold text-gray-900">
                 {batch.interest_rate}%
               </div>
               <div className="text-gray-600">Interest Rate</div>
             </div>
-            <div className="text-center bg-white/50 rounded-lg p-2">
+            <div className="text-center bg-white/50 rounded p-2">
               <div className="font-bold text-gray-900">100%</div>
               <div className="text-gray-600">Complete</div>
             </div>
@@ -624,7 +624,7 @@ export default function XPayDashboard() {
               {withdrawalInfo.isEarly && (
                 <button
                   onClick={proceedWithWithdrawal}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-medium py-2 px-4 rounded transition-all duration-300 flex items-center justify-center space-x-2"
                 >
                   <MinusCircle className="h-4 w-4" />
                   <span>Early Withdrawal (20% Interest)</span>
@@ -633,10 +633,10 @@ export default function XPayDashboard() {
 
               {withdrawalInfo.isEmergency && (
                 <button
-                  onClick={()=>{
-                    navigate("/emergency-withdrawal")
+                  onClick={() => {
+                    navigate("/emergency-withdrawal");
                   }}
-                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-2 px-4 rounded transition-all duration-300 flex items-center justify-center space-x-2"
                 >
                   <AlertTriangle className="h-4 w-4" />
                   <span>Emergency Withdrawal (Principal Only)</span>
@@ -646,7 +646,7 @@ export default function XPayDashboard() {
               {!withdrawalInfo.isEarly && !withdrawalInfo.isEmergency && (
                 <button
                   onClick={proceedWithWithdrawal}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium py-2 px-4 rounded transition-all duration-300 flex items-center justify-center space-x-2"
                 >
                   <CheckCircle className="h-4 w-4" />
                   <span>Complete Withdrawal</span>
@@ -676,7 +676,7 @@ export default function XPayDashboard() {
               <button
                 onClick={refreshDashboardData}
                 disabled={loading || batchLoading}
-                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                className="p-2 text-gray-400 hover:text-gray-600 rounded hover:bg-gray-100 transition-colors disabled:opacity-50"
                 title="Refresh dashboard data"
               >
                 <RefreshCw
@@ -712,46 +712,48 @@ export default function XPayDashboard() {
       </header>
 
       {/* Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
         {/* Welcome */}
-        <div className="mb-8">
+        <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
           <BannerAdSlider />
-        </div>
 
-        {/* Referral Link Section */}
-        <div className="bg-white rounded-2xl p-2 md:p-6 shadow-sm border border-gray-100 mb-8">
-          <h4 className="font-semibold text-gray-900 mb-4">
-            Your Referral Link
-          </h4>
-          <div className="flex gap-2 items-center flex-col md:flex-row space-x-3">
-            <div className="flex-1 bg-gray-50 rounded-lg px-2 md:px-3 md:py-4 border border-gray-200">
+          {/* Referral Link Section */}
+          <div className="bg-white md:w-[43%] shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-teal-200 rounded-2xl px-4 md:p-3 ">
+            <h5 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
+              Your Referral Link
+            </h5>
+            <div className=" bg-gray-50 rounded-lg px-2 md:px-3 md:py-2 border  border-teal-300">
               <p className="text-sm text-gray-600 font-mono break-all">
                 {refUrl}
               </p>
             </div>
-            <button
-              onClick={copyReferralLink}
-              disabled={copySuccess}
-              className="px-4 py-3 rounded-lg font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full md:w-auto"
-            >
-              {copySuccess ? <Check size={16} /> : <Copy size={16} />}
-              <span>{copySuccess ? "Copied!" : "Copy"}</span>
-            </button>
+            <div className=" flex  flex-col lg:flex-row items-center justify-between mt-4">
+              <button
+                onClick={copyReferralLink}
+                disabled={copySuccess}
+                className="px-4 py-1 rounded font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full lg:w-auto"
+              >
+                {copySuccess ? <Check size={16} /> : <Copy size={16} />}
+                <span>{copySuccess ? "Copied!" : "Copy"}</span>
+              </button>
 
-            <button
-              onClick={showReferalModal}
-              className="px-4 mx-1 py-3 rounded-lg font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full md:w-auto"
-            >
-              <UsersIcon /> View Referrals
-            </button>
+              <button
+                onClick={showReferalModal}
+                className="px-4 mx-1 py-1 mt-2 md:mt-0  rounded font-medium transition-all flex items-center min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full lg:w-auto"
+              >
+                <UsersIcon className="" /> View Referrals
+              </button>
+            </div>
+            {/* </div> */}
+            <p className="text-xs text-gray-500 mt-3">
+              Share this link with friends and earn 5% commission on their
+              investments.
+              {navigator.share
+                ? " Use the share button to send via your preferred app."
+                : " Copy the link to share it manually."}
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-3">
-            Share this link with friends and earn 5% commission on their
-            investments.
-            {navigator.share
-              ? " Use the share button to send via your preferred app."
-              : " Copy the link to share it manually."}
-          </p>
         </div>
 
         {/* Investment Overview Stats */}

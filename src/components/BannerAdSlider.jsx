@@ -17,9 +17,9 @@ const BannerAdSlider = ({
   showControls = false, // Disabled controls
   showIndicators = true,
   openInNewTab = true,
-  height = "180px",
-  maxHeight = "200px",
-  className = "w-full px-4 py-3 bg-gray-50",
+  height = "300px",
+  maxHeight = "400px",
+  className = "w-full md:w-[70] px-4 py-3 bg-gray-50",
   containerClassName = "max-w-4xl mx-auto shadow-md",
   maintainAspectRatio = false,
 }) => {
@@ -170,7 +170,7 @@ const BannerAdSlider = ({
         style={getContainerStyle()}
       >
         {/* Main Banner Container */}
-        <div className="relative w-full h-full max-h-[250px] overflow-hidden">
+        <div className="relative w-full h-full max-h-[350px] overflow-hidden">
           {/* Image Slider */}
           <div className="relative w-full h-full overflow-hidden">
             {activeAds.map((ad, index) => (

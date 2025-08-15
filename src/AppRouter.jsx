@@ -18,6 +18,7 @@ import ChangePasswordPage from "./pages/ChangePassword";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import WithdrawalHistory from "./pages/WithdrawalHistory";
 import EmergencyWithdrawal from "./pages/emergency-withdrawal";
+import Xpay_Batches from "./pages/Xpay_Batches";
 
 export default function AppRouter() {
   return (
@@ -83,6 +84,14 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <EmergencyWithdrawal />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/batches"
+              element={
+                <PrivateRoute>
+                  <Xpay_Batches />
                 </PrivateRoute>
               }
             />{" "}
