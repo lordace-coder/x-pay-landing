@@ -34,6 +34,9 @@ import {
   X,
   Info,
   MinusCircle,
+  Zap,
+  ExternalLink,
+  Upload,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
@@ -755,7 +758,6 @@ export default function XPayDashboard() {
             </p>
           </div>
         </div>
-
         {/* Investment Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Investment */}
@@ -849,7 +851,6 @@ export default function XPayDashboard() {
             </p>
           </div>
         </div>
-
         {/* Investment Batches Section */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -916,78 +917,92 @@ export default function XPayDashboard() {
             </div>
           )}
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Watch and Earn */}
-          <WatchEarnComponent
-            onRefresh={() => getVideosLeft(true)}
-            availableVideos={videosWatched.remaining_today ?? 0}
-          />
-
-          {/* Sidebar Content */}
-          <div className="space-y-6">
-            {/* Promo Banner */}
-            <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full -ml-8 -mb-8"></div>
-              <div className="relative">
-                <div className="flex items-center mb-3">
-                  <Gift className="h-6 w-6 mr-2" />
-                  <span className="text-sm font-medium opacity-90">
-                    Special Offer
-                  </span>
-                </div>
-                <h4 className="text-xl font-bold mb-2">Earn More Tokens</h4>
-                <p className="text-sm opacity-90 mb-4">
-                  Purchase extra X-Pay tokens to boost your daily profit and
-                  earn more.
-                </p>
-                <button
-                  className="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-100 transition-colors"
-                  onClick={() => navigate("/purchase-tokens")}
-                >
-                  Purchase Now
-                </button>
-              </div>
-            </div>
-
-            {/* Recent Activity */}
-            <RecentActivity />
+        {/* Main Content Area */}
+        <div className="space-y-8">
+          {/* Top Row: Watch & Earn + Quick Actions + Recent Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Watch and Earn - Keep your current implementation */}
+            <WatchEarnComponent
+              onRefresh={() => getVideosLeft(true)}
+              availableVideos={videosWatched.remaining_today ?? 0}
+            />
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">
                 Quick Actions
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <button
-                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
+                  className="w-full p-4 rounded-xl border border-gray-200 hover:border-gray-300 transition-all duration-200 flex items-center group hover:shadow-md"
                   onClick={() => navigate("/withdraw")}
                 >
-                  <div className="flex items-center">
-                    <DollarSign className="h-5 w-5 text-gray-600 mr-3" />
-                    <span className="font-medium text-gray-900">
-                      Make Withdrawal
-                    </span>
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-green-200 transition-colors">
+                    <DollarSign className="h-5 w-5 text-green-600" />
                   </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
+                  <div className="text-left flex-1">
+                    <div className="font-semibold text-gray-900">
+                      Make Withdrawal
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Withdraw your earnings
+                    </div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                 </button>
 
                 <button
-                  className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-xl transition-colors flex items-center justify-between group"
+                  className="w-full p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all duration-200 flex items-center group"
                   onClick={() => navigate("/ads")}
                 >
-                  <div className="flex items-center">
-                    <Video className="h-5 w-5 text-gray-600 mr-3" />
-                    <span className="font-medium text-gray-900">
-                      Upload Video Ads
-                    </span>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors">
+                    <Upload className="h-5 w-5 text-blue-600" />
                   </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
+                  <div className="text-left flex-1">
+                    <div className="font-semibold text-gray-900">
+                      Upload Video Ads
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      Add new video content
+                    </div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-blue-600" />
                 </button>
               </div>
             </div>
+            {/* Recent Activity */}
+            <RecentActivity />
+          </div>
+
+          {/* Special Offer Banner - Full Width */}
+          <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-blue-600 rounded-2xl p-8 text-white relative overflow-hidden shadow-xl">
+            <div className="absolute top-4 right-6">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                <Clock className="h-4 w-4 mr-2" />
+                <span className="text-sm font-medium">Limited Time Offer</span>
+              </div>
+            </div>
+
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                <Gift className="h-6 w-6" />
+              </div>
+              <span className="text-sm font-semibold">Special Offer</span>
+            </div>
+
+            <h4 className="text-3xl font-bold mb-3">Earn More Tokens</h4>
+            <p className="text-lg opacity-90 mb-6 max-w-2xl">
+              Purchase extra X-Pay tokens to boost your daily profit and earn
+              more.
+            </p>
+
+            <button
+              className="bg-white text-purple-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+              onClick={() => navigate("/purchase-tokens")}
+            >
+              Purchase Now
+            </button>
           </div>
         </div>
       </div>

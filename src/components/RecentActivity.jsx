@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { Activity, BarChart3, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
@@ -30,48 +30,24 @@ export default function RecentActivity() {
   }, []);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h3>
-
-      <div className="space-y-4">
-        {recentTransactions.map((transaction, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0"
-          >
-            <div>
-              <p className="font-medium text-gray-900 text-sm">
-                {transaction.title}
-              </p>
-              <p className="text-xs text-gray-500">
-                {formatTimeAgo(transaction.timestamp)}
-              </p>
-            </div>
-            <span
-              className={`font-semibold text-sm ${
-                transaction.amount > 0 ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {transaction.amount > 0 ? "+" : "-"}$
-              {Math.abs(transaction.amount).toFixed(2)}
-            </span>
-          </div>
-        ))}
-
-        {recentTransactions.length === 0 && (
-          <p className="text-sm text-gray-500">No recent transactions.</p>
-        )}
+    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
+        <button
+          className="text-teal-600 hover:text-teal-700 text-sm font-medium flex items-center transition-colors"
+          onClick={() => navigate("/notifications")}
+        >
+          View All Transactions
+          <ChevronRight className="h-4 w-4 ml-1" />
+        </button>
       </div>
 
-      <button
-        className="w-full mt-4 text-gray-600 text-sm hover:text-gray-900 transition-colors flex items-center justify-center"
-        onClick={() => {
-          navigate("/notifications");
-        }}
-      >
-        View All Transactions
-        <ChevronRight className="h-4 w-4 ml-1" />
-      </button>
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <BarChart3 className="h-8 w-8 text-gray-400" />
+        </div>
+        <p className="text-gray-500 text-sm">No recent transactions.</p>
+      </div>
     </div>
   );
 }
