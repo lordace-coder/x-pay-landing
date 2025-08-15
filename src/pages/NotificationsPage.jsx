@@ -32,51 +32,62 @@ export default function XPayNotifications() {
   const { authFetch } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const [transactions, setTransactions] = useState([]);
+  const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingPayments, setLoadingPayments] = useState(false);
 
+  // Fetch transactions
   useEffect(() => {
-    // Check if transactions are already cached
     const cachedTransactions = getDashboardData("transactions");
-
-    if (cachedTransactions && cachedTransactions.length > 0) {
-      // Use cached data
+    if (Array.isArray(cachedTransactions) && cachedTransactions.length > 0) {
       setTransactions(cachedTransactions);
     } else {
-      // Fetch fresh data
       setLoading(true);
       authFetch(BASEURL + "/api/payments/transactions")
         .then((e) => e.json())
         .then((data) => {
-          console.log("Fetched transactions:", data);
-          if (data && Array.from(data).length === 0) {
-            console.warn("No transactions found in the response.");
-          } else {
-            setTransactions(data);
-            // Cache the fetched data
-            setDashboardData("transactions", data);
-          }
+          setTransactions(Array.isArray(data) ? data : []);
+          setDashboardData("transactions", Array.isArray(data) ? data : []);
         })
         .catch((error) => {
           console.error("Error fetching transactions:", error);
+          setTransactions([]);
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }, [authFetch, getDashboardData, setDashboardData]);
+  // }, [authFetch, getDashboardData, setDashboardData]);
+  }, [authFetch]);
 
-  // Function to refresh transactions data
+  // Fetch payments
+  useEffect(() => {
+    setLoadingPayments(true);
+    authFetch(BASEURL + "/api/payments/my-payments")
+      .then((e) => e.json())
+      .then((data) => {
+        setPayments(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching payments:", error);
+      })
+      .finally(() => {
+        setLoadingPayments(false);
+      });
+  }, [authFetch]);
+
+  // Refresh transactions
   const refreshTransactions = () => {
     setLoading(true);
     authFetch(BASEURL + "/tokens/transactions")
       .then((e) => e.json())
       .then((data) => {
-        setTransactions(data);
-        // Update cached data
-        setDashboardData("transactions", data);
+        setTransactions(Array.isArray(data) ? data : []);
+        setDashboardData("transactions", Array.isArray(data) ? data : []);
       })
       .catch((error) => {
         console.error("Error refreshing transactions:", error);
+        setTransactions([]);
       })
       .finally(() => {
         setLoading(false);
@@ -139,61 +150,180 @@ export default function XPayNotifications() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          {loading && transactions.length === 0 && (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-500">Loading transactions...</p>
-            </div>
-          )}
-
-          <div className="space-y-4">
-            {transactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="p-4 bg-gray-50 hover:bg-white rounded-xl border border-gray-200 transition-all duration-200"
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Transaction History */}
+          <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-w-[320px]">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <svg
+                className="h-5 w-5 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
               >
-                <div className="flex justify-between items-start">
-                  <div className="space-y-0.5">
-                    <h4 className="text-base font-semibold text-gray-900">
-                      {transaction.title}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {transaction.description}
-                    </p>
-                    <div className="flex items-center mt-1 text-xs text-gray-500">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {formatTimeAgo(transaction.timestamp)}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-1.79-8-4V7c0-2.21 3.582-4 8-4s8 1.79 8 4v7c0 2.21-3.582 4-8 4z"
+                />
+              </svg>
+              Transaction History
+            </h2>
+            <div className="space-y-4">
+              {loading && (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-500">Loading transactions...</p>
+                </div>
+              )}
+              {!loading && transactions.length === 0 && (
+                <div className="text-center py-12">
+                  <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No transactions
+                  </h3>
+                  <p className="text-gray-500">
+                    No transaction history available.
+                  </p>
+                </div>
+              )}
+              {!loading &&
+                transactions.length > 0 &&
+                transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="p-4 bg-gray-50 hover:bg-white rounded-xl border border-gray-200 transition-all duration-200"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-0.5">
+                        <h4 className="text-base font-semibold text-gray-900">
+                          {transaction.title}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          {transaction.description}
+                        </p>
+                        <div className="flex items-center mt-1 text-xs text-gray-500">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {formatTimeAgo(transaction.timestamp)}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p
+                          className={`text-lg font-bold ${
+                            transaction.amount > 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {transaction.amount > 0 ? "+" : "-"}$
+                          {Math.abs(transaction.amount).toFixed(2)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p
-                      className={`text-lg font-bold ${
-                        transaction.amount > 0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {transaction.amount > 0 ? "+" : "-"}$
-                      {Math.abs(transaction.amount).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {!loading && transactions.length === 0 && (
+                ))}
+            </div>
+          </div>
+          {/* Payment History */}
+          <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-w-[320px]">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <svg
+                className="h-5 w-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-1.79-8-4V7c0-2.21 3.582-4 8-4s8 1.79 8 4v7c0 2.21-3.582 4-8 4z"
+                />
+              </svg>
+              Payment History
+            </h2>
+            {loadingPayments && payments.length === 0 && (
               <div className="text-center py-12">
-                <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No transactions
-                </h3>
-                <p className="text-gray-500">
-                  No transaction history available.
-                </p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
+                <p className="text-gray-500">Loading payments...</p>
               </div>
             )}
+            <div className="space-y-4">
+              {payments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="p-4 bg-green-50 hover:bg-white rounded-xl border border-green-200 transition-all duration-200 relative"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-0.5">
+                      <h4 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                        {payment.payment_method}
+                        <span
+                          className={`text-xs font-bold px-2 py-0.5 rounded-full ml-2 ${
+                            payment.status === "approved"
+                              ? "bg-green-200 text-green-800"
+                              : payment.status === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {payment.status.charAt(0).toUpperCase() +
+                            payment.status.slice(1)}
+                        </span>
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {payment.description || "No description"}
+                      </p>
+                      <div className="flex items-center mt-1 text-xs text-gray-500 gap-2">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {formatTimeAgo(payment.created_at)}
+                        {payment.reference_number && (
+                          <span className="ml-2 bg-gray-100 px-2 py-0.5 rounded text-xs font-mono text-gray-700">
+                            Ref: {payment.reference_number}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right flex flex-col items-end gap-2">
+                      <p className="text-lg font-bold text-green-700">
+                        +$
+                        {payment.amount.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                        })}
+                      </p>
+                      {payment.proof_image_path && (
+                        <a
+                          href={payment.proof_image_path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 underline hover:text-blue-800"
+                        >
+                          View Proof
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  {payment.admin_notes && (
+                    <div className="mt-2 text-xs text-gray-600 bg-gray-100 rounded p-2">
+                      <span className="font-semibold text-gray-700">
+                        Admin Notes:
+                      </span>{" "}
+                      {payment.admin_notes}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {!loadingPayments && payments.length === 0 && (
+                <div className="text-center py-12">
+                  <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No payments
+                  </h3>
+                  <p className="text-gray-500">No payment history available.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>
