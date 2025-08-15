@@ -1010,6 +1010,27 @@ export default function XPayDashboard() {
       {/* Withdrawal Modal */}
       <WithdrawalModal />
       <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
+
+      <div className="">
+        <footer className="border-t border-gray-200 pt-8 pb-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-gray-500">
+              © 2024 Investment Platform. All rights reserved.
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <a href="#" className="hover:text-gray-700 transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="hover:text-gray-700 transition-colors">
+                Terms of Service
+              </a>
+              <a href="#" className="hover:text-gray-700 transition-colors">
+                Support
+              </a>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
