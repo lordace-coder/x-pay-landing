@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   CheckCircle2,
@@ -25,14 +25,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
-
+import db from "../services/cocobase";
 export const MIN_INVESTMENT_AMOUNT = 15;
 // Mock implementations for missing dependencies
 const WALLET_BOOK = {
   USDT_BRP20: {
     label: "USDT",
     network: "BRP20",
-    address: "TX9fP9A3cW4xJ6qN1K9sS8tL2mZ5Y8Q3B1",
     note: "Send only USDT via BRP20. Do not send other tokens.",
   },
 };
@@ -40,6 +39,7 @@ const WALLET_BOOK = {
 export const CreateBatch = () => {
   const [batchCreationActive] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [address, setAddress] = useState(null);
   const [investmentAmount, setInvestmentAmount] = useState(
     MIN_INVESTMENT_AMOUNT
   );
@@ -65,6 +65,14 @@ export const CreateBatch = () => {
   const dailyProfit = totalProfit / 30;
   const totalReturn = investmentAmount + totalProfit;
   const videosRequired = 60;
+
+  useEffect(() => {
+    db.getDocument("settings", "5f4ef303-3624-409e-ae3d-1e3d892ed180").then(
+      (d) => {
+        setAddress(d.data.wallet);
+      }
+    );
+  }, []);
 
   const handleSliderChange = (e) => {
     setIsSliding(true);
@@ -571,15 +579,6 @@ export const CreateBatch = () => {
                       ✓ Available
                     </div>
                   </button>
-                  <button className="p-4 rounded-2xl border border-slate-200 text-left opacity-50 cursor-not-allowed">
-                    <div className="font-bold text-lg">Bank Transfer</div>
-                    <div className="text-sm text-slate-500">
-                      Traditional Banking
-                    </div>
-                    <div className="text-xs text-orange-600 mt-1">
-                      Coming soon
-                    </div>
-                  </button>
                 </div>
               </div>
 
@@ -609,7 +608,7 @@ export const CreateBatch = () => {
                   </div>
                   <div className="flex items-center gap-3">
                     <code className="text-sm font-mono break-all bg-slate-100 px-3 py-2 rounded-lg flex-1">
-                      {WALLET_BOOK[paymentMethod].address}
+                      {address == null ? "loading..." : address}
                     </code>
                     <button
                       onClick={() => copy(WALLET_BOOK[paymentMethod].address)}
