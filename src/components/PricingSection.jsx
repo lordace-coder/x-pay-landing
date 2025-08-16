@@ -231,6 +231,8 @@ export const CreateBatch = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-bl-full"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-indigo-200/30 to-transparent rounded-tr-full"></div>
 
+
+
               <div className="relative z-10">
                 {!user ? (
                   // Enhanced Unauthenticated state
