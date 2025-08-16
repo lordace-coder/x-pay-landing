@@ -49,7 +49,7 @@ const Navigation = () => {
       href: "/withdraw",
     },
     { id: "ads", label: "Upload Adverts", icon: UploadCloud, href: "/ads" },
-    { id: "password", label: "Settings", icon: Cog, href: "/password-reset" },
+    { id: "password", label: "Settings", icon: User, href: "/password-reset" },
   ];
 
   const NavItem = ({ item, collapsed = false }) => {
@@ -118,7 +118,7 @@ const Navigation = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
                 <BarChart3 className="h-4 w-4 text-white" />
               </div>
-              <span className="text-lg font-semibold text-gray-900">
+              <span className="text- font-semibold text-gray-900">
                 Dashboard
               </span>
             </div>
@@ -159,8 +159,12 @@ const Navigation = () => {
               sidebarCollapsed ? "justify-center" : "space-x-3"
             }`}
           >
-            <div className="w-8 h-5 bg-gray-100 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-gray-500" />
+             <button className="mt-3 md:hidden w-full flex bg-gray-100  items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors">
+              <LogOut onClick={logout} className="h-4 w-4 text-red-500" />
+              {/* Sign out */}
+            </button>
+            <div className="w-8 h-5 hidden md:flex bg-gray-100 rounded-full  items-center justify-center">
+              <User className="hidden md:flex h-4 w-4 text-gray-500" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
