@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   TrendingUp,
@@ -12,7 +14,6 @@ import {
   Copy,
   X,
   Upload,
-  ImageIcon,
   Sparkles,
   Shield,
   Users,
@@ -166,7 +167,7 @@ export const CreateBatch = () => {
   return (
     <>
       <section
-        className="relative py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen overflow-hidden"
+        className="relative py-8 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen overflow-hidden"
         id="create-batch"
       >
         {/* Animated background elements */}
@@ -176,20 +177,20 @@ export const CreateBatch = () => {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-300/10 to-indigo-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           {/* Enhanced Header */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 backdrop-blur-sm rounded-full border border-blue-200/50 mb-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Sparkles className="w-4 h-4 text-white" />
+          <div className="text-center mb-8 md:mb-12 lg:mb-16">
+            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 backdrop-blur-sm rounded-full border border-blue-200/50 mb-4 sm:mb-6 lg:mb-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
               </div>
-              <span className="text-sm font-bold text-blue-700 uppercase tracking-wider">
+              <span className="text-xs sm:text-sm font-bold text-blue-700 uppercase tracking-wider">
                 Premium Investment Platform
               </span>
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             </div>
 
-            <h2 className="text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-blue-900 via-indigo-700 to-purple-700 bg-clip-text text-transparent mb-8 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-900 via-indigo-700 to-purple-700 bg-clip-text text-transparent mb-4 sm:mb-6 lg:mb-8 leading-tight">
               Create Your
               <br />
               <span className="relative">
@@ -198,7 +199,7 @@ export const CreateBatch = () => {
               </span>
             </h2>
 
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-8">
+            <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6 lg:mb-8 px-2">
               Join thousands of investors earning guaranteed returns. Watch just
               2 videos daily for 30 days and earn{" "}
               <span className="font-bold text-green-600">50% profit</span> on
@@ -206,17 +207,17 @@ export const CreateBatch = () => {
             </p>
 
             {/* Trust indicators */}
-            <div className="flex items-center justify-center gap-8 text-sm text-gray-500">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 lg:gap-8 text-xs sm:text-sm text-gray-500">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-500" />
+                <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
                 <span>Secure & Protected</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-blue-500" />
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
                 <span>10,000+ Investors</span>
               </div>
               <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-yellow-500" />
+                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500" />
                 <span>4.9/5 Rating</span>
               </div>
             </div>
@@ -224,7 +225,7 @@ export const CreateBatch = () => {
 
           {/* Enhanced Main card */}
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white/90 backdrop-blur-xl border border-white/60 rounded-3xl p-12 shadow-2xl hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-2xl hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
               {/* Card background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-50"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-bl-full"></div>
@@ -234,39 +235,39 @@ export const CreateBatch = () => {
                 {!user ? (
                   // Enhanced Unauthenticated state
                   <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl mb-8 shadow-lg">
-                      <Lock className="w-12 h-12 text-gray-500" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 lg:mb-8 shadow-lg">
+                      <Lock className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-gray-500" />
                     </div>
-                    <h3 className="text-4xl font-bold text-gray-900 mb-6">
+                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-6">
                       Login Required
                     </h3>
-                    <p className="text-gray-600 mb-12 text-xl max-w-md mx-auto">
+                    <p className="text-gray-600 mb-6 sm:mb-8 lg:mb-12 text-sm sm:text-base lg:text-xl max-w-md mx-auto px-2">
                       Please log in to create investment batches and start your
                       journey to financial growth.
                     </p>
 
                     <button
                       onClick={handleLoginRedirect}
-                      className="w-full max-w-md py-6 px-10 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center gap-4 group mb-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 mx-auto"
+                      className="w-full max-w-md py-4 sm:py-5 lg:py-6 px-6 sm:px-8 lg:px-10 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold rounded-xl sm:rounded-2xl hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center gap-3 sm:gap-4 group mb-4 sm:mb-6 lg:mb-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 mx-auto text-sm sm:text-base"
                     >
-                      <Lock className="w-6 h-6" />
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                       Login to Continue
-                      <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 group-hover:translate-x-2 transition-transform" />
                     </button>
                   </div>
                 ) : (
                   <>
                     {/* Enhanced Title */}
-                    <div className="text-center mb-12">
-                      <div className="inline-flex items-center gap-4 mb-8">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                          <TrendingUp className="w-8 h-8 text-white" />
+                    <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+                      <div className="inline-flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
                         </div>
                         <div className="text-left">
-                          <h3 className="text-3xl font-bold text-gray-900">
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                             Select Investment Amount
                           </h3>
-                          <p className="text-gray-600">
+                          <p className="text-sm sm:text-base text-gray-600">
                             Choose your investment to start earning
                           </p>
                         </div>
@@ -274,14 +275,14 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Amount display */}
-                    <div className="text-center mb-12">
-                      <div className="inline-flex items-center gap-8 p-8 bg-gradient-to-br from-gray-50/80 to-blue-50/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-inner">
+                    <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+                      <div className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-gray-50/80 to-blue-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-gray-200/50 shadow-inner">
                         <div className="text-center">
-                          <div className="text-sm text-gray-500 font-medium mb-2">
+                          <div className="text-xs sm:text-sm text-gray-500 font-medium mb-1 sm:mb-2">
                             Investment Amount
                           </div>
                           <div
-                            className={`text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${
                               isSliding ? "scale-110 drop-shadow-lg" : ""
                             }`}
                           >
@@ -290,18 +291,18 @@ export const CreateBatch = () => {
                         </div>
 
                         <div className="flex flex-col items-center">
-                          <ArrowRight className="w-8 h-8 text-gray-400 mb-2" />
+                          <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-gray-400 mb-1 sm:mb-2 rotate-90 sm:rotate-0" />
                           <div className="text-xs text-gray-500 font-medium">
                             30 Days
                           </div>
                         </div>
 
                         <div className="text-center">
-                          <div className="text-sm text-gray-500 font-medium mb-2">
+                          <div className="text-xs sm:text-sm text-gray-500 font-medium mb-1 sm:mb-2">
                             Total Return
                           </div>
                           <div
-                            className={`text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${
                               isSliding ? "scale-110 drop-shadow-lg" : ""
                             }`}
                           >
@@ -312,12 +313,12 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-                      <div className="group text-center p-6 bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-2xl border border-blue-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                          <DollarSign className="w-6 h-6 text-white" />
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-12">
+                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-blue-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                          <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
-                        <div className="text-2xl font-bold text-blue-900 mb-1">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-900 mb-1">
                           ${dailyProfit.toFixed(2)}
                         </div>
                         <div className="text-xs text-blue-600 font-medium">
@@ -325,11 +326,11 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-6 bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-2xl border border-green-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                          <Target className="w-6 h-6 text-white" />
+                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-green-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                          <Target className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
-                        <div className="text-2xl font-bold text-green-900 mb-1">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-900 mb-1">
                           ${totalProfit.toFixed(0)}
                         </div>
                         <div className="text-xs text-green-600 font-medium">
@@ -337,11 +338,11 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-6 bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-2xl border border-purple-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                          <Play className="w-6 h-6 text-white" />
+                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-purple-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                          <Play className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
-                        <div className="text-2xl font-bold text-purple-900 mb-1">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-900 mb-1">
                           {videosRequired}
                         </div>
                         <div className="text-xs text-purple-600 font-medium">
@@ -349,11 +350,11 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-6 bg-gradient-to-br from-orange-50/80 to-orange-100/80 backdrop-blur-sm rounded-2xl border border-orange-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                          <Calendar className="w-6 h-6 text-white" />
+                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-orange-50/80 to-orange-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-orange-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
-                        <div className="text-2xl font-bold text-orange-900 mb-1">
+                        <div className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-900 mb-1">
                           30
                         </div>
                         <div className="text-xs text-orange-600 font-medium">
@@ -363,11 +364,11 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Slider */}
-                    <div className="mb-10">
-                      <label className="block text-gray-700 font-semibold mb-4 text-lg">
+                    <div className="mb-6 sm:mb-8 lg:mb-10">
+                      <label className="block text-gray-700 font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
                         Investment Amount (${MIN_INVESTMENT_AMOUNT} - $1,000)
                       </label>
-                      <div className="relative p-6 bg-gradient-to-r from-gray-50/50 to-blue-50/50 rounded-2xl border border-gray-200/50">
+                      <div className="relative p-4 sm:p-5 lg:p-6 bg-gradient-to-r from-gray-50/50 to-blue-50/50 rounded-xl sm:rounded-2xl border border-gray-200/50">
                         <input
                           type="range"
                           min={MIN_INVESTMENT_AMOUNT}
@@ -388,7 +389,7 @@ export const CreateBatch = () => {
                             }%, #e5e7eb 100%)`,
                           }}
                         />
-                        <div className="flex justify-between text-sm text-gray-500 mt-3 font-medium">
+                        <div className="flex justify-between text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 font-medium">
                           <span>${MIN_INVESTMENT_AMOUNT}</span>
                           <span>$500</span>
                           <span>$1,000</span>
@@ -397,18 +398,18 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Manual Input */}
-                    <div className="mb-10">
-                      <label className="block text-gray-700 font-semibold mb-3 text-lg">
+                    <div className="mb-6 sm:mb-8 lg:mb-10">
+                      <label className="block text-gray-700 font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
                         Or enter exact amount
                       </label>
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                           <input
                             type="number"
                             value={investmentAmount}
                             onChange={handleInputChange}
                             min={MIN_INVESTMENT_AMOUNT}
-                            className="w-full px-6 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-semibold bg-white/80 backdrop-blur-sm"
+                            className="w-full px-4 sm:px-5 lg:px-6 py-3 sm:py-4 border border-gray-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-lg font-semibold bg-white/80 backdrop-blur-sm"
                             placeholder="Enter investment amount"
                             disabled={!batchCreationActive}
                           />
@@ -417,7 +418,7 @@ export const CreateBatch = () => {
                           onClick={() =>
                             setInvestmentAmount(MIN_INVESTMENT_AMOUNT)
                           }
-                          className="px-6 py-4 text-sm text-blue-600 border border-blue-200 rounded-xl hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                          className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 text-sm text-blue-600 border border-blue-200 rounded-lg sm:rounded-xl hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold whitespace-nowrap"
                           disabled={!batchCreationActive}
                         >
                           Min (${MIN_INVESTMENT_AMOUNT})
@@ -426,36 +427,36 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Info Box */}
-                    <div className="mb-10 p-6 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-200/50 rounded-2xl shadow-inner">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                          <Gift className="w-5 h-5 text-white" />
+                    <div className="mb-6 sm:mb-8 lg:mb-10 p-4 sm:p-5 lg:p-6 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-200/50 rounded-xl sm:rounded-2xl shadow-inner">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                          <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
                         <div className="text-sm text-blue-800">
-                          <p className="font-semibold mb-3 text-base">
+                          <p className="font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                             Your investment batch will include:
                           </p>
-                          <ul className="space-y-2 text-blue-700">
+                          <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-blue-700">
                             <li className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0"></div>
                               ${investmentAmount.toLocaleString()} investment
                               amount
                             </li>
                             <li className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0"></div>
                               ${dailyProfit.toFixed(2)} daily profit for 30 days
                             </li>
                             <li className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full flex-shrink-0"></div>
                               Just 2 videos to watch each day
                             </li>
                             <li className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full flex-shrink-0"></div>
                               ${totalProfit.toFixed(0)} total profit (50%
                               return)
                             </li>
                             <li className="flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full flex-shrink-0"></div>
                               ${totalReturn.toLocaleString()} total payout
                               (investment + profit)
                             </li>
@@ -465,61 +466,78 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Action Button */}
-                    <div className="text-center space-y-4">
+                    <div className="text-center space-y-3 sm:space-y-4">
                       <button
                         disabled={creating}
-                        className="w-full py-6 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 flex items-center justify-center gap-3 group shadow-xl hover:shadow-2xl mb-4 transform hover:-translate-y-1 text-lg relative overflow-hidden"
+                        className="w-full py-4 sm:py-5 lg:py-6 px-6 sm:px-7 lg:px-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl sm:rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 group shadow-xl hover:shadow-2xl mb-3 sm:mb-4 transform hover:-translate-y-1 text-sm sm:text-base lg:text-lg relative overflow-hidden"
                         onClick={openPaymentDetails}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                         {creating ? (
                           <>
-                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-                            Preparing Your Batch...
+                            <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-b-2 border-white"></div>
+                            <span className="hidden sm:inline">
+                              Preparing Your Batch...
+                            </span>
+                            <span className="sm:hidden">Preparing...</span>
                           </>
                         ) : (
                           <>
-                            <Zap className="w-6 h-6" />
-                            Create ${investmentAmount.toLocaleString()}{" "}
-                            Investment Batch
-                            <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                            <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
+                            <span className="hidden sm:inline">
+                              Create ${investmentAmount.toLocaleString()}{" "}
+                              Investment Batch
+                            </span>
+                            <span className="sm:hidden">
+                              Create ${investmentAmount.toLocaleString()} Batch
+                            </span>
+                            <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 transition-transform" />
                           </>
                         )}
                       </button>
 
-                      <p className="text-sm text-gray-500  flex items-center justify-center gap-2">
-                        <Shield className="w-4 h-4" />
-                        Secure processing • Submit proof for admin review •
-                        Funds appear after approval
+                      <p className="text-xs sm:text-sm text-gray-500 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2">
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <span>Secure processing</span>
+                        </div>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="text-center">
+                          Submit proof for admin review
+                        </span>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="text-center">
+                          Funds appear after approval
+                        </span>
                       </p>
                     </div>
                   </>
                 )}
 
                 {/* Enhanced Footer Stats */}
-                <div className="mt-12 pt-8 border-t border-gray-200/50">
-                  <div className="grid grid-cols-3 gap-6 text-center">
+                <div className="mt-6 sm:mt-8 lg:mt-12 pt-4 sm:pt-6 lg:pt-8 border-t border-gray-200/50">
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6 text-center">
                     <div className="group">
-                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
                         50%
                       </div>
-                      <div className="text-sm text-gray-500 font-medium">
+                      <div className="text-xs sm:text-sm text-gray-500 font-medium">
                         Total Profit
                       </div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
                         ${MIN_INVESTMENT_AMOUNT}
                       </div>
-                      <div className="text-sm text-gray-500 font-medium">
+                      <div className="text-xs sm:text-sm text-gray-500 font-medium">
                         Minimum Investment
                       </div>
                     </div>
                     <div className="group">
-                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
+                      <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
                         24/7
                       </div>
-                      <div className="text-sm text-gray-500 font-medium">
+                      <div className="text-xs sm:text-sm text-gray-500 font-medium">
                         Support Available
                       </div>
                     </div>
@@ -533,19 +551,19 @@ export const CreateBatch = () => {
 
       {/* Enhanced Payment Modal */}
       {showPayModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-md"
             onClick={() => setShowPayModal(false)}
           />
-          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
             {/* Fixed header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 border-b border-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">
                   Payment Details
                 </h3>
               </div>
@@ -553,27 +571,27 @@ export const CreateBatch = () => {
                 className="p-2 rounded-full hover:bg-slate-100 transition-colors"
                 onClick={() => setShowPayModal(false)}
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 lg:space-y-6">
               {/* Payment Method Selection */}
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-3 block">
+                <label className="text-sm font-semibold text-slate-700 mb-2 sm:mb-3 block">
                   Payment Method
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setPaymentMethod("USDT_BRP20")}
-                    className={`p-4 rounded-2xl border text-left transition-all duration-200 ${
+                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${
                       paymentMethod === "USDT_BRP20"
                         ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
                         : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
                     }`}
                   >
-                    <div className="font-bold text-lg">USDT</div>
+                    <div className="font-bold text-base sm:text-lg">USDT</div>
                     <div className="text-sm text-slate-500">Network: BRP20</div>
                     <div className="text-xs text-green-600 mt-1">
                       ✓ Available
@@ -583,36 +601,36 @@ export const CreateBatch = () => {
               </div>
 
               {/* Enhanced Wallet Card */}
-              <div className="p-4 bg-gradient-to-br from-slate-50/80 to-blue-50/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 shadow-inner">
-                <div className="flex items-center justify-between mb-4">
+              <div className="p-3 sm:p-4 bg-gradient-to-br from-slate-50/80 to-blue-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-slate-200/50 shadow-inner">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
                   <div>
                     <div className="text-sm text-slate-600 mb-1">
                       Amount to pay
                     </div>
-                    <div className="text-3xl font-extrabold text-slate-900">
+                    <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                       ${investmentAmount.toLocaleString()}
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right">
                     <div className="text-sm text-slate-600 mb-1">Method</div>
-                    <div className="font-bold text-lg">
+                    <div className="font-bold text-base sm:text-lg">
                       {WALLET_BOOK[paymentMethod].label} •{" "}
                       {WALLET_BOOK[paymentMethod].network}
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200/50 bg-white/80 backdrop-blur-sm p-4 shadow-sm">
+                <div className="rounded-xl sm:rounded-2xl border border-slate-200/50 bg-white/80 backdrop-blur-sm p-3 sm:p-4 shadow-sm">
                   <div className="text-xs text-slate-500 mb-2 font-medium">
                     Wallet Address
                   </div>
-                  <div className="flex items-center gap-3">
-                    <code className="text-sm font-mono break-all bg-slate-100 px-3 py-2 rounded-lg flex-1">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                    <code className="text-xs sm:text-sm font-mono break-all bg-slate-100 px-2 sm:px-3 py-2 rounded-lg flex-1 min-h-[2.5rem] flex items-center">
                       {address == null ? "loading..." : address}
                     </code>
                     <button
                       onClick={() => copy(WALLET_BOOK[paymentMethod].address)}
-                      className="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium"
+                      className="inline-flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium whitespace-nowrap"
                     >
                       <Copy className="w-4 h-4" /> Copy
                     </button>
@@ -621,7 +639,7 @@ export const CreateBatch = () => {
 
                 {WALLET_BOOK[paymentMethod].note && (
                   <div className="mt-3 p-3 bg-blue-100/50 rounded-lg border border-blue-200/50">
-                    <p className="text-sm text-blue-700 font-medium">
+                    <p className="text-xs sm:text-sm text-blue-700 font-medium">
                       {WALLET_BOOK[paymentMethod].note}
                     </p>
                   </div>
@@ -630,16 +648,16 @@ export const CreateBatch = () => {
             </div>
 
             {/* Fixed footer with buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 p-6 border-t border-gray-100 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-5 lg:p-6 border-t border-gray-100 flex-shrink-0">
               <button
                 onClick={() => setShowPayModal(false)}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 onClick={proceedToProof}
-                className="w-full sm:w-auto flex-1 px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto flex-1 px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base"
               >
                 I've Paid — Submit Proof
               </button>
@@ -650,19 +668,19 @@ export const CreateBatch = () => {
 
       {/* Enhanced Proof Modal */}
       {showProofModal && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-md"
             onClick={() => setShowProofModal(false)}
           />
-          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
             {/* Fixed header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 border-b border-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg sm:rounded-xl flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">
                   Submit Payment Proof
                 </h3>
               </div>
@@ -670,14 +688,14 @@ export const CreateBatch = () => {
                 className="p-2 rounded-full hover:bg-slate-100 transition-colors"
                 onClick={() => setShowProofModal(false)}
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-3 sm:space-y-4">
               {/* Amount and Method */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="text-sm font-semibold text-slate-700 mb-2 block">
                     Amount (USD)
@@ -691,7 +709,7 @@ export const CreateBatch = () => {
                         Math.max(MIN_INVESTMENT_AMOUNT, Number(e.target.value))
                       )
                     }
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white/80 backdrop-blur-sm"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -701,13 +719,13 @@ export const CreateBatch = () => {
                   <input
                     value={`${WALLET_BOOK[paymentMethod].label} (${WALLET_BOOK[paymentMethod].network})`}
                     readOnly
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-700"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 bg-slate-50 text-slate-700 text-sm sm:text-base"
                   />
                 </div>
               </div>
 
               {/* Reference and Description */}
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="text-sm font-semibold text-slate-700 mb-2 block">
                     Reference Number{" "}
@@ -719,7 +737,7 @@ export const CreateBatch = () => {
                     value={referenceNumber}
                     onChange={(e) => setReferenceNumber(e.target.value)}
                     placeholder="e.g. Transaction ID or Bank Reference"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white/80 backdrop-blur-sm"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   />
                 </div>
                 <div>
@@ -734,25 +752,25 @@ export const CreateBatch = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                     placeholder="Any additional information about this payment..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-white/80 backdrop-blur-sm"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   />
                 </div>
               </div>
 
               {/* Enhanced File Upload */}
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-3 block">
+                <label className="text-sm font-semibold text-slate-700 mb-2 sm:mb-3 block">
                   Proof Image <span className="text-red-500">*</span>
                 </label>
                 <div className="mt-2">
-                  <label className="w-full flex flex-col items-center justify-center px-6 py-6 border-2 border-dashed border-slate-300 rounded-2xl hover:bg-slate-50 cursor-pointer transition-all duration-200 bg-white/50 backdrop-blur-sm">
-                    <Upload className="w-8 h-8 text-slate-400 mb-3" />
-                    <span className="text-sm font-medium text-slate-600">
+                  <label className="w-full flex flex-col items-center justify-center px-4 sm:px-6 py-4 sm:py-6 border-2 border-dashed border-slate-300 rounded-xl sm:rounded-2xl hover:bg-slate-50 cursor-pointer transition-all duration-200 bg-white/50 backdrop-blur-sm">
+                    <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400 mb-2 sm:mb-3" />
+                    <span className="text-sm font-medium text-slate-600 text-center">
                       {proofImage
                         ? proofImage.name
                         : "Upload transaction receipt or screenshot"}
                     </span>
-                    <span className="text-xs text-slate-400 mt-1">
+                    <span className="text-xs text-slate-400 mt-1 text-center">
                       PNG, JPG, or PDF up to 10MB
                     </span>
                     <input
@@ -767,13 +785,13 @@ export const CreateBatch = () => {
 
                   {/* Enhanced Preview */}
                   {proofImage && (
-                    <div className="mt-4 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                    <div className="mt-3 sm:mt-4 rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                       <img
                         src={
                           URL.createObjectURL(proofImage) || "/placeholder.svg"
                         }
                         alt="Proof preview"
-                        className="w-full h-48 object-contain bg-slate-50"
+                        className="w-full h-32 sm:h-48 object-contain bg-slate-50"
                       />
                     </div>
                   )}
@@ -782,17 +800,17 @@ export const CreateBatch = () => {
             </div>
 
             {/* Fixed footer with buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 p-6 border-t border-gray-100 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-5 lg:p-6 border-t border-gray-100 flex-shrink-0">
               <button
                 onClick={() => setShowProofModal(false)}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-sm sm:text-base"
               >
                 Close
               </button>
               <button
                 onClick={submitPaymentProof}
                 disabled={submitting}
-                className="w-full sm:w-auto flex-1 px-8 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold hover:from-green-700 hover:to-emerald-700 disabled:opacity-60 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto flex-1 px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold hover:from-green-700 hover:to-emerald-700 disabled:opacity-60 transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base"
               >
                 {submitting ? (
                   <div className="flex items-center justify-center gap-2">
