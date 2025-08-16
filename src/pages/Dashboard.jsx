@@ -723,7 +723,7 @@ export default function XPayDashboard() {
           <BannerAdSlider />
 
           {/* Referral Link Section */}
-          <div className="bg-white w-full md:w-[43%] shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-teal-200 rounded-2xl px-3 py-3 sm:px-4 sm:py-4 ">
+          {/* <div className="bg-white w-full md:w-[43%] shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-teal-200 rounded-2xl px-3 py-3 sm:px-4 sm:py-4 ">
             <h5 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
               Your Referral Link
@@ -751,14 +751,14 @@ export default function XPayDashboard() {
               </button>
             </div>
             {/* </div> */}
-            <p className="text-[11px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
+            {/* <p className="text-[11px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
               Share this link with friends and earn 5% commission on their
               investments.
               {navigator.share
                 ? " Use the share button to send via your preferred app."
                 : " Copy the link to share it manually."}
             </p>
-          </div>
+          {/* </div> */ }
         </div>
         {/* Investment Overview Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
