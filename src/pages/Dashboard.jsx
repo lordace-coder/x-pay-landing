@@ -926,53 +926,63 @@ export default function XPayDashboard() {
               onRefresh={() => getVideosLeft(true)}
               availableVideos={videosWatched.remaining_today ?? 0}
             />
+            {/*  */}
+            {/* */}
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-lg font-bold text-gray-900 mb-6">
-                Quick Actions
-              </h3>
+            <div className="space-y-6">
+              {/* Quick Actions */}
+              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <Zap className="w-6 h-6 text-orange-500" />
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Quick Actions
+                  </h3>
+                </div>
 
-              <div className="space-y-4">
-                <button
-                  className="w-full p-4 rounded-xl border border-gray-200 hover:border-gray-300 transition-all duration-200 flex items-center group hover:shadow-md"
+                <div className="space-y-3">
+                  <button 
                   onClick={() => navigate("/withdraw")}
-                >
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-green-200 transition-colors">
-                    <DollarSign className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold text-gray-900">
-                      Make Withdrawal
+                  className="w-full flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-200 hover:bg-green-100 transition-all duration-200 group">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200">
+                      <Download className="w-5 h-5 text-green-600" />
                     </div>
-                    <div className="text-sm text-gray-500">
-                      Withdraw your earnings
+                    <div className="flex-1 text-left">
+                      <div className="font-semibold text-gray-900">
+                        Make Withdrawal
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Available: $180.00
+                      </div>
                     </div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
-                </button>
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-green-600" />
+                  </button>
 
-                <button
-                  className="w-full p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all duration-200 flex items-center group"
-                  onClick={() => navigate("/ads")}
-                >
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors">
-                    <Upload className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold text-gray-900">
-                      Upload Video Ads
+                  <button
+                  onClick={() => navigate("/ads")} 
+                  className="w-full flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-all duration-200 group">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200">
+                      <Upload className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div className="text-sm text-gray-500">
-                      Add new video content
+                    <div className="flex-1 text-left">
+                      <div className="font-semibold text-gray-900">
+                        Upload Video Ads
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Earn extra rewards
+                      </div>
                     </div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-blue-600" />
-                </button>
+                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
+                  </button>
+                </div>
               </div>
+
+              {/* Recent Activity */}
             </div>
+
             {/* Recent Activity */}
             <RecentActivity />
+            {/* <transa */}
           </div>
 
           {/* Special Offer Banner - Full Width */}
@@ -1011,26 +1021,204 @@ export default function XPayDashboard() {
       <WithdrawalModal />
       <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
 
-      <div className="">
-        <footer className="border-t border-gray-200 pt-8 pb-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-gray-500">
-              © 2024 Investment Platform. All rights reserved.
+      <footer className="border-t border-gray-200 pt-8 pb-6 mt-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-lg flex items-center justify-center">
+              <DollarSign className="w-4 h-4 text-white" />
             </div>
-            <div className="flex items-center gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-gray-700 transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-gray-700 transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="hover:text-gray-700 transition-colors">
-                Support
-              </a>
+            <div>
+              <div className="font-semibold text-gray-900">
+                Investment Platform
+              </div>
+              <div className="text-sm text-gray-500">
+                © 2024 All rights reserved
+              </div>
             </div>
           </div>
-        </footer>
-      </div>
+
+          <div className="flex items-center gap-8">
+            <a
+              href="#"
+              className="text-sm text-gray-500 hover:text-teal-600 transition-all duration-200 hover:scale-105 font-medium"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-sm text-gray-500 hover:text-teal-600 transition-all duration-200 hover:scale-105 font-medium"
+            >
+              Terms of Service
+            </a>
+            <a
+              href="#"
+              className="text-sm text-gray-500 hover:text-teal-600 transition-all duration-200 hover:scale-105 font-medium"
+            >
+              Support
+            </a>
+            <a
+              href="#"
+              className="text-sm text-gray-500 hover:text-teal-600 transition-all duration-200 hover:scale-105 font-medium"
+            >
+              Contact
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <p className="text-xs text-gray-400">
+            Invest responsibly. Past performance does not guarantee future
+            results.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
+
+
+
+
+
+{/* Responsive grid for bottom sections */}
+      //   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+      //     {/* Watch & Earn */}
+      //     <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+      //       <div className="flex items-center justify-between mb-6">
+      //         <div className="flex items-center gap-3">
+      //           <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
+      //             <Play className="w-6 h-6 text-white fill-current" />
+      //           </div>
+      //           <div>
+      //             <h3 className="text-lg font-bold text-gray-900">Watch & Earn</h3>
+      //           </div>
+      //         </div>
+      //         <div className="flex items-center gap-2">
+      //           <span className="bg-green-100 text-green-700 text-sm font-semibold px-3 py-1 rounded-full">
+      //             2 Available
+      //           </span>
+      //           <Star className="w-4 h-4 text-orange-500 fill-current" />
+      //           <span className="text-orange-500 text-sm font-medium">Premium</span>
+      //         </div>
+      //       </div>
+
+      //       <div className="text-center mb-6">
+      //         <div className="relative inline-flex items-center justify-center mb-4">
+      //           <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+      //             <span className="text-3xl font-bold text-white">2</span>
+      //           </div>
+      //           <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+      //             <span className="text-white text-xs font-bold">!</span>
+      //           </div>
+      //         </div>
+
+      //         <h4 className="text-lg font-bold text-gray-900 mb-2">Ready to Watch</h4>
+      //         <p className="text-sm text-gray-600 mb-4">Earn up to $2.50 per video</p>
+
+      //         <div className="bg-blue-50 rounded-xl p-4 mb-6">
+      //           <div className="text-sm text-gray-600 mb-1">Potential Earnings</div>
+      //           <div className="text-2xl font-bold text-blue-600">$5.00</div>
+      //         </div>
+
+      //         <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 transform">
+      //           <Play className="w-5 h-5 fill-current" />
+      //           Start Watching
+      //         </button>
+      //       </div>
+      //     </div>
+
+      //     {/* Special Offer */}
+      //     <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-pink-600 rounded-2xl p-6 text-white relative overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+      //       <div className="absolute top-4 right-4">
+      //         <div className="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">50% OFF</div>
+      //       </div>
+
+      //       <div className="flex items-center gap-2 mb-4">
+      //         <Gift className="w-6 h-6" />
+      //         <span className="text-sm font-medium">Special Offer</span>
+      //       </div>
+      //       <div className="text-xs opacity-90 mb-4">Limited Time</div>
+
+      //       <div className="flex items-center gap-2 mb-4">
+      //         <Zap className="w-6 h-6" />
+      //         <h3 className="text-2xl font-bold">Boost Your Earnings</h3>
+      //       </div>
+
+      //       <p className="text-sm opacity-90 mb-6 leading-relaxed">
+      //         Get X-Pay premium tokens and unlock higher daily profits with exclusive video content.
+      //       </p>
+
+      //       <div className="mb-6">
+      //         <div className="flex items-center gap-2 mb-2">
+      //           <span className="text-sm opacity-75">Regular Price:</span>
+      //           <span className="text-lg line-through opacity-75">$20.00</span>
+      //         </div>
+      //         <div className="flex items-center gap-2">
+      //           <span className="text-sm opacity-75">Your Price:</span>
+      //           <span className="text-3xl font-bold text-yellow-400">$10.00</span>
+      //         </div>
+      //       </div>
+
+      //       <button className="w-full bg-white text-purple-600 font-bold py-3 px-6 rounded-xl hover:bg-gray-100 transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 transform">
+      //         <Gift className="w-5 h-5" />
+      //         Purchase Now
+      //       </button>
+      //     </div>
+
+      //     {/* Quick Actions & Recent Activity */}
+      //     <div className="space-y-6">
+      //       {/* Quick Actions */}
+      //       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+      //         <div className="flex items-center gap-3 mb-6">
+      //           <Zap className="w-6 h-6 text-orange-500" />
+      //           <h3 className="text-lg font-bold text-gray-900">Quick Actions</h3>
+      //         </div>
+
+      //         <div className="space-y-3">
+      //           <button className="w-full flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-200 hover:bg-green-100 transition-all duration-200 group">
+      //             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200">
+      //               <Download className="w-5 h-5 text-green-600" />
+      //             </div>
+      //             <div className="flex-1 text-left">
+      //               <div className="font-semibold text-gray-900">Make Withdrawal</div>
+      //               <div className="text-sm text-gray-600">Available: $180.00</div>
+      //             </div>
+      //             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-green-600" />
+      //           </button>
+
+      //           <button className="w-full flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-all duration-200 group">
+      //             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200">
+      //               <Upload className="w-5 h-5 text-blue-600" />
+      //             </div>
+      //             <div className="flex-1 text-left">
+      //               <div className="font-semibold text-gray-900">Upload Video Ads</div>
+      //               <div className="text-sm text-gray-600">Earn extra rewards</div>
+      //             </div>
+      //             <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
+      //           </button>
+      //         </div>
+      //       </div>
+
+      //       {/* Recent Activity */}
+      //       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+      //         <div className="flex items-center justify-between mb-6">
+      //           <div className="flex items-center gap-3">
+      //             <BarChart3 className="w-6 h-6 text-gray-600" />
+      //             <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
+      //           </div>
+      //           <User className="w-5 h-5 text-gray-400" />
+      //         </div>
+
+      //         <div className="text-center py-8">
+      //           <p className="text-gray-500 text-sm mb-4">No recent transactions</p>
+      //           <button className="text-teal-600 hover:text-teal-700 text-sm font-medium flex items-center gap-1 mx-auto transition-colors">
+      //             View All Transactions
+      //             <ChevronRight className="w-4 h-4" />
+      //           </button>
+      //         </div>
+      //       </div>
+      //     </div>
+      //   </div>
+
+      
+      // </div>
