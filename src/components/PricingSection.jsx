@@ -206,6 +206,7 @@ export const CreateBatch = () => {
               your investment plus get your original amount back.
             </p>
 
+
             {/* Trust indicators */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 lg:gap-8 text-xs sm:text-sm text-gray-500">
               <div className="flex items-center gap-2">
@@ -230,8 +231,6 @@ export const CreateBatch = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-50"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-bl-full"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-indigo-200/30 to-transparent rounded-tr-full"></div>
-
-
 
               <div className="relative z-10">
                 {!user ? (
