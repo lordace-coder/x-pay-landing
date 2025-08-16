@@ -106,8 +106,6 @@ export const CreateBatch = () => {
       return;
     }
 
-    
-
     try {
       setSubmitting(true);
 
@@ -119,7 +117,6 @@ export const CreateBatch = () => {
       if (referenceNumber.trim())
         form.append("reference_number", referenceNumber.trim());
       if (description.trim()) form.append("description", description.trim());
-       
 
       const res = await authFetch(`${BASEURL}/api/payments/submit-proof`, {
         method: "POST",
@@ -630,16 +627,6 @@ export const CreateBatch = () => {
                     </p>
                   </div>
                 )}
-
-                {/* QR Code Placeholder */}
-                <div className="mt-4 flex justify-center">
-                  <div className="h-32 w-32 rounded-2xl border-2 border-dashed border-slate-300 flex items-center justify-center bg-white/50">
-                    <ImageIcon className="w-8 h-8 text-slate-400" />
-                  </div>
-                </div>
-                <p className="text-xs text-slate-500 text-center mt-2">
-                  QR code for easy payment
-                </p>
               </div>
             </div>
 
