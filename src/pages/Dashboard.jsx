@@ -758,7 +758,10 @@ export default function XPayDashboard() {
                 ? " Use the share button to send via your preferred app."
                 : " Copy the link to share it manually."}
             </p>
-          {/* </div> */ }
+          {/* </div> */ }  
+
+
+
         </div>
         {/* Investment Overview Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">

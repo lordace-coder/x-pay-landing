@@ -18,10 +18,12 @@ import {
   Star,
   TrendingUp,
   Award,
+  UsersIcon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
+import ReferralModal from "../components/RefModal";
 
 // Password strength checker function
 const checkPasswordStrength = (password) => {
@@ -203,6 +205,9 @@ const ChangePassword = () => {
     }
   };
 
+  const showReferalModal = () => {
+    setShowRef(true);
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="py-4 sm:py-8 px-3 sm:px-4 lg:px-6">
@@ -331,11 +336,12 @@ const ChangePassword = () => {
                     )}
                     <span>{copySuccess ? "Copied!" : "Copy Link"}</span>
                   </button>
+
                   <button
-                    onClick={() => setShowRef(true)}
+                    onClick={showReferalModal}
                     className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                   >
-                    <Users className="w-5 h-5" /> View Referrals
+                    <UsersIcon className="" /> View Referrals
                   </button>
                 </div>
                 <div className="grid grid-cols-2 gap-2 mt-3">
@@ -598,6 +604,8 @@ const ChangePassword = () => {
           </div>
         </div>
       </div>
+
+      <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
     </div>
   );
 };
