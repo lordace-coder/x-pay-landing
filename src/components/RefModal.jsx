@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Users, X, DollarSign, Share2 } from "lucide-react";
 import { useDashboardContext } from "../context/DashboardContext";
+import { BASEURL } from "../utils/utils";
+import { useAuth } from "../context/AuthContext";
 
 const ReferralModal = ({ isOpen, onClose }) => {
   // Default fallback data if none provided
-
-  const { getDashboardData, setDashboardData } = useDashboardContext();
-
+  const { authFetch } = useAuth();
+  const [data, setdata] = useState([]);
   const copyReferralLink = () => {
     const referralLink = "https://invest.yoursite.com/ref/user123";
     navigator.clipboard.writeText(referralLink);
@@ -19,7 +20,20 @@ const ReferralModal = ({ isOpen, onClose }) => {
       currency: "USD",
     }).format(amount);
   };
-  const data = getDashboardData("referralData") || [];
+
+  useEffect(() => {
+    const getReferralData = async () => {
+      try {
+        const response = await authFetch(`${BASEURL}/auth/my-referrals`); // Replace with your API endpoint
+        const result = await response.json();
+        console.log(result);
+        setdata(result);
+      } catch (error) {
+        console.error("Error fetching referral data:", error);
+      }
+    };
+    getReferralData();
+  }, []);
 
   if (!isOpen) return null;
 
@@ -50,11 +64,8 @@ const ReferralModal = ({ isOpen, onClose }) => {
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
           {data.length > 0 ? (
             <>
-           
-
               {/* Referrals List */}
               <div className="space-y-3 sm:space-y-4">
-               
                 <div className="space-y-2 sm:space-y-3 max-h-64 sm:max-h-80 overflow-y-auto">
                   {data.map((referral) => (
                     <div

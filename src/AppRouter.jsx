@@ -19,6 +19,8 @@ import ForgotPasswordPage from "./pages/ForgotPassword";
 import WithdrawalHistory from "./pages/WithdrawalHistory";
 import EmergencyWithdrawal from "./pages/emergency-withdrawal";
 import Xpay_Batches from "./pages/Xpay_Batches";
+import EmailVerification from "./components/EmailVerification";
+import PhoneVerification from "./components/PhoneVerification";
 
 export default function AppRouter() {
   return (
@@ -84,6 +86,22 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <EmergencyWithdrawal />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/email-verify"
+              element={
+                <PrivateRoute>
+                  <EmailVerification />
+                </PrivateRoute>
+              }
+            />{" "}
+            <Route
+              path="/phone-verify"
+              element={
+                <PrivateRoute>
+                  <PhoneVerification />
                 </PrivateRoute>
               }
             />{" "}

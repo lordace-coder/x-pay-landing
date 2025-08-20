@@ -1,12 +1,46 @@
-# React + Vite
+# X-Pay Investment Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based investment platform with video monetization features.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User authentication (email/phone verification)
+- Investment batch management
+- Video ad viewing system
+- Referral program 
+- Withdrawal system with different modes
+- Admin dashboard
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Frontend: React 19, Vite, Tailwind CSS
+- State Management: React Context
+- Routing: React Router 7
+- UI Components: Lucide React
+- Animation: GSAP, AOS
+- Form Handling: React Hook Form
+
+## Quick Start
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Configure environment variables (create `.env` file)
+4. Run dev server: `npm run dev`
+
+## Detailed Documentation
+
+- [Setup Guide](docs/SETUP.md)
+- [Theme Management](docs/THEMES.md) 
+- [API Reference](docs/API.md)
+- [Usage Examples](docs/USAGE.md)
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── context/        # Application state contexts
+├── pages/          # Route-level components
+├── services/       # API service layers
+├── utils/          # Utility functions
+└── assets/         # Static assets
