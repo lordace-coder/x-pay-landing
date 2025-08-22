@@ -1,7 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Eye, EyeOff, ArrowRight, Mail, Lock } from "lucide-react"
+import { Eye, EyeOff, ArrowRight, Mail, Lock, Phone } from "lucide-react"
+import PhoneInput from "react-phone-number-input"
+import { getCountryCallingCode } from "react-phone-number-input"
+import en from "react-phone-number-input/locale/en.json"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import logo from "../assets/img/xpay-logo.png"
 import { useAuth } from "../context/AuthContext"
@@ -24,7 +27,7 @@ export default function Login() {
       const res = await login(email, password)
       console.log(res)
       if (!res) {
-        toast("Invalid email or password", { type: "error" })
+        toast("Network Error ", { type: "error" })
       } else {
         navigate("/dashboard")
       }

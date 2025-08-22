@@ -21,6 +21,7 @@ import EmergencyWithdrawal from "./pages/emergency-withdrawal";
 import Xpay_Batches from "./pages/Xpay_Batches";
 import EmailVerification from "./components/EmailVerification";
 import PhoneVerification from "./components/PhoneVerification";
+import VerificationHub from "./pages/VerificationHub";
 
 export default function AppRouter() {
   return (
@@ -72,7 +73,7 @@ export default function AppRouter() {
                   <WithdrawalPage />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
               path="/withdrawal-history"
               element={
@@ -80,7 +81,7 @@ export default function AppRouter() {
                   <WithdrawalHistory />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
               path="/emergency-withdrawal"
               element={
@@ -88,23 +89,23 @@ export default function AppRouter() {
                   <EmergencyWithdrawal />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
-              path="/email-verify"
+              path="/verify-email"
               element={
                 <PrivateRoute>
                   <EmailVerification />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
-              path="/phone-verify"
+              path="/verify-phone"
               element={
                 <PrivateRoute>
                   <PhoneVerification />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
               path="/batches"
               element={
@@ -112,12 +113,21 @@ export default function AppRouter() {
                   <Xpay_Batches />
                 </PrivateRoute>
               }
-            />{" "}
+            />
             <Route
               path="/ads"
               element={
                 <PrivateRoute>
                   <UploadAds />
+                </PrivateRoute>
+              }
+            />
+            {/* Verification Hub Route - Standalone page for authenticated users */}
+            <Route
+              path="/verify-hub"
+              element={
+                <PrivateRoute>
+                  <VerificationHub />
                 </PrivateRoute>
               }
             />

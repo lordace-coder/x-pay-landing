@@ -9,7 +9,11 @@ import {
   User,
   CheckCircle,
   Phone,
+  Globe,
 } from "lucide-react";
+import PhoneInput from "react-phone-number-input";
+import en from "react-phone-number-input/locale/en.json";
+import { getCountryCallingCode } from "react-phone-number-input";
 import logo from "../assets/img/xpay-logo.png";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BASEURL } from "../utils/utils";
@@ -18,7 +22,6 @@ import { toast } from "react-toastify";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +55,9 @@ export default function Signup() {
       if (res.ok) {
         const completed = await login(email, password);
         if (completed) {
-          navigate("/dashboard");
+          // navigate("/dashboard");
+          toast.success("Account created! Please verify your email/phone.");
+          navigate("/verify-hub", { state: { email, phoneNumber } });
         } else {
           navigate("/login");
         }
@@ -69,23 +74,40 @@ export default function Signup() {
     }
   };
 
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const isFormValid =
-    fullName &&
-    email &&
-    password &&
-    confirmPassword &&
-    phoneNumber &&
-    agreeToTerms &&
-    password === confirmPassword;
+    fullName?.length > 2 &&
+    validateEmail(email) &&
+    password?.length >= 8 &&
+    phoneNumber?.length >= 10 &&
+    agreeToTerms;
+
+  const [errors, setErrors] = useState({
+    fullName: false,
+    email: false,
+    password: false,
+    phoneNumber: false,
+    terms: false,
+  });
+
+  const handleBlur = (field) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: true,
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8 px-4">
       <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100/50">
-          <div className="text-center mb-8">
-            <div className="mb-4">
+        <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100/50">
+          <div className="text-center ">
+            <div className="mb-2">
               <img
                 src={logo || "/placeholder.svg"}
                 alt="X-Pay Logo"
@@ -114,8 +136,13 @@ export default function Signup() {
                   placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                  className={`block w-full pl-10 pr-10 py-2.5 bg-gray-50 border ${
+                    errors.fullName && !fullName
+                      ? "border-red-300"
+                      : "border-gray-200"
+                  } rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200`}
                   required
+                  onBlur={() => handleBlur("fullName")}
                 />
                 {fullName && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -138,8 +165,13 @@ export default function Signup() {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                  className={`block w-full pl-10 pr-10 py-2.5 bg-gray-50 border ${
+                    errors.email && (!email || !validateEmail(email))
+                      ? "border-red-300"
+                      : "border-gray-200"
+                  } rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200`}
                   required
+                  onBlur={() => handleBlur("email")}
                 />
                 {email && email.includes("@") && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -186,8 +218,13 @@ export default function Signup() {
                   placeholder="Create a strong password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                  className={`block w-full pl-10 pr-12 py-2.5 bg-gray-50 border ${
+                    errors.password && (!password || password.length < 8)
+                      ? "border-red-300"
+                      : "border-gray-200"
+                  } rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200`}
                   required
+                  onBlur={() => handleBlur("password")}
                 />
                 <button
                   type="button"
@@ -223,76 +260,43 @@ export default function Signup() {
               )}
             </div>
 
-            <div className="group">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-4 w-4 text-gray-400 group-focus-within:text-gray-600" />
-                </div>
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
                 <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm your password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-16 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-8 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200 focus:outline-none"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-                {confirmPassword && password && (
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    {password === confirmPassword ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <div className="w-4 h-4 rounded-full border-2 border-red-300"></div>
-                    )}
-                  </div>
-                )}
-              </div>
-              {confirmPassword && password !== confirmPassword && (
-                <p className="mt-1 text-xs text-red-600">
-                  Passwords do not match
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
-              <label className="flex items-start cursor-pointer group">
-                <input
+                  id="terms"
                   type="checkbox"
                   checked={agreeToTerms}
                   onChange={(e) => setAgreeToTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded border-2 border-gray-300 text-gray-900 focus:ring-gray-900 focus:ring-2 transition-colors"
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                   required
                 />
-                <span className="ml-3 text-sm leading-relaxed text-gray-600 group-hover:text-gray-900 transition-colors">
+              </div>
+              <div className="ml-3 text-sm">
+                <label
+                  htmlFor="terms"
+                  className="font-medium text-gray-700 cursor-pointer"
+                >
                   I agree to the{" "}
                   <Link
-                    href="/terms"
-                    className="text-gray-900 hover:text-gray-700 underline underline-offset-2 font-medium"
+                    to="/terms"
+                    className="text-primary-600 hover:text-primary-500 hover:underline"
                   >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
                   <Link
-                    href="/policies"
-                    className="text-gray-900 hover:text-gray-700 underline underline-offset-2 font-medium"
+                    to="/policies"
+                    className="text-primary-600 hover:text-primary-500 hover:underline"
                   >
                     Privacy Policy
                   </Link>
-                </span>
-              </label>
+                </label>
+                {!agreeToTerms && (
+                  <p className="mt-1 text-xs text-red-600">
+                    You must agree to the terms to continue
+                  </p>
+                )}
+              </div>
             </div>
 
             <button

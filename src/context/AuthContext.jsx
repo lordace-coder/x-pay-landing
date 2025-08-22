@@ -12,21 +12,24 @@ export const useAuth = () => useContext(AuthContext);
 const API_BASE = BASEURL;
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null); // stores logged-in user info
+  const [accessToken, setAccessToken] = useState(null); // JWT token from backend
+  const [loading, setLoading] = useState(true); // controls app-wide loading state
+  const [verificationStatus, setVerificationStatus] = useState(null); // NEW: track email/phone verification
   const navigate = useNavigate();
 
+  // On app load → check if token exists in localStorage
   useEffect(() => {
     const token = localStorage.getItem("xpay_token");
     if (token) {
       setAccessToken(token);
-      fetchProfile(token);
+      fetchProfile(token); // also triggers verification fetch
     } else {
       setLoading(false);
     }
   }, []);
 
+  // Fetch user profile + verification status
   const fetchProfile = async (token) => {
     try {
       const res = await fetch(`${API_BASE}/auth/current-user`, {
@@ -43,9 +46,11 @@ const AuthProvider = ({ children }) => {
 
       const data = await res.json();
       setUser(data);
+
+      // After getting profile, fetch verification state
+      fetchVerificationStatus(token);
     } catch (err) {
       if (err.name === "TypeError") {
-        // TypeError is usually thrown by fetch when there’s a network issue
         console.error(
           "Connectivity issue or server not reachable:",
           err.message
@@ -59,6 +64,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // 🔑 Login → store token → fetch profile + verification
   const login = async (email, password) => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
@@ -69,12 +75,15 @@ const AuthProvider = ({ children }) => {
         },
         body: new URLSearchParams({ username: email, password }),
       });
+
       if (!res.ok) throw new Error("Login failed");
       const data = await res.json();
       const token = data.access_token;
+
       localStorage.setItem("xpay_token", token);
       setAccessToken(token);
-      await fetchProfile(token);
+
+      await fetchProfile(token); // also updates verification
       return true;
     } catch (err) {
       console.error("Login error:", err);
@@ -82,13 +91,16 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Logout → clear everything
   const logout = () => {
     localStorage.removeItem("xpay_token");
     setAccessToken(null);
     setUser(null);
+    setVerificationStatus(null); // clear verification state too
     navigate("/login");
   };
 
+  // Fetch helper that auto-attaches token
   const authFetch = async (url, options = {}) => {
     const token = accessToken;
     const headers = {
@@ -109,6 +121,52 @@ const AuthProvider = ({ children }) => {
     return res;
   };
 
+  // ✅ NEW: Check email/phone verification status
+  const fetchVerificationStatus = async (token = accessToken) => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/verification-status`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setVerificationStatus(data); // backend should return { email_verified: bool, phone_verified: bool }
+      }
+    } catch (err) {
+      console.error("Failed to fetch verification status:", err.message);
+    }
+  };
+
+  // ✅ NEW: Verify Email
+  const verifyEmail = async (email, otp) => {
+    const res = await authFetch(`${API_BASE}/auth/verify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
+    if (res.ok) fetchVerificationStatus();
+    return res.ok;
+  };
+
+  // ✅ NEW: Verify Phone
+  const verifyPhone = async (phone_number, otp) => {
+    const res = await authFetch(`${API_BASE}/auth/verify-phone`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone_number, otp }),
+    });
+    if (res.ok) fetchVerificationStatus();
+    return res.ok;
+  };
+
+  // ✅ NEW: Skip Phone Verification
+  const skipPhoneVerification = async () => {
+    const res = await authFetch(`${API_BASE}/auth/skip-phone-verification`, {
+      method: "POST",
+    });
+    if (res.ok) fetchVerificationStatus();
+    return res.ok;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -118,6 +176,11 @@ const AuthProvider = ({ children }) => {
         login,
         logout,
         authFetch,
+        verificationStatus, // 👈 expose verification state
+        fetchVerificationStatus,
+        verifyEmail,
+        verifyPhone,
+        skipPhoneVerification,
       }}
     >
       {loading && <LoadingComponent />}

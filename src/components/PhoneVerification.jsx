@@ -1,241 +1,221 @@
-
-import { useState, useEffect } from "react"
-import { ArrowLeft, Clock, CheckCircle, Send, Globe, Phone } from "lucide-react"
-import { toast } from "react-toastify"
-import { getCountries, getCountryCallingCode } from "react-phone-number-input"
-import en from "react-phone-number-input/locale/en.json"
+import { useState, useEffect } from "react";
+import {
+  Clock,
+  CheckCircle,
+  Send,
+  Phone,
+  ArrowLeft,
+  Edit3,
+  Shield,
+} from "lucide-react";
+import { toast } from "react-toastify";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { BASEURL } from "../utils/utils";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PhoneVerification = () => {
-  const [selectedCountry, setSelectedCountry] = useState("US")
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [otp, setOtp] = useState(["", "", "", "", "", ""])
-  const [isOtpSent, setIsOtpSent] = useState(false)
-  const [isChangingPhone, setIsChangingPhone] = useState(false)
-  const [newPhoneNumber, setNewPhoneNumber] = useState("")
-  const [newSelectedCountry, setNewSelectedCountry] = useState("US")
-  const [isLoading, setIsLoading] = useState(false)
-  const [canResend, setCanResend] = useState(true)
-  const [countdown, setCountdown] = useState(0)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isNewDropdownOpen, setIsNewDropdownOpen] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isChangingPhone, setIsChangingPhone] = useState(false);
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [canResend, setCanResend] = useState(true);
+  const [countdown, setCountdown] = useState(0);
+  const [isVerified, setIsVerified] = useState(false);
 
-  const countries = getCountries()
-  const popularCountries = ["US", "GB", "CA", "AU", "DE", "FR", "IN", "CN", "JP", "BR"]
+  const location = useLocation();
+  const navigate = useNavigate();
+  const initialPhone = location.state?.phoneNumber || "";
 
   useEffect(() => {
-    const lastSent = localStorage.getItem("phoneOtpSentTime")
+    if (initialPhone) setPhoneNumber(initialPhone);
+  }, [initialPhone]);
+
+  // Countdown restore
+  useEffect(() => {
+    const lastSent = localStorage.getItem("phoneOtpSentTime");
     if (lastSent) {
-      const timeDiff = Date.now() - Number.parseInt(lastSent)
-      const remainingTime = 60000 - timeDiff
+      const timeDiff = Date.now() - Number.parseInt(lastSent);
+      const remainingTime = 60000 - timeDiff;
       if (remainingTime > 0) {
-        setCanResend(false)
-        setCountdown(Math.ceil(remainingTime / 1000))
+        setCanResend(false);
+        setCountdown(Math.ceil(remainingTime / 1000));
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
     } else if (countdown === 0 && !canResend) {
-      setCanResend(true)
+      setCanResend(true);
     }
-  }, [countdown, canResend])
-
-  const formatPhoneNumber = (value, countryCode) => {
-    const phoneNumber = value.replace(/[^\d]/g, "")
-    if (countryCode === "US" || countryCode === "CA") {
-      const phoneNumberLength = phoneNumber.length
-      if (phoneNumberLength < 4) return phoneNumber
-      if (phoneNumberLength < 7) {
-        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`
-      }
-      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`
-    }
-    return phoneNumber
-  }
-
-  const handlePhoneChange = (e) => {
-    const formattedPhone = formatPhoneNumber(e.target.value, selectedCountry)
-    setPhoneNumber(formattedPhone)
-  }
-
-  const handleNewPhoneChange = (e) => {
-    const formattedPhone = formatPhoneNumber(e.target.value, newSelectedCountry)
-    setNewPhoneNumber(formattedPhone)
-  }
+  }, [countdown, canResend]);
 
   const handleOtpChange = (index, value) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
-      const newOtp = [...otp]
-      newOtp[index] = value
-      setOtp(newOtp)
-
-      // Auto-focus next input
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
       if (value && index < 5) {
-        const nextInput = document.getElementById(`phone-otp-${index + 1}`)
-        nextInput?.focus()
+        document.getElementById(`phone-otp-${index + 1}`)?.focus();
       }
     }
-  }
+  };
 
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`phone-otp-${index - 1}`)
-      prevInput?.focus()
+      document.getElementById(`phone-otp-${index - 1}`)?.focus();
     }
-  }
+  };
 
-  const handleOtpPaste = (e) => {
-    e.preventDefault()
-    const pastedData = e.clipboardData.getData("text").replace(/[^\d]/g, "").slice(0, 6)
-    const newOtp = [...otp]
-    for (let i = 0; i < pastedData.length; i++) {
-      newOtp[i] = pastedData[i]
-    }
-    setOtp(newOtp)
-  }
-
+  // Send OTP
   const handleSendOtp = async () => {
-    const cleanPhone = phoneNumber.replace(/[^\d]/g, "")
-    if (!phoneNumber || cleanPhone.length < 7) {
-      toast.error("Please enter a valid phone number")
-      return
+    if (!phoneNumber || phoneNumber.length < 7) {
+      toast.error("Enter a valid phone number");
+      return;
     }
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
+      });
+      if (res.ok) {
+        toast.success("OTP sent to your phone!");
+        localStorage.setItem("phoneOtpSentTime", Date.now().toString());
+        setCanResend(false);
+        setCountdown(60);
+        setIsOtpSent(true);
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Error: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    localStorage.setItem("phoneOtpSentTime", Date.now().toString())
-    setCanResend(false)
-    setCountdown(60)
-    setIsOtpSent(true)
-    setIsLoading(false)
-    toast.success("OTP sent to your phone!")
-  }
-
+  // Verify OTP
   const handleVerifyPhone = async () => {
-    const otpCode = otp.join("")
+    const otpCode = otp.join("");
     if (otpCode.length !== 6) {
-      toast.error("Please enter complete 6-digit code")
-      return
+      toast.error("Enter complete 6-digit code");
+      return;
     }
-
-    setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    if (otpCode === "123456") {
-      toast.success("Phone number verified successfully!")
-    } else {
-      toast.error("Invalid verification code")
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASEURL}/auth/verify-phone`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
+      });
+      if (res.ok) {
+        setIsVerified(true);
+        toast.success("Phone verified successfully!");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Invalid code");
+      }
+    } catch (error) {
+      toast.error("Error verifying: " + error.message);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false)
-  }
+  };
 
+  // Change phone
   const handleChangePhone = async () => {
-    const cleanPhone = newPhoneNumber.replace(/[^\d]/g, "")
-    if (!newPhoneNumber || cleanPhone.length < 7) {
-      toast.error("Please enter a valid phone number")
-      return
+    if (!newPhoneNumber || newPhoneNumber.length < 7) {
+      toast.error("Enter a valid phone number");
+      return;
     }
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASEURL}/auth/change-phone`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          old_phone: `+${phoneNumber}`,
+          new_phone: `+${newPhoneNumber}`,
+        }),
+      });
+      if (res.ok) {
+        toast.success("Phone updated! OTP resent.");
+        setPhoneNumber(newPhoneNumber);
+        setNewPhoneNumber("");
+        setIsChangingPhone(false);
+        setOtp(["", "", "", "", "", ""]);
+        await handleSendOtp();
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to change phone");
+      }
+    } catch (error) {
+      toast.error("Error: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setPhoneNumber(newPhoneNumber)
-    setSelectedCountry(newSelectedCountry)
-    setNewPhoneNumber("")
-    setIsChangingPhone(false)
-    setOtp(["", "", "", "", "", ""])
-    setIsOtpSent(true)
-    await handleSendOtp()
-  }
-
-  const CountrySelector = ({ selectedCountry, onCountryChange, isOpen, setIsOpen }) => {
-    const sortedCountries = [
-      ...popularCountries.filter((country) => countries.includes(country)),
-      ...countries.filter((country) => !popularCountries.includes(country)),
-    ]
-
+  // Success state
+  if (isVerified) {
     return (
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-3 bg-input border border-border rounded-l-lg hover:bg-input/80 transition-colors focus:ring-2 focus:ring-ring focus:border-transparent"
-        >
-          <Globe className="w-4 h-4 text-muted-foreground" />
-          <span className="font-mono text-sm">+{getCountryCallingCode(selectedCountry)}</span>
-          <span className="text-xs opacity-60">{selectedCountry}</span>
-        </button>
-
-        {isOpen && (
-          <div className="absolute top-full left-0 z-50 w-80 mt-1 bg-card border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-            <div className="p-2 border-b border-border">
-              <p className="text-xs text-muted-foreground font-medium">Popular Countries</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+        <div className="relative w-full max-w-md">
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+              <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            {popularCountries
-              .filter((country) => countries.includes(country))
-              .map((country) => (
-                <button
-                  key={country}
-                  onClick={() => {
-                    onCountryChange(country)
-                    setIsOpen(false)
-                  }}
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent text-left transition-colors"
-                >
-                  <span className="font-mono text-sm min-w-[3rem]">+{getCountryCallingCode(country)}</span>
-                  <span className="text-sm">{en[country] || country}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">{country}</span>
-                </button>
-              ))}
-            <div className="p-2 border-t border-border">
-              <p className="text-xs text-muted-foreground font-medium">All Countries</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Phone Verified!
+            </h1>
+            <p className="text-gray-600 mb-4">
+              Your phone number has been successfully verified.
+            </p>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Redirecting to dashboard...</span>
             </div>
-            {countries
-              .filter((country) => !popularCountries.includes(country))
-              .map((country) => (
-                <button
-                  key={country}
-                  onClick={() => {
-                    onCountryChange(country)
-                    setIsOpen(false)
-                  }}
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent text-left transition-colors"
-                >
-                  <span className="font-mono text-sm min-w-[3rem]">+{getCountryCallingCode(country)}</span>
-                  <span className="text-sm">{en[country] || country}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">{country}</span>
-                </button>
-              ))}
           </div>
-        )}
+        </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-card to-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border p-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+
+      <div className="relative w-full max-w-md">
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary/10 rounded-full mb-4">
-              <Phone className="w-8 h-8 text-secondary" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <Phone className="w-8 h-8 text-gray-700" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">Verify Your Phone</h1>
-            <p className="text-muted-foreground">
-              {isOtpSent ? "Enter the code sent to" : "Enter your phone number to receive a verification code"}
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
+              Verify Your Phone
+            </h1>
+            <p className="text-gray-600 text-base">
+              {isOtpSent
+                ? "We've sent a 6-digit code to"
+                : "Enter your phone number to receive a verification code"}
             </p>
             {isOtpSent && (
-              <p className="text-secondary font-semibold mt-2">
-                +{getCountryCallingCode(selectedCountry)} {phoneNumber}
-              </p>
+              <div className="mt-3 p-3 bg-gray-50 rounded-lg border">
+                <p className="text-gray-900 font-semibold">+{phoneNumber}</p>
+              </div>
             )}
           </div>
 
@@ -243,102 +223,133 @@ const PhoneVerification = () => {
             <>
               {!isOtpSent ? (
                 <>
-                  {/* Phone Number Input with Country Selector */}
+                  {/* Phone Number Input */}
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
-                    <div className="flex relative">
-                      <CountrySelector
-                        selectedCountry={selectedCountry}
-                        onCountryChange={setSelectedCountry}
-                        isOpen={isDropdownOpen}
-                        setIsOpen={setIsDropdownOpen}
-                      />
-                      <input
-                        type="tel"
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <PhoneInput
+                        country={"us"}
                         value={phoneNumber}
-                        onChange={handlePhoneChange}
-                        placeholder="Enter your phone number"
-                        className="flex-1 px-4 py-3 bg-input border border-l-0 border-border rounded-r-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                        onChange={setPhoneNumber}
+                        enableSearch={true}
+                        searchPlaceholder="Search countries..."
+                        inputProps={{
+                          className:
+                            "w-full h-12 text-base px-14 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200",
+                        }}
+                        buttonStyle={{
+                          height: "48px",
+                          backgroundColor: "#f9fafb",
+                          border: "1px solid #e5e7eb",
+                          borderRight: "none",
+                          borderTopLeftRadius: "8px",
+                          borderBottomLeftRadius: "8px",
+                        }}
+                        dropdownStyle={{
+                          backgroundColor: "white",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "8px",
+                          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                        }}
                       />
                     </div>
                   </div>
 
-                  {/* Send OTP Button */}
                   <button
                     onClick={handleSendOtp}
                     disabled={isLoading || !phoneNumber}
-                    className="w-full bg-secondary hover:bg-secondary/90 disabled:bg-muted disabled:text-muted-foreground text-secondary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
+                      phoneNumber && !isLoading
+                        ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
                   >
                     {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-secondary-foreground/30 border-t-secondary-foreground rounded-full animate-spin" />
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Sending...</span>
+                      </div>
                     ) : (
-                      <Send className="w-5 h-5" />
+                      <>
+                        <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" />
+                        Send Verification Code
+                      </>
                     )}
-                    {isLoading ? "Sending..." : "Send Verification Code"}
                   </button>
                 </>
               ) : (
                 <>
-                  {/* OTP Input */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-foreground mb-3">Enter verification code</label>
-                    <div className="flex gap-2 justify-center" onPaste={handleOtpPaste}>
-                      {otp.map((digit, index) => (
-                        <input
-                          key={index}
-                          id={`phone-otp-${index}`}
-                          type="text"
-                          value={digit}
-                          onChange={(e) => handleOtpChange(index, e.target.value)}
-                          onKeyDown={(e) => handleKeyDown(index, e)}
-                          className="w-12 h-12 text-center text-lg font-semibold bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                          maxLength={1}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Verify Button */}
-                  <button
-                    onClick={handleVerifyPhone}
-                    disabled={isLoading || otp.join("").length !== 6}
-                    className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
-                  >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    ) : (
-                      <CheckCircle className="w-5 h-5" />
-                    )}
-                    {isLoading ? "Verifying..." : "Verify Phone Number"}
-                  </button>
-
-                  {/* Resend OTP */}
-                  <div className="text-center mb-4">
+                  {/* Action buttons */}
+                  <div className="flex justify-between items-center mb-6">
+                    <button
+                      onClick={() => setIsChangingPhone(true)}
+                      className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group"
+                    >
+                      <Edit3 className="w-3 h-3 group-hover:scale-110 transition-transform" />
+                      Change Phone
+                    </button>
                     {canResend ? (
                       <button
                         onClick={handleSendOtp}
                         disabled={isLoading}
-                        className="text-secondary hover:text-secondary/80 font-medium transition-colors"
+                        className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group disabled:opacity-50"
                       >
+                        <Send className="w-3 h-3 group-hover:scale-110 transition-transform" />
                         Resend Code
                       </button>
                     ) : (
-                      <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Clock className="w-3 h-3" />
                         <span>Resend in {countdown}s</span>
                       </div>
                     )}
                   </div>
 
-                  {/* Change Phone */}
-                  <div className="text-center">
-                    <button
-                      onClick={() => setIsChangingPhone(true)}
-                      className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                    >
-                      Change Phone Number
-                    </button>
+                  {/* OTP Input */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Enter verification code
+                    </label>
+                    <div className="flex gap-2 justify-center">
+                      {otp.map((digit, i) => (
+                        <input
+                          key={i}
+                          id={`phone-otp-${i}`}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handleOtpChange(i, e.target.value)}
+                          onKeyDown={(e) => handleKeyDown(i, e)}
+                          className="w-12 h-12 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                        />
+                      ))}
+                    </div>
                   </div>
+
+                  <button
+                    onClick={handleVerifyPhone}
+                    disabled={isLoading || otp.join("").length !== 6}
+                    className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
+                      otp.join("").length === 6 && !isLoading
+                        ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Verifying...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <Shield className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+                        Verify Phone Number
+                      </>
+                    )}
+                  </button>
                 </>
               )}
             </>
@@ -346,20 +357,34 @@ const PhoneVerification = () => {
             <>
               {/* Change Phone Form */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-foreground mb-2">New Phone Number</label>
-                <div className="flex relative">
-                  <CountrySelector
-                    selectedCountry={newSelectedCountry}
-                    onCountryChange={setNewSelectedCountry}
-                    isOpen={isNewDropdownOpen}
-                    setIsOpen={setIsNewDropdownOpen}
-                  />
-                  <input
-                    type="tel"
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  New Phone Number
+                </label>
+                <div className="relative">
+                  <PhoneInput
+                    country={"us"}
                     value={newPhoneNumber}
-                    onChange={handleNewPhoneChange}
-                    placeholder="Enter new phone number"
-                    className="flex-1 px-4 py-3 bg-input border border-l-0 border-border rounded-r-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                    onChange={setNewPhoneNumber}
+                    enableSearch={true}
+                    searchPlaceholder="Search countries..."
+                    inputProps={{
+                      className:
+                        "w-full h-12 text-base px-14 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200",
+                    }}
+                    buttonStyle={{
+                      height: "48px",
+                      backgroundColor: "#f9fafb",
+                      border: "1px solid #e5e7eb",
+                      borderRight: "none",
+                      borderTopLeftRadius: "8px",
+                      borderBottomLeftRadius: "8px",
+                    }}
+                    dropdownStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    }}
                   />
                 </div>
               </div>
@@ -367,25 +392,49 @@ const PhoneVerification = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsChangingPhone(false)}
-                  className="flex-1 bg-muted hover:bg-muted/80 text-muted-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back
                 </button>
                 <button
                   onClick={handleChangePhone}
-                  disabled={isLoading}
-                  className="flex-1 bg-secondary hover:bg-secondary/90 disabled:bg-muted disabled:text-muted-foreground text-secondary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200"
+                  disabled={isLoading || !newPhoneNumber}
+                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                    newPhoneNumber && !isLoading
+                      ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
+                  {isLoading ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                   {isLoading ? "Updating..." : "Update Phone"}
                 </button>
               </div>
             </>
           )}
+
+          {/* Back to Dashboard */}
+          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="text-gray-600 hover:text-gray-800 transition-colors text-sm flex items-center justify-center gap-1 mx-auto group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
+              Back to Dashboard
+            </button>
+          </div>
         </div>
+
+        {/* Decorative elements */}
+        <div className="absolute -top-6 -left-6 w-12 h-12 bg-gray-100 rounded-full blur-lg opacity-60"></div>
+        <div className="absolute -bottom-6 -right-6 w-12 h-12 bg-gray-200 rounded-full blur-lg opacity-50"></div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PhoneVerification
+export default PhoneVerification;

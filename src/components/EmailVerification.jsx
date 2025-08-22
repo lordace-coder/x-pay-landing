@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Mail, ArrowLeft, Clock, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
+import { BASEURL } from "../utils/utils";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EmailVerification = () => {
-  const [email, setEmail] = useState("user@example.com");
+  const { verifyEmail, fetchVerificationStatus } = useAuth();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState("");
@@ -11,6 +14,11 @@ const EmailVerification = () => {
   const [canResend, setCanResend] = useState(true);
   const [countdown, setCountdown] = useState(0);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || "your@email.com"; // passed from signup
+
+  // restore OTP resend timer
   useEffect(() => {
     const lastSent = localStorage.getItem("emailOtpSentTime");
     if (lastSent) {
@@ -37,8 +45,6 @@ const EmailVerification = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
-      // Auto-focus next input
       if (value && index < 5) {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
@@ -53,59 +59,90 @@ const EmailVerification = () => {
     }
   };
 
+  // Send OTP
   const handleSendOtp = async () => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    localStorage.setItem("emailOtpSentTime", Date.now().toString());
-    setCanResend(false);
-    setCountdown(60);
-    setIsLoading(false);
-    toast.success("OTP sent successfully!");
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASEURL}/auth/send-email-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        localStorage.setItem("emailOtpSentTime", Date.now().toString());
+        setCanResend(false);
+        setCountdown(60);
+        toast.success("OTP sent successfully!");
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Error sending OTP: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  // Verify Email
   const handleVerifyEmail = async () => {
     const otpCode = otp.join("");
     if (otpCode.length !== 6) {
       toast.error("Please enter complete 6-digit code");
       return;
     }
-
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    if (otpCode === "123456") {
-      toast.success("Email verified successfully!");
-    } else {
-      toast.error("Invalid verification code");
+    try {
+      setIsLoading(true);
+      const success = await verifyEmail(email, otpCode);
+      if (success) {
+        toast.success("Email verified successfully!");
+        await fetchVerificationStatus();
+        navigate("/dashboard");
+      } else {
+        toast.error("Invalid or expired verification code");
+      }
+    } catch (err) {
+      toast.error("Verification failed: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
+  // Change Email & resend OTP
   const handleChangeEmail = async () => {
     if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
       toast.error("Please enter a valid email address");
       return;
     }
-
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    setEmail(newEmail);
-    setNewEmail("");
-    setIsChangingEmail(false);
-    setOtp(["", "", "", "", "", ""]);
-    await handleSendOtp();
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASEURL}/auth/change-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ old_email: email, new_email: newEmail }),
+      });
+      if (res.ok) {
+        toast.success("Email updated! OTP resent.");
+        setOtp(["", "", "", "", "", ""]);
+        setIsChangingEmail(false);
+        localStorage.setItem("emailOtpSentTime", Date.now().toString());
+        setCanResend(false);
+        setCountdown(60);
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to change email");
+      }
+    } catch (error) {
+      toast.error("Error changing email: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border p-8">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
               <Mail className="w-8 h-8 text-primary" />
@@ -121,7 +158,6 @@ const EmailVerification = () => {
 
           {!isChangingEmail ? (
             <>
-              {/* OTP Input */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-foreground mb-3">
                   Enter verification code
@@ -142,7 +178,6 @@ const EmailVerification = () => {
                 </div>
               </div>
 
-              {/* Verify Button */}
               <button
                 onClick={handleVerifyEmail}
                 disabled={isLoading || otp.join("").length !== 6}
@@ -156,7 +191,6 @@ const EmailVerification = () => {
                 {isLoading ? "Verifying..." : "Verify Email"}
               </button>
 
-              {/* Resend OTP */}
               <div className="text-center mb-4">
                 {canResend ? (
                   <button
@@ -174,7 +208,6 @@ const EmailVerification = () => {
                 )}
               </div>
 
-              {/* Change Email */}
               <div className="text-center">
                 <button
                   onClick={() => setIsChangingEmail(true)}
@@ -186,7 +219,6 @@ const EmailVerification = () => {
             </>
           ) : (
             <>
-              {/* Change Email Form */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-foreground mb-2">
                   New Email Address
