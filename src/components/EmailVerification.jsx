@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Mail, ArrowLeft, Clock, CheckCircle } from "lucide-react";
+import {
+  Mail,
+  ArrowLeft,
+  Clock,
+  CheckCircle,
+  Send,
+  Edit3,
+  Shield,
+  RefreshCw,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
@@ -13,12 +22,13 @@ const EmailVerification = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(true);
   const [countdown, setCountdown] = useState(0);
+  const [isVerified, setIsVerified] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || "your@email.com"; // passed from signup
+  const email = location.state?.email || "your@email.com";
 
-  // restore OTP resend timer
+  // Restore OTP resend timer
   useEffect(() => {
     const lastSent = localStorage.getItem("emailOtpSentTime");
     if (lastSent) {
@@ -63,22 +73,22 @@ const EmailVerification = () => {
   const handleSendOtp = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${BASEURL}/auth/send-email-otp`, {
+      const res = await fetch(`${BASEURL}/auth/send-email-otp${email}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
       });
       if (res.ok) {
         localStorage.setItem("emailOtpSentTime", Date.now().toString());
         setCanResend(false);
         setCountdown(60);
-        toast.success("OTP sent successfully!");
+        toast.success("Verification code sent successfully!");
       } else {
         const err = await res.json();
-        toast.error(err.detail || "Failed to send OTP");
+        toast.error(err.detail || "Failed to send verification code");
       }
     } catch (error) {
-      toast.error("Error sending OTP: " + error.message);
+      console.error("Send OTP error:", error);
+      toast.error("Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -95,14 +105,18 @@ const EmailVerification = () => {
       setIsLoading(true);
       const success = await verifyEmail(email, otpCode);
       if (success) {
+        setIsVerified(true);
         toast.success("Email verified successfully!");
         await fetchVerificationStatus();
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
       } else {
         toast.error("Invalid or expired verification code");
       }
     } catch (err) {
-      toast.error("Verification failed: " + err.message);
+      console.error("Verify email error:", err);
+      toast.error("Verification failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -122,8 +136,9 @@ const EmailVerification = () => {
         body: JSON.stringify({ old_email: email, new_email: newEmail }),
       });
       if (res.ok) {
-        toast.success("Email updated! OTP resent.");
+        toast.success("Email updated! Verification code sent.");
         setOtp(["", "", "", "", "", ""]);
+        setNewEmail("");
         setIsChangingEmail(false);
         localStorage.setItem("emailOtpSentTime", Date.now().toString());
         setCanResend(false);
@@ -133,33 +148,92 @@ const EmailVerification = () => {
         toast.error(err.detail || "Failed to change email");
       }
     } catch (error) {
-      toast.error("Error changing email: " + error.message);
+      console.error("Change email error:", error);
+      toast.error("Network error. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-card to-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border border-border p-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-              <Mail className="w-8 h-8 text-primary" />
+  // Success state
+  if (isVerified) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+        <div className="relative w-full max-w-md">
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
+              <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Email Verified!
+            </h1>
+            <p className="text-gray-600 mb-4">
+              Your email has been successfully verified.
+            </p>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Redirecting to dashboard...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+
+      <div className="relative w-full max-w-md">
+        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <Mail className="w-8 h-8 text-gray-700" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
               Verify Your Email
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-600 text-base">
               We've sent a 6-digit code to
             </p>
-            <p className="text-primary font-semibold">{email}</p>
+            <div className=" bg-gray-50 rounded-lg border">
+              <p className="text-gray-900 font-semibold">{email}</p>
+            </div>
           </div>
 
           {!isChangingEmail ? (
             <>
+              {/* Action buttons */}
+              <div className="flex justify-between items-center mb-6">
+                <button
+                  onClick={() => setIsChangingEmail(true)}
+                  className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group"
+                >
+                  <Edit3 className="w-3 h-3 group-hover:scale-110 transition-transform" />
+                  Change Email
+                </button>
+                {canResend ? (
+                  <button
+                    onClick={handleSendOtp}
+                    disabled={isLoading}
+                    className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group disabled:opacity-50"
+                  >
+                    <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform duration-300" />
+                    Resend Code
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <Clock className="w-3 h-3" />
+                    <span>Resend in {countdown}s</span>
+                  </div>
+                )}
+              </div>
+
+              {/* OTP Input */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-foreground mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Enter verification code
                 </label>
                 <div className="flex gap-2 justify-center">
@@ -168,89 +242,127 @@ const EmailVerification = () => {
                       key={index}
                       id={`otp-${index}`}
                       type="text"
+                      inputMode="numeric"
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-12 h-12 text-center text-lg font-semibold bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                      className="w-12 h-12 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
                       maxLength={1}
                     />
                   ))}
                 </div>
               </div>
 
+              {/* Verify Button */}
               <button
                 onClick={handleVerifyEmail}
                 disabled={isLoading || otp.join("").length !== 6}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 mb-4"
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
+                  otp.join("").length === 6 && !isLoading
+                    ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
               >
                 {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Verifying...</span>
+                  </div>
                 ) : (
-                  <CheckCircle className="w-5 h-5" />
+                  <>
+                    <Shield className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+                    Verify Email
+                  </>
                 )}
-                {isLoading ? "Verifying..." : "Verify Email"}
               </button>
 
-              <div className="text-center mb-4">
-                {canResend ? (
-                  <button
-                    onClick={handleSendOtp}
-                    disabled={isLoading}
-                    className="text-secondary hover:text-secondary/80 font-medium transition-colors"
-                  >
-                    Resend Code
-                  </button>
-                ) : (
-                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>Resend in {countdown}s</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="text-center">
-                <button
-                  onClick={() => setIsChangingEmail(true)}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                >
-                  Change Email Address
-                </button>
+              {/* Help text */}
+              <div className="text-center mt-4">
+                <p className="text-xs text-gray-500">
+                  Didn't receive the code? Check your spam folder or try
+                  resending.
+                </p>
               </div>
             </>
           ) : (
             <>
+              {/* Change Email Form */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   New Email Address
                 </label>
-                <input
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="Enter new email address"
-                  className="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="Enter new email address"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                  />
+                  {newEmail && /\S+@\S+\.\S+/.test(newEmail) && (
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    </div>
+                  )}
+                </div>
+                {newEmail && !/\S+@\S+\.\S+/.test(newEmail) && (
+                  <p className="mt-1 text-xs text-red-600">
+                    Please enter a valid email address
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => setIsChangingEmail(false)}
-                  className="flex-1 bg-muted hover:bg-muted/80 text-muted-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  onClick={() => {
+                    setIsChangingEmail(false);
+                    setNewEmail("");
+                  }}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back
                 </button>
                 <button
                   onClick={handleChangeEmail}
-                  disabled={isLoading}
-                  className="flex-1 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-200"
+                  disabled={
+                    isLoading || !newEmail || !/\S+@\S+\.\S+/.test(newEmail)
+                  }
+                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                    newEmail && /\S+@\S+\.\S+/.test(newEmail) && !isLoading
+                      ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
+                  {isLoading ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
                   {isLoading ? "Updating..." : "Update Email"}
                 </button>
               </div>
             </>
           )}
+
+          {/* Back to Dashboard */}
+          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="text-gray-600 hover:text-gray-800 transition-colors text-sm flex items-center justify-center gap-1 mx-auto group"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
+              Back to Dashboard
+            </button>
+          </div>
         </div>
+
+        {/* Decorative elements */}
+        <div className="absolute -top-6 -left-6 w-12 h-12 bg-gray-100 rounded-full blur-lg opacity-60"></div>
+        <div className="absolute -bottom-6 -right-6 w-12 h-12 bg-gray-200 rounded-full blur-lg opacity-50"></div>
       </div>
     </div>
   );
