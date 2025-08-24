@@ -53,14 +53,20 @@ export default function Signup() {
         headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
-        const completed = await login(email, password);
-        if (completed) {
-          // navigate("/dashboard");
-          toast.success("Account created! Please verify your email/phone.");
-          navigate("/verify-hub", { state: { email, phoneNumber } });
-        } else {
-          navigate("/login");
-        }
+        // const completed = await login(email, password);
+
+        const data = await res.json();
+        toast.success(`${data.message}`);
+
+        console.log(data);
+
+        navigate(`/${data.next_step}`, { state: { email, phoneNumber } });
+        // if (completed) {
+        //   // navigate("/dashboard");
+
+        // } else {
+        //   navigate("/login");
+        // }
       } else {
         const err = await res.json();
         toast("An Error occured please try again. " + err.detail, {
@@ -101,11 +107,11 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8 px-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+    <div className="min-h-screen customebg flex items-center justify-center py-8 px-4">
+      <div className="absolute inset-0 "></div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100/50">
+        <div className="bg-white rounded-2xl p-4 shadow-2xl border border-gray-100/50">
           <div className="text-center ">
             <div className="mb-2">
               <img
@@ -197,6 +203,7 @@ export default function Signup() {
                   className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
                   required
                 />
+
                 {phoneNumber && phoneNumber.length >= 10 && (
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <CheckCircle className="h-4 w-4 text-green-500" />

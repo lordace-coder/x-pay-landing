@@ -665,9 +665,9 @@ export default function XPayDashboard() {
   const totals = calculateTotals();
 
   return (
-    <div className="min-h-screen bg-gray-50 lg:pl-16 text-[15px] sm:text-base">
+    <div className="min-h-screen main_img_bg lg:pl-16 text-[15px] sm:text-base">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 pt-4 sm:pt-6 sticky top-0 z-40">
+      <header className="trans_2 border-b border-gray-200 pt-4 sm:pt-6 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center h-auto sm:h-16 gap-2 sm:gap-0">
             <div className="flex items-center">
@@ -751,22 +751,19 @@ export default function XPayDashboard() {
               </button>
             </div>
             {/* </div> */}
-            {/* <p className="text-[11px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
+          {/* <p className="text-[11px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
               Share this link with friends and earn 5% commission on their
               investments.
               {navigator.share
                 ? " Use the share button to send via your preferred app."
                 : " Copy the link to share it manually."}
             </p>
-          {/* </div> */ }  
-
-
-
+          {/* </div> */}
         </div>
         {/* Investment Overview Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Total Investment */}
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
+          <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
             {batchLoading && (
               <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
                 <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
@@ -789,7 +786,7 @@ export default function XPayDashboard() {
           </div>
 
           {/* Total Interest Earned */}
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
+          <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
             {batchLoading && (
               <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
                 <RefreshCw className="h-4 w-4 animate-spin text-green-600" />
@@ -811,7 +808,7 @@ export default function XPayDashboard() {
           </div>
 
           {/* Today Earnings */}
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
+          <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
             {loading && (
               <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
                 <RefreshCw className="h-4 w-4 animate-spin text-purple-600" />
@@ -835,7 +832,7 @@ export default function XPayDashboard() {
           </div>
 
           {/* Videos Progress */}
-          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
+          <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 relative">
             {loading && (
               <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-2xl">
                 <RefreshCw className="h-4 w-4 animate-spin text-orange-600" />
@@ -857,7 +854,7 @@ export default function XPayDashboard() {
           </div>
         </div>
         {/* Investment Batches Section */}
-        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 mb-6 sm:mb-8">
+        <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900">
               Investment Batches
@@ -937,7 +934,7 @@ export default function XPayDashboard() {
             {/* Quick Actions */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <div className="trans_4 rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                   <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                   <h3 className="text-base sm:text-lg font-bold text-gray-900">
@@ -1031,7 +1028,7 @@ export default function XPayDashboard() {
       <WithdrawalModal />
       <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
 
-      <footer className="border-t border-gray-200 pt-6 sm:pt-8 pb-4 sm:pb-6 mt-8 sm:mt-12">
+      <footer className="border-t trans_5 border-gray-200 pt-6 sm:pt-8 pb-4 sm:pb-6 mt-8 sm:mt-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-lg flex items-center justify-center">

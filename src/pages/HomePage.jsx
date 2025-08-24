@@ -305,13 +305,13 @@ const Hero = function () {
           </div>
           <div className="col-lg-6">
             <div className="hero-img">
-              <img
+              {/* <img
                 className="img-card img-fluid"
                 src={CardExpenses}
                 alt="Image card"
                 data-aos="fade-down"
                 data-aos-delay="600"
-              />
+              /> */}
               <img
                 className="img-main img-fluid rounded-4"
                 src={HeroImg1Min}

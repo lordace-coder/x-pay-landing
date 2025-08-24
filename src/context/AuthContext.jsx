@@ -64,7 +64,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // 🔑 Login → store token → fetch profile + verification
   const login = async (email, password) => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
@@ -76,18 +75,22 @@ const AuthProvider = ({ children }) => {
         body: new URLSearchParams({ username: email, password }),
       });
 
-      if (!res.ok) throw new Error("Login failed");
       const data = await res.json();
-      const token = data.access_token;
 
+      if (!res.ok) {
+        return { success: false, message: data.detail || "Login failed" };
+      }
+
+      const token = data.access_token;
       localStorage.setItem("xpay_token", token);
       setAccessToken(token);
 
-      await fetchProfile(token); // also updates verification
-      return true;
+      await fetchProfile(token);
+
+      return { success: true, data };
     } catch (err) {
       console.error("Login error:", err);
-      return false;
+      return { success: false, message: "Network error. Please try again." };
     }
   };
 
@@ -143,6 +146,16 @@ const AuthProvider = ({ children }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, otp }),
     });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data.detail || "Invalid or expired verification code",
+      };
+    }
+
     if (res.ok) fetchVerificationStatus();
     return res.ok;
   };

@@ -105,7 +105,7 @@ const Navigation = () => {
       {/* Sidebar */}
       <div
         className={`
-        fixed inset-y-0 left-0 z-50 bg-white border-r border-gray-100 transform transition-all duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 trans_5 border-r border-gray-100 transform transition-all duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         ${sidebarCollapsed ? "w-16" : "w-64"}
         lg:translate-x-0
@@ -159,7 +159,10 @@ const Navigation = () => {
               sidebarCollapsed ? "justify-center" : "space-x-3"
             }`}
           >
-             <button className="mt-3 md:hidden w-full flex bg-gray-100  items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors">
+            <button
+              onClick={logout}
+              className="mt-3 md:hidden w-full flex bg-gray-100  items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+            >
               <LogOut onClick={logout} className="h-4 w-4 text-red-500" />
               {/* Sign out */}
             </button>
@@ -177,7 +180,10 @@ const Navigation = () => {
           </div>
 
           {!sidebarCollapsed && (
-            <button className="mt-3 w-full flex items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors">
+            <button
+              onClick={logout}
+              className="mt-3 w-full flex items-center px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+            >
               <LogOut onClick={logout} className="h-4 w-4 mr-3" />
               Sign out
             </button>

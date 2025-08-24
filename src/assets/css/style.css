@@ -8,15 +8,16 @@ Buy Pro
 :root,
 [data-bs-theme="light"] {
   --bs-body-bg: #ffffff;
+  /* --bs-body-bg: #ffffff; */
   --bs-body-color: #494b5b;
-  --bs-primary: #215c5c;
+  --bs-primary: #0a5688;
   --bs-primary-rgb: 33, 92, 92;
-  --bs-primary-hover: #144b4b;
+  --bs-primary-hover: #142a4b;
   --bs-primary-hover-rgb: 20, 75, 75;
   --bs-secondary: #cce8c9;
   --bs-secondary-rgb: 204, 232, 201;
   --bs-heading-color: #16181b;
-  --inverse-color: #494b5b;
+  --inverse-color: #0754c7;
   --inverse-color-rgb: 73, 75, 91;
   --bs-link-color: var(--bs-primary);
   --nav-bg: #ffffff;
@@ -33,6 +34,17 @@ body {
   font: 1rem/1.7 "Inter", sans-serif;
   background-color: var(--bs-body-bg);
   color: var(--bs-body-color);
+
+  background: linear-gradient(
+      #ffffff,
+      #ffffffcb,
+      #ffffff81,
+      rgba(255, 255, 255, 0.089)
+    ),
+    url(../images/Water.jpg);
+
+  background-attachment: fixed;
+  background-size: cover;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

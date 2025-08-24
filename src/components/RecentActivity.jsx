@@ -70,7 +70,7 @@ export default function RecentActivity() {
   }, [activeTab, authFetch]);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+    <div className="trans_4 rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <BarChart3 className="w-6 h-6 text-gray-600" />

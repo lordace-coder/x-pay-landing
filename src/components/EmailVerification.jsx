@@ -15,8 +15,10 @@ import { BASEURL } from "../utils/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const EmailVerification = () => {
-  const { verifyEmail, fetchVerificationStatus } = useAuth();
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const { user, verifyEmail, fetchVerificationStatus, verificationStatus } =
+    useAuth();
+
+  const [otp, setOtp] = useState(new Array(4).fill(""));
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +28,7 @@ const EmailVerification = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || "your@email.com";
+  const email = location.state?.email || user.email || "Error in geting email ";
 
   // Restore OTP resend timer
   useEffect(() => {
@@ -41,11 +43,22 @@ const EmailVerification = () => {
     }
   }, []);
 
+  // Auto-send OTP only if no valid count down
+  useEffect(() => {
+    const lastSent = localStorage.getItem("emailOtpSentTime");
+    const hasActiveCooldown =
+      lastSent && Date.now() - Number.parseInt(lastSent) < 60000;
+
+    if (email && !hasActiveCooldown) {
+      handleSendOtp();
+    }
+  }, [email]);
+
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (countdown === 0 && !canResend) {
+    } else if (countdown <= 0 && !canResend) {
       setCanResend(true);
     }
   }, [countdown, canResend]);
@@ -55,7 +68,7 @@ const EmailVerification = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      if (value && index < 5) {
+      if (value && index < otp.length - 1) {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
       }
@@ -73,18 +86,20 @@ const EmailVerification = () => {
   const handleSendOtp = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${BASEURL}/auth/send-email-otp${email}`, {
+      const res = await fetch(`${BASEURL}/auth/send-email-otp/${email}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
+
+      const data = await res.json();
+
       if (res.ok) {
         localStorage.setItem("emailOtpSentTime", Date.now().toString());
         setCanResend(false);
         setCountdown(60);
-        toast.success("Verification code sent successfully!");
+        toast.success(data.message);
       } else {
-        const err = await res.json();
-        toast.error(err.detail || "Failed to send verification code");
+        toast.error(data.detail || "Failed to send verification code");
       }
     } catch (error) {
       console.error("Send OTP error:", error);
@@ -97,22 +112,25 @@ const EmailVerification = () => {
   // Verify Email
   const handleVerifyEmail = async () => {
     const otpCode = otp.join("");
-    if (otpCode.length !== 6) {
-      toast.error("Please enter complete 6-digit code");
+    if (otpCode.length !== 4) {
+      toast.error("Please enter complete 4-digit code");
       return;
     }
     try {
       setIsLoading(true);
-      const success = await verifyEmail(email, otpCode);
+      const { success, message } = await verifyEmail(email, otpCode);
+
+      // console.log(message);
+
       if (success) {
         setIsVerified(true);
         toast.success("Email verified successfully!");
         await fetchVerificationStatus();
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/verify-phone");
         }, 2000);
       } else {
-        toast.error("Invalid or expired verification code");
+        toast.error(message);
       }
     } catch (err) {
       console.error("Verify email error:", err);
@@ -135,17 +153,19 @@ const EmailVerification = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ old_email: email, new_email: newEmail }),
       });
+
+      const data = await res.json();
+
       if (res.ok) {
-        toast.success("Email updated! Verification code sent.");
-        setOtp(["", "", "", "", "", ""]);
+        toast.success(data.message || data.detail);
+        setOtp(["", "", "", ""]);
         setNewEmail("");
         setIsChangingEmail(false);
         localStorage.setItem("emailOtpSentTime", Date.now().toString());
         setCanResend(false);
         setCountdown(60);
       } else {
-        const err = await res.json();
-        toast.error(err.detail || "Failed to change email");
+        toast.error(data.detail || "Failed to send verification code");
       }
     } catch (error) {
       console.error("Change email error:", error);
@@ -182,11 +202,11 @@ const EmailVerification = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+    <div className="min-h-screen customebg flex items-center justify-center p-4">
+      <div className="absolute inset-0 "></div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50">
+        <div className="bg-white rounded-2xl p-8  shadow-2xl border border-gray-100/50">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
@@ -196,7 +216,7 @@ const EmailVerification = () => {
               Verify Your Email
             </h1>
             <p className="text-gray-600 text-base">
-              We've sent a 6-digit code to
+              We've sent a 4-digit code to
             </p>
             <div className=" bg-gray-50 rounded-lg border">
               <p className="text-gray-900 font-semibold">{email}</p>
@@ -236,7 +256,7 @@ const EmailVerification = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   Enter verification code
                 </label>
-                <div className="flex gap-2 justify-center">
+                <div className="flex gap-4 justify-center">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
@@ -246,7 +266,7 @@ const EmailVerification = () => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-12 h-12 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                      className="w-15 h-15 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
                       maxLength={1}
                     />
                   ))}
@@ -256,9 +276,9 @@ const EmailVerification = () => {
               {/* Verify Button */}
               <button
                 onClick={handleVerifyEmail}
-                disabled={isLoading || otp.join("").length !== 6}
+                disabled={isLoading || otp.join("").length !== 4}
                 className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
-                  otp.join("").length === 6 && !isLoading
+                  otp.join("").length === 4 && !isLoading
                     ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}

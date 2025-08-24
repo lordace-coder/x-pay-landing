@@ -39,6 +39,32 @@ export default function AppRouter() {
                 </PrivateRoute>
               }
             />
+
+            <Route
+              path="/verify-hub"
+              element={
+                // <PrivateRoute>
+                <VerificationHub />
+                // {/* </PrivateRoute> */}
+              }
+            />
+
+            <Route
+              path="/verify_email"
+              element={
+                // <PrivateRoute>
+                <EmailVerification />
+                // </PrivateRoute>
+              }
+            />
+            <Route
+              path="/verify_phone"
+              element={
+                // <PrivateRoute>
+                <PhoneVerification />
+                // </PrivateRoute>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Signup />} />
             <Route path="/docs" element={<HowItWorksPage />} />
@@ -90,22 +116,7 @@ export default function AppRouter() {
                 </PrivateRoute>
               }
             />
-            <Route
-              path="/verify-email"
-              element={
-                <PrivateRoute>
-                  <EmailVerification />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/verify-phone"
-              element={
-                <PrivateRoute>
-                  <PhoneVerification />
-                </PrivateRoute>
-              }
-            />
+
             <Route
               path="/batches"
               element={
@@ -123,14 +134,14 @@ export default function AppRouter() {
               }
             />
             {/* Verification Hub Route - Standalone page for authenticated users */}
-            <Route
+            {/* <Route
               path="/verify-hub"
               element={
                 <PrivateRoute>
                   <VerificationHub />
                 </PrivateRoute>
               }
-            />
+            /> */}
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/policies" element={<PrivacyPolicy />} />
             <Route path="*" element={<NotFound />} />
