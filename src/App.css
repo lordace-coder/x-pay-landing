@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.customebg {
+/* .customebg {
   background-image: linear-gradient(
       #ffffff70,
       #ffffff69,
@@ -11,8 +11,8 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
-}
-.c {
+} */
+/* .c {
   background-image: linear-gradient(
       #ffffff70,
       #ffffff69,
@@ -23,7 +23,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
-}
+} */
 
 .trans_1 {
   background-color: #ffffff88;

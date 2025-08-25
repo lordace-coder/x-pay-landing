@@ -1,3 +1,4 @@
+// EmailVerification.jsx
 import { useState, useEffect } from "react";
 import {
   Mail,
@@ -15,8 +16,7 @@ import { BASEURL } from "../utils/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const EmailVerification = () => {
-  const { user, verifyEmail, fetchVerificationStatus, verificationStatus } =
-    useAuth();
+  const { user, verifyEmail, fetchVerificationStatus } = useAuth();
 
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [isChangingEmail, setIsChangingEmail] = useState(false);
@@ -28,7 +28,7 @@ const EmailVerification = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || user.email || "Error in geting email ";
+  const email = location.state?.email || user.email || "";
 
   // Restore OTP resend timer
   useEffect(() => {
@@ -43,7 +43,7 @@ const EmailVerification = () => {
     }
   }, []);
 
-  // Auto-send OTP only if no valid count down
+  // Auto-send OTP on mount if no cooldown
   useEffect(() => {
     const lastSent = localStorage.getItem("emailOtpSentTime");
     const hasActiveCooldown =
@@ -54,6 +54,7 @@ const EmailVerification = () => {
     }
   }, [email]);
 
+  // Countdown logic
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -62,6 +63,12 @@ const EmailVerification = () => {
       setCanResend(true);
     }
   }, [countdown, canResend]);
+
+  const startCooldown = () => {
+    localStorage.setItem("emailOtpSentTime", Date.now().toString());
+    setCanResend(false);
+    setCountdown(60);
+  };
 
   const handleOtpChange = (index, value) => {
     if (value.length <= 1 && /^\d*$/.test(value)) {
@@ -82,7 +89,7 @@ const EmailVerification = () => {
     }
   };
 
-  // Send OTP
+  // Send OTP (first time)
   const handleSendOtp = async () => {
     try {
       setIsLoading(true);
@@ -93,19 +100,39 @@ const EmailVerification = () => {
 
       const data = await res.json();
 
-      // console.log(data);
-      
-
       if (res.ok) {
-        localStorage.setItem("emailOtpSentTime", Date.now().toString());
-        setCanResend(false);
-        setCountdown(60);
-        toast.success(data.message);
+        startCooldown();
+        toast.success(data.message || "Verification code sent");
       } else {
         toast.error(data.detail || "Failed to send verification code");
       }
     } catch (error) {
       console.error("Send OTP error:", error);
+      toast.error("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${BASEURL}/auth/resend-email-otp/${encodeURIComponent(email)}`,
+        { method: "GET" }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        startCooldown();
+        toast.success(data.message || "Verification code resent");
+      } else {
+        toast.error(data.detail || "Failed to resend verification code");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
       toast.error("Network error. Please try again.");
     } finally {
       setIsLoading(false);
@@ -122,8 +149,6 @@ const EmailVerification = () => {
     try {
       setIsLoading(true);
       const { success, message } = await verifyEmail(email, otpCode);
-
-      // console.log(message);
 
       if (success) {
         setIsVerified(true);
@@ -143,7 +168,7 @@ const EmailVerification = () => {
     }
   };
 
-  // Change Email & resend OTP
+  // Change Email (and auto-send OTP to new email)
   const handleChangeEmail = async () => {
     if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
       toast.error("Please enter a valid email address");
@@ -160,15 +185,13 @@ const EmailVerification = () => {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success(data.message || data.detail);
+        toast.success(data.message || "Email updated. OTP sent.");
         setOtp(["", "", "", ""]);
         setNewEmail("");
         setIsChangingEmail(false);
-        localStorage.setItem("emailOtpSentTime", Date.now().toString());
-        setCanResend(false);
-        setCountdown(60);
+        startCooldown();
       } else {
-        toast.error(data.detail || "Failed to send verification code");
+        toast.error(data.detail || "Failed to update email");
       }
     } catch (error) {
       console.error("Change email error:", error);
@@ -239,7 +262,7 @@ const EmailVerification = () => {
                 </button>
                 {canResend ? (
                   <button
-                    onClick={handleSendOtp}
+                    onClick={handleResendOtp}
                     disabled={isLoading}
                     className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group disabled:opacity-50"
                   >

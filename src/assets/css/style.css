@@ -30,25 +30,6 @@ Buy Pro
   --nav-inverse-alt: #ffffff;
 }
 
-body {
-  font: 1rem/1.7 "Inter", sans-serif;
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-
-  background: linear-gradient(
-      #ffffff,
-      #ffffffcb,
-      #ffffff81,
-      rgba(255, 255, 255, 0.089)
-    ),
-    url(../images/Water.jpg);
-
-  background-attachment: fixed;
-  background-size: cover;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .site-wrap {
   position: relative;
 }

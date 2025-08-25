@@ -63,7 +63,27 @@
     <link rel="stylesheet" href="src/assets/css/style.css" />
     <!-- End Theme Style-->
   </head>
-  <body>
+  <style>
+    .body {
+      font: 1rem/1.7 "Inter", sans-serif;
+      background-color: var(--bs-body-bg);
+      color: var(--bs-body-color);
+
+      background: linear-gradient(
+          #ffffff,
+          #ffffffcb,
+          #ffffff81,
+          rgba(255, 255, 255, 0.089)
+        ),
+        url(./src/assets/images/Water.jpg);
+
+      background-attachment: fixed;
+      background-size: cover;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+  <body class="body">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
