@@ -9,7 +9,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/img/xpay-logo.png";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
-import imgbg from "./../assets/images/Water.jpg";
+// import imgbg from "./../assets/images/Water.jpg";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,15 +33,15 @@ export default function Login() {
 
       const user = res.data;
 
-      toast.success("Login successful!");
+      // toast.success("Login successful!");
 
-      if (!user.fully_verified) {
-        if (!user.email_verified) {
+      if (!user.verification_status.fully_verified) {
+        if (!user.verification_status.email_verified) {
           navigate("/verify_email", { state: { email } });
           return;
         }
 
-        if (!user.phone_verified) {
+        if (!user.verification_status.phone_verified) {
           navigate("/verify_phone", { state: { email } });
           return;
         }

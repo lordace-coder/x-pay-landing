@@ -93,6 +93,9 @@ const EmailVerification = () => {
 
       const data = await res.json();
 
+      // console.log(data);
+      
+
       if (res.ok) {
         localStorage.setItem("emailOtpSentTime", Date.now().toString());
         setCanResend(false);

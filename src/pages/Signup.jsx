@@ -52,6 +52,7 @@ export default function Signup() {
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" },
       });
+
       if (res.ok) {
         // const completed = await login(email, password);
 
