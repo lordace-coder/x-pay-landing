@@ -1,0 +1,210 @@
+/* theme.css
+   Converted Tailwind theme tokens -> plain CSS utilities
+   Drop this file into your project and import it (e.g. index.css or App.css).
+   It provides color/token variables and utility classes that map to the Tailwind tokens
+   in your config so you can replace Tailwind tokens with these class names.
+*/
+
+/* ---------- Root tokens ---------- */
+:root {
+  --radius: 1rem;
+
+  --bg-deep: #001f33;
+  --bg-deep-50: #002b50;
+  --bg-deep-100: #003366;
+  --blue-deep: #003366;
+  --blue-primary: #1e40af;
+  --blue-highlight: #3b82f6;
+  --text-on-dark: #f9fafb;
+  --muted-on-dark: #cbd5e1;     
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Background Utilities ---------- */
+.bg-deep {
+  background-color: var(--bg-deep) !important;
+}
+.bg-deep-50 {
+  background-color: var(--bg-deep-50) !important;
+}
+.bg-deep-100 {
+  background-color: var(--bg-deep-100) !important;
+}
+.bg-blue-deep {
+  background-color: var(--blue-deep) !important;
+}
+
+/* deep vertical gradient used for main site background */
+.bg-gradient-deep {
+  background-image: linear-gradient(
+    to bottom,
+    var(--bg-deep),
+    var(--bg-deep-50),
+    var(--bg-deep-100)
+  ) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* ---------- Text Color Utilities ---------- */
+.text-blue-primary {
+  color: var(--blue-primary) !important;
+}
+.text-blue-highlight {
+  color: var(--blue-highlight) !important;
+}
+.text-blue-deep {
+  color: var(--blue-deep) !important;
+}
+.text-on-dark {
+  color: var(--text-on-dark) !important;
+}
+.text-muted-on-dark {
+  color: var(--muted-on-dark) !important;
+}
+/* frequently-used tailwind fallback */
+.text-gray-200 {
+  color: #e5e7eb !important;
+}
+
+/* ---------- Glass / Card Utilities ---------- */
+.glass-bg {
+  background-color: var(--glass-bg) !important;
+}
+.glass-border {
+  border: 1px solid var(--glass-border) !important;
+}
+.backdrop-blur-glass {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Combined card utility for quick use */
+.card-glass {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- Button Utilities ---------- */
+.btn-primary {
+  display: inline-block;
+  background-image: linear-gradient(
+    to right,
+    var(--blue-primary),
+    var(--blue-deep)
+  );
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(30, 64, 175, 0.12);
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    background-image 0.18s ease;
+  text-decoration: none;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  transform: scale(1.03);
+  box-shadow: 0 14px 28px rgba(59, 130, 246, 0.18);
+  background-image: linear-gradient(
+    to right,
+    var(--blue-highlight),
+    var(--blue-primary)
+  );
+  outline: none;
+}
+
+/* Secondary style: solid deep blue */
+.btn-secondary {
+  display: inline-block;
+  background-color: var(--blue-deep);
+  color: #fff;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--blue-primary);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* ---------- Headings / Gradient Text ---------- */
+.heading-gradient {
+  background-image: linear-gradient(
+    90deg,
+    var(--blue-highlight),
+    var(--blue-primary)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+/* ---------- Borders / Misc ---------- */
+.border-blue-deep {
+  border-color: var(--blue-deep) !important;
+}
+
+.focus-ring-blue {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+  border-radius: 0.5rem;
+}
+
+/* ---------- Border Radius Utilities ---------- */
+.rounded-lg {
+  border-radius: var(--radius) !important;
+}
+.rounded-md {
+  border-radius: calc(var(--radius) - 0.125rem) !important;
+}
+.rounded-sm {
+  border-radius: calc(var(--radius) - 0.25rem) !important;
+}
+
+/* ---------- Accessibility helpers ---------- */
+/* Text contrast helper for dark backgrounds */
+.text-on-dark-strong {
+  color: var(--text-on-dark) !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* small utility to use glass style for sections with hover shadow */
+.section-glass-hover {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+}
+.section-glass-hover:hover {
+  box-shadow: 0 20px 50px rgba(3, 37, 65, 0.45);
+  transform: translateY(-4px);
+}
+
+/* ---------- Notes / Usage ----------
+ - Replace Tailwind tokens with the matching utility:
+   * bg-[#001F33]  -> .bg-deep
+   * bg-[#003366]  -> .bg-blue-deep
+   * bg-gradient-deep -> .bg-gradient-deep
+   * bg-white/10 glass -> .glass-bg + .glass-border + .backdrop-blur-glass
+   * text-blue-600 -> .text-blue-primary
+   * text-blue-500 -> .text-blue-highlight
+   * text-gray-200 -> .text-gray-200
+   * Use .btn-primary for primary CTAs and .btn-secondary for secondary CTAs
+ - If you need variants (hover/focus) on other elements, copy the respective :hover/:focus rules above.
+ - Import this CSS after any base CSS so it takes precedence, or keep the !important modifiers where necessary.
+*/
