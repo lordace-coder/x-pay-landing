@@ -124,6 +124,9 @@ const ChangePassword = () => {
     }));
   }, [user, getDashboardData]);
 
+  console.log(user);
+  
+
   const getStrengthColor = (strength) => {
     if (strength <= 2) return "from-red-400 to-red-600";
     if (strength <= 3) return "from-yellow-400 to-yellow-600";
@@ -209,7 +212,7 @@ const ChangePassword = () => {
     setShowRef(true);
   };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <div className="py-4 sm:py-8 px-3 sm:px-4 lg:px-6">
         <div className="w-full max-w-5xl mx-auto space-y-6 lg:space-y-8">
           {/* Header Section */}
@@ -230,7 +233,7 @@ const ChangePassword = () => {
           {/* Main Content - Centered Layout */}
           <div className="max-w-4xl mx-auto space-y-6 lg:space-y-8">
             {/* User Profile Card */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div className="trans_5  rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
               <div className="p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-8">
                   {/* Avatar */}
@@ -259,7 +262,6 @@ const ChangePassword = () => {
                           {userInfo.email}
                         </p>
                       </div>
-
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">

@@ -88,8 +88,8 @@ const ForgotPasswordPage = () => {
     try {
       const res = await fetch(BASEURL + "/auth/confirm-otp", {
         method: "POST",
-        headers:{
-            "Content-Type":"application/json"
+        headers: {
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
@@ -149,8 +149,8 @@ const ForgotPasswordPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen  flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white p-4 shadow-lg rounded">
         {/* Step Indicator */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center space-x-4">

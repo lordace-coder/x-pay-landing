@@ -190,7 +190,7 @@ function Xpay_Batches() {
 
   // --- UI ---
   return (
-    <div className="min-h-screen bg-gray-50 lg:pl-16">
+    <div className="min-h-screen  lg:pl-16">
       <header className="bg-white border-b border-gray-200 pt-6 sticky top-0 z-40 mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -210,7 +210,7 @@ function Xpay_Batches() {
         </div>
       </header>
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+        <div className="trans_5  rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
           {batchLoading ? (
             <div className="flex items-center justify-center py-12">
               <RefreshCw className="h-6 w-6 animate-spin text-gray-400" />

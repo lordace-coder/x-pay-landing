@@ -167,7 +167,7 @@ export const CreateBatch = () => {
   return (
     <>
       <section
-        className="relative py-8 md:py-16 lg:py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen overflow-hidden"
+        className="relative py-8 md:py-16 lg:py-20 min-h-screen overflow-hidden"
         id="create-batch"
       >
         {/* Animated background elements */}
@@ -630,7 +630,7 @@ export const CreateBatch = () => {
                       {address == null ? "loading..." : address}
                     </code>
                     <button
-                      onClick={() => copy(WALLET_BOOK[paymentMethod].address)}
+                      onClick={() => copy(address)}
                       className="inline-flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors font-medium whitespace-nowrap"
                     >
                       <Copy className="w-4 h-4" /> Copy

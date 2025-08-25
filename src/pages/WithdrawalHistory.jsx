@@ -127,7 +127,7 @@ export default function WithdrawalHistory() {
     const StatusIcon = statusConfig.icon;
     
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6 hover:shadow-md transition-shadow">
+      <div className=" rounded-xl border border-gray-200 p-4 md:p-6 hover:shadow-md transition-shadow">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
           <div className="flex items-center space-x-3">
@@ -289,7 +289,7 @@ export default function WithdrawalHistory() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 lg:pl-16">
+    <div className="min-h-screen  lg:pl-16">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 pt-6 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,7 +313,7 @@ export default function WithdrawalHistory() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl trans_4 rounded mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="text-center">

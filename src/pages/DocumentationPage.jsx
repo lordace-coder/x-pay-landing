@@ -78,7 +78,7 @@ const features = [
 
 export default function CorporateXPayPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen trans_1">
       {/* Header Section */}
       <div className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-8">

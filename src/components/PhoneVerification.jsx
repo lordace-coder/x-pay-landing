@@ -194,8 +194,8 @@ const PhoneVerification = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100"></div>
+    <div className="min-h-screen  flex items-center justify-center p-4">
+      <div className="absolute inset-0 "></div>
 
       <div className="relative w-full max-w-md">
         <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100/50">

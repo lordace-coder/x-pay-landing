@@ -355,7 +355,7 @@ export default function EmergencyWithdrawal() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 lg:pl-16">
+    <div className="min-h-screen  lg:pl-16">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 pt-4 pb-2 sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8">

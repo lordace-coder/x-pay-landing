@@ -40,14 +40,14 @@ export default function AppRouter() {
               }
             />
 
-            <Route
+            {/* <Route
               path="/verify-hub"
               element={
                 // <PrivateRoute>
                 <VerificationHub />
-                // {/* </PrivateRoute> */}
+                // {/* </PrivateRoute> 
               }
-            />
+            /> */}
 
             <Route
               path="/verify_email"
