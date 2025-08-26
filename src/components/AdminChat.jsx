@@ -131,7 +131,6 @@ const AdminChatPopup = () => {
 
   const fetchMessages = async () => {
     const res = await (await authFetch(BASEURL + "/chats/")).json();
-    console.log(res);
 
     if (!res) return;
     setMessages(res);

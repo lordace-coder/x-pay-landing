@@ -83,12 +83,17 @@ const PhoneVerification = () => {
       return;
     }
     try {
+      const token = localStorage.getItem("xpay_token");
       setIsLoading(true);
-      const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
-      });
+    const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",   
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
+});
+
 
       const data = await res.json();
       console.log(data);
@@ -112,6 +117,9 @@ const PhoneVerification = () => {
 
   // Verify OTP
   const handleVerifyPhone = async () => {
+    const token = localStorage.getItem("xpay_token");
+    console.log(token);
+
     const otpCode = otp.join("");
     if (otpCode.length !== 6) {
       toast.error("Enter complete 6-digit code");
@@ -119,11 +127,14 @@ const PhoneVerification = () => {
     }
     try {
       setIsLoading(true);
-      const res = await fetch(`${BASEURL}/auth/verify-phone`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
-      });
+     const res = await fetch(`${BASEURL}/auth/verify-phone`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
+});
       if (res.ok) {
         setIsVerified(true);
         toast.success("Phone verified successfully!");
