@@ -132,7 +132,7 @@ const AuthProvider = ({ children }) => {
       });
       if (res.ok) {
         const data = await res.json();
-        setVerificationStatus(data); // backend should return { email_verified: bool, phone_verified: bool }
+        setVerificationStatus(data);
       }
     } catch (err) {
       console.error("Failed to fetch verification status:", err.message);

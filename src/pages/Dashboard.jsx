@@ -57,9 +57,32 @@ export default function XPayDashboard() {
   const [showRef, setShowRef] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const { user: userData, logout, authFetch } = useAuth();
+  const { user: userData, logout, authFetch, verificationStatus } = useAuth();
+
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!verificationStatus) return; // wait until it's fetched
+
+    if (verificationStatus.email_verified === false) {
+      toast.info("Please verify your email to continue.", { autoClose: 1500 });
+      setTimeout(() => {
+        navigate("/verify_email");
+      }, 2000);
+      return;
+    }
+
+    if (verificationStatus.phone_verified === false) {
+      toast.info("Please verify your phone number to continue.", {
+        autoClose: 1500,
+      });
+      setTimeout(() => {
+        navigate("/verify_phone");
+      }, 2000);
+      return;
+    }
+  }, [verificationStatus, navigate]);
 
   const refUrl = window.location.origin + "/register?ref=" + userData.id;
 
