@@ -61,7 +61,7 @@ export default function Signup() {
 
         console.log(data);
 
-        navigate(`/${data.next_step}`, { state: { email, phoneNumber } });
+        navigate(`/verify_email`, { state: { email, phoneNumber } });
       } else {
         const err = await res.json();
         toast("An Error occured please try again. " + err.detail, {

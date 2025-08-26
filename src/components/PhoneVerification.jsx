@@ -13,8 +13,11 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { BASEURL } from "../utils/utils";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PhoneVerification = () => {
+  // const { user, verifyEmail, fetchVerificationStatus } = useAuth();
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -45,6 +48,7 @@ const PhoneVerification = () => {
       }
     }
   }, []);
+  // console.log(user);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -85,6 +89,10 @@ const PhoneVerification = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
       });
+
+      const data = await res.json();
+      console.log(data);
+
       if (res.ok) {
         toast.success("OTP sent to your phone!");
         localStorage.setItem("phoneOtpSentTime", Date.now().toString());

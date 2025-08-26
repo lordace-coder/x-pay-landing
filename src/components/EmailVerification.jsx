@@ -148,14 +148,14 @@ const EmailVerification = () => {
     }
     try {
       setIsLoading(true);
-      const { success, message } = await verifyEmail(email, otpCode);
+      const { success, message, details } = await verifyEmail(email, otpCode);
 
-      if (success) {
+      if (message == "Email already verified" || "Email verified") {
         setIsVerified(true);
-        toast.success("Email verified successfully!");
+        toast.success(message || details);
         await fetchVerificationStatus();
         setTimeout(() => {
-          navigate("/verify-phone");
+          navigate("/verify_phone");
         }, 2000);
       } else {
         toast.error(message);
