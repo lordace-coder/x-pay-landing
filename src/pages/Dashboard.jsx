@@ -63,8 +63,9 @@ export default function XPayDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    
-    if (!verificationStatus) return;      
+    if (!verificationStatus) return;
+
+    console.log("Verification Status:", verificationStatus);
 
     if (verificationStatus.email_verified === false) {
       toast.info("Please verify your email to continue.", { autoClose: 1500 });

@@ -74,6 +74,7 @@ const PhoneVerification = () => {
   };
 
   // Send OTP
+  // Send OTP
   const handleSendOtp = async () => {
     if (!phoneNumber || phoneNumber.length < 4) {
       toast.error("Enter a valid phone number");
@@ -82,6 +83,7 @@ const PhoneVerification = () => {
     try {
       const token = localStorage.getItem("xpay_token");
       setIsLoading(true);
+
       const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
         method: "POST",
         headers: {
@@ -93,15 +95,13 @@ const PhoneVerification = () => {
 
       const data = await res.json();
 
-      // console.log(data);
-
       if (res.ok) {
         toast.success(
-          ` ${data.message}- ${data.masked_phone}` || "OTP sent to your phone!"
+          `${data.message} - ${data.masked_phone}` || "OTP sent to your phone!"
         );
         localStorage.setItem("phoneOtpSentTime", Date.now().toString());
         setCanResend(false);
-        setCountdown(60);
+        setCountdown(60); // start countdown
         setIsOtpSent(true);
       } else {
         toast.error(data.detail || "Failed to send OTP");
@@ -113,19 +113,18 @@ const PhoneVerification = () => {
     }
   };
 
+  // Resend OTP
   const handleResendOtp = async () => {
     try {
       setIsLoading(true);
       const token = localStorage.getItem("xpay_token");
 
-      // Ensure phone has leading +
-
       const res = await fetch(
-        `${BASEURL}/auth/resend-phone-otp/${encodeURIComponent(phoneNumber)}`,
+        `${BASEURL}/auth/resend-phone-otp/${`+${phoneNumber}`}`,
         {
           method: "POST", // docs confirm POST
           headers: {
-            Authorization: `Bearer ${token}`, // no Content-Type since no body
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -134,10 +133,10 @@ const PhoneVerification = () => {
       console.log("Resend response:", data);
 
       if (res.ok) {
-        setCountdown(60);
-        setCanResend(false);
-        localStorage.setItem("phoneOtpSentTime", Date.now().toString());
         toast.success(data.message || "Verification code resent");
+        localStorage.setItem("phoneOtpSentTime", Date.now().toString());
+        setCanResend(false);
+        setCountdown(60);
       } else {
         toast.error(data.detail || "Failed to resend verification code");
       }
@@ -152,12 +151,13 @@ const PhoneVerification = () => {
   // Verify OTP
   const handleVerifyPhone = async () => {
     const token = localStorage.getItem("xpay_token");
-
     const otpCode = otp.join("");
+
     if (otpCode.length !== 4) {
       toast.error("Enter complete 4-digit code");
       return;
     }
+
     try {
       setIsLoading(true);
       const res = await fetch(`${BASEURL}/auth/verify-phone`, {
@@ -166,25 +166,28 @@ const PhoneVerification = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
+        body: JSON.stringify({
+          otp: otpCode,
+          phone_number: `+${phoneNumber}`,
+        }),
       });
 
-      console.log(res);
+      const data = await res.json();
 
       if (res.ok) {
         setIsVerified(true);
         toast.success(
-          `${res.message}- ${resmasked_phone}` || "Phone verified successfully!"
+          `${data.message} - ${data.masked_phone}` ||
+            "Phone verified successfully!"
         );
         setTimeout(() => {
           navigate("/dashboard");
         }, 2000);
       } else {
-        const err = await res.json();
-        toast.error(err.detail || "Invalid code");
+        toast.error(data.detail || "Invalid code");
       }
     } catch (error) {
-      toast.error("Error verifying: " + error.detail);
+      toast.error("Error verifying: " + error.message);
     } finally {
       setIsLoading(false);
     }
