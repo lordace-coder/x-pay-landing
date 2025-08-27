@@ -16,10 +16,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const PhoneVerification = () => {
-  // const { user, verifyEmail, fetchVerificationStatus } = useAuth();
-
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isChangingPhone, setIsChangingPhone] = useState(false);
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
@@ -48,7 +46,6 @@ const PhoneVerification = () => {
       }
     }
   }, []);
-  // console.log(user);
 
   useEffect(() => {
     if (countdown > 0) {
@@ -78,35 +75,36 @@ const PhoneVerification = () => {
 
   // Send OTP
   const handleSendOtp = async () => {
-    if (!phoneNumber || phoneNumber.length < 7) {
+    if (!phoneNumber || phoneNumber.length < 4) {
       toast.error("Enter a valid phone number");
       return;
     }
     try {
       const token = localStorage.getItem("xpay_token");
       setIsLoading(true);
-    const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",   
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
-});
-
+      const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ phone_number: `+${phoneNumber}` }),
+      });
 
       const data = await res.json();
-      console.log(data);
+
+      // console.log(data);
 
       if (res.ok) {
-        toast.success("OTP sent to your phone!");
+        toast.success(
+          ` ${data.message}- ${data.masked_phone}` || "OTP sent to your phone!"
+        );
         localStorage.setItem("phoneOtpSentTime", Date.now().toString());
         setCanResend(false);
         setCountdown(60);
         setIsOtpSent(true);
       } else {
-        const err = await res.json();
-        toast.error(err.detail || "Failed to send OTP");
+        toast.error(data.detail || "Failed to send OTP");
       }
     } catch (error) {
       toast.error("Error: " + error.message);
@@ -115,29 +113,69 @@ const PhoneVerification = () => {
     }
   };
 
+  const handleResendOtp = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("xpay_token");
+
+      // Ensure phone has leading +
+
+      const res = await fetch(
+        `${BASEURL}/auth/resend-phone-otp/${encodeURIComponent(phoneNumber)}`,
+        {
+          method: "POST", // docs confirm POST
+          headers: {
+            Authorization: `Bearer ${token}`, // no Content-Type since no body
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log("Resend response:", data);
+
+      if (res.ok) {
+        setCountdown(60);
+        setCanResend(false);
+        localStorage.setItem("phoneOtpSentTime", Date.now().toString());
+        toast.success(data.message || "Verification code resent");
+      } else {
+        toast.error(data.detail || "Failed to resend verification code");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      toast.error("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Verify OTP
   const handleVerifyPhone = async () => {
     const token = localStorage.getItem("xpay_token");
-    console.log(token);
 
     const otpCode = otp.join("");
-    if (otpCode.length !== 6) {
-      toast.error("Enter complete 6-digit code");
+    if (otpCode.length !== 4) {
+      toast.error("Enter complete 4-digit code");
       return;
     }
     try {
       setIsLoading(true);
-     const res = await fetch(`${BASEURL}/auth/verify-phone`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
-});
+      const res = await fetch(`${BASEURL}/auth/verify-phone`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ otp: otpCode, phone_number: `+${phoneNumber}` }),
+      });
+
+      console.log(res);
+
       if (res.ok) {
         setIsVerified(true);
-        toast.success("Phone verified successfully!");
+        toast.success(
+          `${res.message}- ${resmasked_phone}` || "Phone verified successfully!"
+        );
         setTimeout(() => {
           navigate("/dashboard");
         }, 2000);
@@ -146,7 +184,7 @@ const PhoneVerification = () => {
         toast.error(err.detail || "Invalid code");
       }
     } catch (error) {
-      toast.error("Error verifying: " + error.message);
+      toast.error("Error verifying: " + error.detail);
     } finally {
       setIsLoading(false);
     }
@@ -173,7 +211,7 @@ const PhoneVerification = () => {
         setPhoneNumber(newPhoneNumber);
         setNewPhoneNumber("");
         setIsChangingPhone(false);
-        setOtp(["", "", "", "", "", ""]);
+        setOtp(["", "", "", ""]);
         await handleSendOtp();
       } else {
         const err = await res.json();
@@ -311,7 +349,7 @@ const PhoneVerification = () => {
                     </button>
                     {canResend ? (
                       <button
-                        onClick={handleSendOtp}
+                        onClick={handleResendOtp}
                         disabled={isLoading}
                         className="text-sm text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-1 group disabled:opacity-50"
                       >
@@ -331,7 +369,7 @@ const PhoneVerification = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                       Enter verification code
                     </label>
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-4 justify-center">
                       {otp.map((digit, i) => (
                         <input
                           key={i}
@@ -342,7 +380,7 @@ const PhoneVerification = () => {
                           value={digit}
                           onChange={(e) => handleOtpChange(i, e.target.value)}
                           onKeyDown={(e) => handleKeyDown(i, e)}
-                          className="w-12 h-12 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
+                          className="w-14 h-14 text-center text-lg font-semibold bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all duration-200"
                         />
                       ))}
                     </div>
@@ -350,9 +388,9 @@ const PhoneVerification = () => {
 
                   <button
                     onClick={handleVerifyPhone}
-                    disabled={isLoading || otp.join("").length !== 6}
+                    disabled={isLoading || otp.join("").length !== 4}
                     className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
-                      otp.join("").length === 6 && !isLoading
+                      otp.join("").length === 4 && !isLoading
                         ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
@@ -437,7 +475,7 @@ const PhoneVerification = () => {
           )}
 
           {/* Back to Dashboard */}
-          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+          {/* <div className="text-center mt-6 pt-4 border-t border-gray-200">
             <button
               onClick={() => navigate("/dashboard")}
               className="text-gray-600 hover:text-gray-800 transition-colors text-sm flex items-center justify-center gap-1 mx-auto group"
@@ -445,7 +483,7 @@ const PhoneVerification = () => {
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
               Back to Dashboard
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Decorative elements */}

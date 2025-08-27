@@ -24,7 +24,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       const res = await login(email, password);
-      console.log("Login response:", res);
+      // console.log("Login response:", res);
 
       if (!res.success) {
         toast.error(res.message);

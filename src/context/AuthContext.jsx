@@ -139,7 +139,6 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ NEW: Verify Email
   const verifyEmail = async (email, otp) => {
     const res = await authFetch(`${API_BASE}/auth/verify-email`, {
       method: "POST",
@@ -147,20 +146,21 @@ const AuthProvider = ({ children }) => {
       body: JSON.stringify({ email, otp }),
     });
 
-    const data = await res.json();
+    const data = await res.json(); 
+    //  console.log(data);
+     
+    // if (!res.ok) {
+    //   return {
+    //     // success: false,
+    //     message: data.detail || "Invalid or expired verification code",
+    //   };
+    // }
 
-    if (!res.ok) {
-      return {
-        success: false,
-        message: data.detail || "Invalid or expired verification code",
-      };
-    }
-
-    if (res.ok) fetchVerificationStatus();
-    return res.ok;
+     fetchVerificationStatus();
+    return data;
   };
 
-  // ✅ NEW: Verify Phone
+  // NEW: Verify Phone
   const verifyPhone = async (phone_number, otp) => {
     const res = await authFetch(`${API_BASE}/auth/verify-phone`, {
       method: "POST",
@@ -171,7 +171,7 @@ const AuthProvider = ({ children }) => {
     return res.ok;
   };
 
-  // ✅ NEW: Skip Phone Verification
+  //  NEW: Skip Phone Verification
   const skipPhoneVerification = async () => {
     const res = await authFetch(`${API_BASE}/auth/skip-phone-verification`, {
       method: "POST",

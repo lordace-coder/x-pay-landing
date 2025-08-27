@@ -704,9 +704,14 @@ export default function BatchWithdrawal() {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 Verify Your Identity
               </h2>
-              <p className="text-gray-600">
-                For security, we'll send a verification code to your email
-              </p>
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
+                <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+                <p className="text-sm text-blue-700">
+                  Note: For your security, a verification code has been sent to
+                  both your <span className="font-semibold">phone number</span>{" "}
+                  and <span className="font-semibold">email address</span>.
+                </p>
+              </div>
             </div>
 
             {selectedBatch && (

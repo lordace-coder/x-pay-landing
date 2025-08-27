@@ -148,18 +148,20 @@ const EmailVerification = () => {
     }
     try {
       setIsLoading(true);
-      const { success, message, details } = await verifyEmail(email, otpCode);
+      const res = await verifyEmail(email, otpCode);
 
-      if (message == "Email already verified" || "Email verified") {
-        setIsVerified(true);
-        toast.success(message || details);
-        await fetchVerificationStatus();
-        setTimeout(() => {
-          navigate("/verify_phone");
-        }, 2000);
-      } else {
-        toast.error(message);
-      }
+      console.log(res);
+
+      // if (message == "Email already verified" || message == "Email verified") {
+      //   setIsVerified(true);
+      //   toast.success(message || details);
+      //   await fetchVerificationStatus();
+      //   setTimeout(() => {
+      //     navigate("/verify_phone");
+      //   }, 2000);
+      // } else {
+      //   toast.error(message);
+      // }
     } catch (err) {
       console.error("Verify email error:", err);
       toast.error("Verification failed. Please try again.");
@@ -395,7 +397,7 @@ const EmailVerification = () => {
           )}
 
           {/* Back to Dashboard */}
-          <div className="text-center mt-6 pt-4 border-t border-gray-200">
+          {/* <div className="text-center mt-6 pt-4 border-t border-gray-200">
             <button
               onClick={() => navigate("/dashboard")}
               className="text-gray-600 hover:text-gray-800 transition-colors text-sm flex items-center justify-center gap-1 mx-auto group"
@@ -403,7 +405,7 @@ const EmailVerification = () => {
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
               Back to Dashboard
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Decorative elements */}
