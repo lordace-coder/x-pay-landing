@@ -125,7 +125,8 @@ const AuthProvider = ({ children }) => {
   };
 
   // ✅ NEW: Check email/phone verification status
-  const fetchVerificationStatus = async (token = accessToken) => {
+  const fetchVerificationStatus = async (token) => {
+    
     try {
       const res = await fetch(`${API_BASE}/auth/verification-status`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -133,6 +134,7 @@ const AuthProvider = ({ children }) => {
       if (res.ok) {
         const data = await res.json();
         setVerificationStatus(data);
+        return data;
       }
     } catch (err) {
       console.error("Failed to fetch verification status:", err.message);
@@ -146,9 +148,9 @@ const AuthProvider = ({ children }) => {
       body: JSON.stringify({ email, otp }),
     });
 
-    const data = await res.json(); 
+    const data = await res.json();
     //  console.log(data);
-     
+
     // if (!res.ok) {
     //   return {
     //     // success: false,
@@ -156,7 +158,7 @@ const AuthProvider = ({ children }) => {
     //   };
     // }
 
-     fetchVerificationStatus();
+    fetchVerificationStatus();
     return data;
   };
 

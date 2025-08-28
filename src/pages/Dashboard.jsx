@@ -57,16 +57,27 @@ export default function XPayDashboard() {
   const [showRef, setShowRef] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const { user: userData, logout, authFetch, verificationStatus } = useAuth();
+  const {
+    user: userData,
+    logout,
+    accessToken,
+    authFetch,
+    verificationStatus,
+    fetchVerificationStatus,
+  } = useAuth();
 
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!verificationStatus) return;
+    handleVerificationCheck();
+  }, [userData]);
 
-    console.log("Verification Status:", verificationStatus);
-
+  const handleVerificationCheck = async () => {
+    const verificationStatus = await fetchVerificationStatus(accessToken);
+    if (!verificationStatus) {
+      toast.error("COnnection error while checking if user is verified, ");
+    }
     if (verificationStatus.email_verified === false) {
       toast.info("Please verify your email to continue.", { autoClose: 1500 });
       setTimeout(() => {
@@ -84,8 +95,7 @@ export default function XPayDashboard() {
       }, 2000);
       return;
     }
-  }, [verificationStatus, navigate]);
-
+  };
   const refUrl = window.location.origin + "/register?ref=" + userData.id;
 
   // Enhanced copy functionality

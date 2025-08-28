@@ -30,29 +30,27 @@ const EmailVerification = () => {
   const location = useLocation();
   const email = location.state?.email || user.email || "";
 
-  // Restore OTP resend timer
+  // Combined effect: Check cooldown status and auto-send OTP if needed
   useEffect(() => {
     const lastSent = localStorage.getItem("emailOtpSentTime");
+    
     if (lastSent) {
       const timeDiff = Date.now() - Number.parseInt(lastSent);
       const remainingTime = 60000 - timeDiff;
+      
       if (remainingTime > 0) {
+        // There's an active cooldown, don't send OTP
         setCanResend(false);
         setCountdown(Math.ceil(remainingTime / 1000));
+      } else if (email) {
+        // Cooldown expired and we have email, send OTP
+        handleSendOtp();
       }
-    }
-  }, []);
-
-  // Auto-send OTP on mount if no cooldown
-  useEffect(() => {
-    const lastSent = localStorage.getItem("emailOtpSentTime");
-    const hasActiveCooldown =
-      lastSent && Date.now() - Number.parseInt(lastSent) < 60000;
-
-    if (email && !hasActiveCooldown) {
+    } else if (email) {
+      // No previous OTP sent, send one now
       handleSendOtp();
     }
-  }, [email]);
+  }, [email]); // Only depend on email
 
   // Countdown logic
   useEffect(() => {
@@ -116,27 +114,7 @@ const EmailVerification = () => {
 
   // Resend OTP
   const handleResendOtp = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(
-        `${BASEURL}/auth/resend-email-otp/${encodeURIComponent(email)}`,
-        { method: "GET" }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        startCooldown();
-        toast.success(data.message || "Verification code resent");
-      } else {
-        toast.error(data.detail || "Failed to resend verification code");
-      }
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      toast.error("Network error. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSendOtp();
   };
 
   // Verify Email
@@ -151,17 +129,9 @@ const EmailVerification = () => {
       const res = await verifyEmail(email, otpCode);
 
       console.log(res);
-
-      // if (message == "Email already verified" || message == "Email verified") {
-      //   setIsVerified(true);
-      //   toast.success(message || details);
-      //   await fetchVerificationStatus();
-      //   setTimeout(() => {
-      //     navigate("/verify_phone");
-      //   }, 2000);
-      // } else {
-      //   toast.error(message);
-      // }
+      if (res.next_step == "verify_phone") {
+        navigate("/verify_phone");
+      }
     } catch (err) {
       console.error("Verify email error:", err);
       toast.error("Verification failed. Please try again.");
@@ -322,6 +292,13 @@ const EmailVerification = () => {
                     Verify Email
                   </>
                 )}
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="w-full mt-4 py-2 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Login
               </button>
 
               {/* Help text */}
