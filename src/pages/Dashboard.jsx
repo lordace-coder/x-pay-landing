@@ -76,7 +76,7 @@ export default function XPayDashboard() {
   const handleVerificationCheck = async () => {
     const verificationStatus = await fetchVerificationStatus(accessToken);
     if (!verificationStatus) {
-      toast.error("COnnection error while checking if user is verified, ");
+      toast.error("Connection error while checking if user is verified, ");
     }
     if (verificationStatus.email_verified === false) {
       toast.info("Please verify your email to continue.", { autoClose: 1500 });
