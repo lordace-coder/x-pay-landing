@@ -16,6 +16,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const PhoneVerification = () => {
+  const { fetchVerificationStatus  } = useAuth();
+
+
+  
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState(false);
@@ -83,6 +87,8 @@ const PhoneVerification = () => {
     try {
       const token = localStorage.getItem("xpay_token");
       setIsLoading(true);
+
+      await fetchVerificationStatus();
 
       const res = await fetch(`${BASEURL}/auth/send-phone-otp`, {
         method: "POST",
@@ -338,6 +344,14 @@ const PhoneVerification = () => {
                       </>
                     )}
                   </button>
+
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="w-full mt-4 py-2 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Login
+                  </button>
                 </>
               ) : (
                 <>
@@ -410,6 +424,16 @@ const PhoneVerification = () => {
                       </>
                     )}
                   </button>
+
+
+
+                   <button
+                onClick={() => navigate("/login")}
+                className="w-full mt-4 py-2 px-4 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold flex items-center justify-center gap-2 transition-all duration-200"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Login
+              </button>
                 </>
               )}
             </>

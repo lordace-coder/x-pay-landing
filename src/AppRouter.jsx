@@ -52,17 +52,17 @@ export default function AppRouter() {
             <Route
               path="/verify_email"
               element={
-                // <PrivateRoute>
+                <PrivateRoute>
                 <EmailVerification />
-                // </PrivateRoute>
+                 </PrivateRoute>
               }
             />
             <Route
               path="/verify_phone"
               element={
-                // <PrivateRoute>
+                <PrivateRoute>
                 <PhoneVerification />
-                // </PrivateRoute>
+                </PrivateRoute>
               }
             />
             <Route path="/login" element={<Login />} />

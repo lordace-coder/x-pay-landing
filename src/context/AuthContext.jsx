@@ -126,7 +126,6 @@ const AuthProvider = ({ children }) => {
 
   // ✅ NEW: Check email/phone verification status
   const fetchVerificationStatus = async (token) => {
-    
     try {
       const res = await fetch(`${API_BASE}/auth/verification-status`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -149,14 +148,11 @@ const AuthProvider = ({ children }) => {
     });
 
     const data = await res.json();
-    //  console.log(data);
 
-    // if (!res.ok) {
-    //   return {
-    //     // success: false,
-    //     message: data.detail || "Invalid or expired verification code",
-    //   };
-    // }
+    if (!res.ok) {
+      // Throw an error so it gets caught in handleVerifyEmail
+      throw new Error(data.detail || "Verification failed");
+    }
 
     fetchVerificationStatus();
     return data;

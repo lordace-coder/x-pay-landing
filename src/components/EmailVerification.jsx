@@ -1,5 +1,5 @@
 // EmailVerification.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Mail,
   ArrowLeft,
@@ -31,27 +31,27 @@ const EmailVerification = () => {
   const email = location.state?.email || user.email || "";
 
   // Combined effect: Check cooldown status and auto-send OTP if needed
+  const sentRef = useRef(false);
+
   useEffect(() => {
+    if (sentRef.current) return; // already sent once
+    sentRef.current = true;
+
     const lastSent = localStorage.getItem("emailOtpSentTime");
-    
     if (lastSent) {
       const timeDiff = Date.now() - Number.parseInt(lastSent);
       const remainingTime = 60000 - timeDiff;
-      
+
       if (remainingTime > 0) {
-        // There's an active cooldown, don't send OTP
         setCanResend(false);
         setCountdown(Math.ceil(remainingTime / 1000));
       } else if (email) {
-        // Cooldown expired and we have email, send OTP
         handleSendOtp();
       }
     } else if (email) {
-      // No previous OTP sent, send one now
       handleSendOtp();
     }
-  }, [email]); // Only depend on email
-
+  }, [email]);
   // Countdown logic
   useEffect(() => {
     if (countdown > 0) {
@@ -128,13 +128,12 @@ const EmailVerification = () => {
       setIsLoading(true);
       const res = await verifyEmail(email, otpCode);
 
-      console.log(res);
-      if (res.next_step == "verify_phone") {
+      if (res.next_step === "verify_phone") {
         navigate("/verify_phone");
       }
     } catch (err) {
       console.error("Verify email error:", err);
-      toast.error("Verification failed. Please try again.");
+      toast.error(err.message); // <-- shows "Invalid or expired OTP"
     } finally {
       setIsLoading(false);
     }
