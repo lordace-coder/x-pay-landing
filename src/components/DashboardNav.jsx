@@ -153,7 +153,12 @@ const Navigation = () => {
         </nav>
 
         {/* User section */}
-        <div className="border-t border-gray-50 p-2">
+        <div
+          className="border-t border-gray-50 p-2"
+          onClick={() => {
+            navigate("/password-reset");
+          }}
+        >
           <div
             className={`flex items-center ${
               sidebarCollapsed ? "justify-center" : "space-x-3"

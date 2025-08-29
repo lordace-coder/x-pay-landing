@@ -46,14 +46,14 @@ const ChangePassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [referrals, setReferrals] = useState({});
   const { authFetch, user, logout } = useAuth();
-  const { getDashboardData } = useDashboardContext();
+  const { getDashboardData, setDashboardData } = useDashboardContext();
   const [userInfo, setUserInfo] = useState({
     email: user?.email || "",
     phone: user?.phone || "",
     balance: 0,
     referralCount: 0,
-    totalEarnings: 0,
   });
   const [copySuccess, setCopySuccess] = useState(false);
   const [showRef, setShowRef] = useState(false);
@@ -63,13 +63,28 @@ const ChangePassword = () => {
       ? window.location.origin + "/register?ref=" + user.id
       : "";
 
+  const getReferralData = async () => {
+    try {
+      const response = await authFetch(`${BASEURL}/auth/my-referrals`); // Replace with your API endpoint
+      const result = await response.json();
+      console.log(result, "referrals");
+      setReferrals(result);
+      setDashboardData("referralData");
+    } catch (error) {
+      console.error("Error fetching referral data:", error);
+    }
+  };
   // Enhanced copy functionality with share API
   const copyReferralLink = async () => {
     try {
       if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
         await navigator.share({
           title: "Join me on X-Pay",
-          text: "Start investing with me and earn great returns!",
+          text: `Increase your capital with 50% interest in 30 days and 20% in 15 days.
+ Introducing X-PAY: A Secure Investment Platform Championed by Professional Traders.
+
+Join the X-PAY Community Today.
+Be part of a secure and transparent investment ecosystem that prioritizes your financial well-being. Sign up for X-PAY today and experience the future of investing.`,
           url: refUrl,
         });
       } else {
@@ -93,11 +108,9 @@ const ChangePassword = () => {
   };
 
   useEffect(() => {
+    console.log(user, "--user");
     // Try to get balance from dashboard context
     const batchData = getDashboardData ? getDashboardData("batchData") : null;
-    const referralData = getDashboardData
-      ? getDashboardData("referralData")
-      : null;
 
     let balance = 0;
     if (batchData && batchData.batches) {
@@ -108,11 +121,8 @@ const ChangePassword = () => {
     }
 
     let referralCount = 0;
-    let totalEarnings = 0;
-    if (referralData) {
-      referralCount = referralData.referrals?.length || 0;
-      totalEarnings = referralData.totalEarnings || 0;
-    }
+
+    referralCount = referrals.length || 0;
 
     setUserInfo((prev) => ({
       ...prev,
@@ -120,12 +130,21 @@ const ChangePassword = () => {
       phone: user?.phone || prev.phone,
       balance,
       referralCount,
-      totalEarnings,
     }));
-  }, [user, getDashboardData]);
+  }, [user]);
 
-  console.log(user);
-  
+  useEffect(() => {
+    const referralData = getDashboardData
+      ? getDashboardData("referralData")
+      : null;
+    if (referralData == null) {
+      getReferralData();
+    } else {
+      if (referralData.length >= 1) setReferrals(referralData);
+    }
+
+    return () => {};
+  }, []);
 
   const getStrengthColor = (strength) => {
     if (strength <= 2) return "from-red-400 to-red-600";
@@ -271,7 +290,7 @@ const ChangePassword = () => {
                             </span>
                           </div>
                           <p className="text-base font-semibold text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border text-center lg:text-left">
-                            {userInfo.phone || (
+                            {user.phone_number || (
                               <span className="italic text-gray-400">
                                 Not set
                               </span>
@@ -283,12 +302,12 @@ const ChangePassword = () => {
                           <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
                             <DollarSign className="w-4 h-4 text-green-600" />
                             <span className="text-sm font-medium text-gray-600">
-                              Balance
+                              Total Capital
                             </span>
                           </div>
                           <p className="text-xl font-bold text-green-600 bg-green-50 px-3 py-2 rounded-lg border text-center lg:text-left">
                             $
-                            {userInfo.balance.toLocaleString(undefined, {
+                            {user.total_capital.toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                             })}
                           </p>
@@ -349,7 +368,7 @@ const ChangePassword = () => {
                 <div className="grid grid-cols-2 gap-2 mt-3">
                   <div className="text-center p-3 bg-emerald-50 rounded-lg border border-emerald-200">
                     <div className="text-base font-bold text-emerald-600">
-                      ${userInfo.totalEarnings.toFixed(2)}
+                      ${user.referral_balance.toFixed(2)}
                     </div>
                     <div className="text-xs text-emerald-700">
                       Total Earnings
@@ -357,7 +376,7 @@ const ChangePassword = () => {
                   </div>
                   <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <div className="text-base font-bold text-blue-600">
-                      {userInfo.referralCount}
+                      {referrals.length}
                     </div>
                     <div className="text-xs text-blue-700">Referrals</div>
                   </div>
@@ -381,7 +400,7 @@ const ChangePassword = () => {
                   <div className="space-y-4">
                     <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="text-2xl font-bold text-blue-600">
-                        {userInfo.referralCount}
+                        {referrals.length}
                       </div>
                       <div className="text-sm text-blue-700">
                         Active Referrals
@@ -607,7 +626,11 @@ const ChangePassword = () => {
         </div>
       </div>
 
-      <ReferralModal isOpen={showRef} onClose={() => setShowRef(false)} />
+      <ReferralModal
+        isOpen={showRef}
+        onClose={() => setShowRef(false)}
+        data={referrals}
+      />
     </div>
   );
 };

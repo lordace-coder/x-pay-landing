@@ -32,7 +32,7 @@ export const MIN_INVESTMENT_AMOUNT = 15;
 const WALLET_BOOK = {
   USDT_BRP20: {
     label: "USDT",
-    network: "BRP20",
+    network: "BEP20",
     note: "Send only USDT via BRP20. Do not send other tokens.",
   },
 };
@@ -205,7 +205,6 @@ export const CreateBatch = () => {
               <span className="font-bold text-green-600">50% profit</span> on
               your investment plus get your original amount back.
             </p>
-
 
             {/* Trust indicators */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 lg:gap-8 text-xs sm:text-sm text-gray-500">
@@ -729,15 +728,12 @@ export const CreateBatch = () => {
               <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="text-sm font-semibold text-slate-700 mb-2 block">
-                    Reference Number{" "}
-                    <span className="text-slate-400 font-normal">
-                      (optional)
-                    </span>
+                    Transaction Hash{" "}
                   </label>
                   <input
                     value={referenceNumber}
                     onChange={(e) => setReferenceNumber(e.target.value)}
-                    placeholder="e.g. Transaction ID or Bank Reference"
+                    placeholder="Transaction Hash"
                     className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   />
                 </div>
