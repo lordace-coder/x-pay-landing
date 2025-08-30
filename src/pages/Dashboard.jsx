@@ -705,7 +705,7 @@ export default function XPayDashboard() {
       <header className="trans_2 border-b border-gray-200 pt-4 sm:pt-6 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center h-auto sm:h-16 gap-2 sm:gap-0">
-            <div className="flex items-center">
+            <div className="flex items-center pl-16">
               <h1 className="text-lg sm:text-xl font-bold text-gray-900">
                 Dashboard
               </h1>
@@ -738,7 +738,12 @@ export default function XPayDashboard() {
               >
                 <LogOut className="h-5 w-5" />
               </button>
-              <div className="flex items-center space-x-3">
+              <div
+                className="flex items-center space-x-3 cursor-pointer"
+                onClick={() => {
+                  navigate("/password-reset");
+                }}
+              >
                 <div className="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                   <User className="h-4 w-4 text-white" />
                 </div>
@@ -756,44 +761,6 @@ export default function XPayDashboard() {
         {/* Welcome */}
         <div className="mb-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
           <BannerAdSlider />
-
-          {/* Referral Link Section */}
-          {/* <div className="bg-white w-full md:w-[43%] shadow-lg border hover:shadow-xl transition-all duration-300 hover:border-teal-200 rounded-2xl px-3 py-3 sm:px-4 sm:py-4 ">
-            <h5 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-              <div className="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
-              Your Referral Link
-            </h5>
-            <div className=" bg-gray-50 rounded-lg px-2 sm:px-3 py-2 border border-teal-300">
-              <p className="text-xs sm:text-sm text-gray-600 font-mono break-all">
-                {refUrl}
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-between mt-3 sm:mt-4 gap-2 sm:gap-0">
-              <button
-                onClick={copyReferralLink}
-                disabled={copySuccess}
-                className="px-3 sm:px-4 py-1 rounded font-medium transition-all flex items-center space-x-2 min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full sm:w-auto"
-              >
-                {copySuccess ? <Check size={16} /> : <Copy size={16} />}
-                <span>{copySuccess ? "Copied!" : "Copy"}</span>
-              </button>
-
-              <button
-                onClick={showReferalModal}
-                className="px-3 sm:px-4 mx-0 sm:mx-1 py-1 mt-2 sm:mt-0 rounded font-medium transition-all flex items-center min-w-[90px] justify-center bg-[var(--bs-primary)] text-white hover:bg-[var(--bs-primary-hover)] w-full sm:w-auto"
-              >
-                <UsersIcon className="" /> View Referrals
-              </button>
-            </div>
-            {/* </div> */}
-          {/* <p className="text-[11px] sm:text-xs text-gray-500 mt-2 sm:mt-3">
-              Share this link with friends and earn 5% commission on their
-              investments.
-              {navigator.share
-                ? " Use the share button to send via your preferred app."
-                : " Copy the link to share it manually."}
-            </p>
-          {/* </div> */}
         </div>
         {/* Investment Overview Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">

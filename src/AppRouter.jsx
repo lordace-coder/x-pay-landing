@@ -22,6 +22,7 @@ import Xpay_Batches from "./pages/Xpay_Batches";
 import EmailVerification from "./components/EmailVerification";
 import PhoneVerification from "./components/PhoneVerification";
 import VerificationHub from "./pages/VerificationHub";
+import ReferralWithdrawal from "./pages/RefWithdrawal";
 
 export default function AppRouter() {
   return (
@@ -53,15 +54,15 @@ export default function AppRouter() {
               path="/verify_email"
               element={
                 <PrivateRoute>
-                <EmailVerification />
-                 </PrivateRoute>
+                  <EmailVerification />
+                </PrivateRoute>
               }
             />
             <Route
               path="/verify_phone"
               element={
                 <PrivateRoute>
-                <PhoneVerification />
+                  <PhoneVerification />
                 </PrivateRoute>
               }
             />
@@ -81,6 +82,15 @@ export default function AppRouter() {
               element={
                 <PrivateRoute>
                   <ChangePasswordPage />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/ref-withdrawal"
+              element={
+                <PrivateRoute>
+                  <ReferralWithdrawal />
                 </PrivateRoute>
               }
             />

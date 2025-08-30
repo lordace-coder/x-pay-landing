@@ -157,10 +157,23 @@ export const CreateBatch = () => {
 
   const copy = async (text) => {
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        // Modern API
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed"; // avoid scrolling to bottom
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
       toast.success("Copied to clipboard");
-    } catch {
-      toast.error("Copy failed");
+    } catch (err) {
+      toast.error("Copy failed: " + err.message);
     }
   };
 
