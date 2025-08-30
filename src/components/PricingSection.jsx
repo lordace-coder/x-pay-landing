@@ -30,10 +30,10 @@ import db from "../services/cocobase";
 export const MIN_INVESTMENT_AMOUNT = 15;
 // Mock implementations for missing dependencies
 const WALLET_BOOK = {
-  USDT_BRP20: {
+  USDT_BEP20: {
     label: "USDT",
     network: "BEP20",
-    note: "Send only USDT via BRP20. Do not send other tokens.",
+    note: "Send only USDT via BEP20. Do not send other tokens.",
   },
 };
 
@@ -53,7 +53,7 @@ export const CreateBatch = () => {
   // Payment flow state
   const [showPayModal, setShowPayModal] = useState(false);
   const [showProofModal, setShowProofModal] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("USDT_BRP20");
+  const [paymentMethod, setPaymentMethod] = useState("USDT_BEP20");
 
   // Submit-proof form state
   const [proofImage, setProofImage] = useState(null);
@@ -214,7 +214,7 @@ export const CreateBatch = () => {
 
             <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6 lg:mb-8 px-2">
               Join thousands of investors earning guaranteed returns. Watch just
-              2 videos daily for 30 days and earn{" "}
+              1 video daily for 30 days and earn{" "}
               <span className="font-bold text-green-600">50% profit</span> on
               your investment plus get your original amount back.
             </p>
@@ -461,7 +461,7 @@ export const CreateBatch = () => {
                             </li>
                             <li className="flex items-center gap-2">
                               <div className="w-1.5 h-1.5 bg-purple-500 rounded-full flex-shrink-0"></div>
-                              Just 2 videos to watch each day
+                              Just 1 video to watch each day
                             </li>
                             <li className="flex items-center gap-2">
                               <div className="w-1.5 h-1.5 bg-orange-500 rounded-full flex-shrink-0"></div>
@@ -597,15 +597,15 @@ export const CreateBatch = () => {
                 </label>
                 <div className="grid grid-cols-1 gap-3">
                   <button
-                    onClick={() => setPaymentMethod("USDT_BRP20")}
+                    onClick={() => setPaymentMethod("USDT_BEP20")}
                     className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${
-                      paymentMethod === "USDT_BRP20"
+                      paymentMethod === "USDT_BEP20"
                         ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
                         : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
                     }`}
                   >
                     <div className="font-bold text-base sm:text-lg">USDT</div>
-                    <div className="text-sm text-slate-500">Network: BRP20</div>
+                    <div className="text-sm text-slate-500">Network: BEP20</div>
                     <div className="text-xs text-green-600 mt-1">
                       ✓ Available
                     </div>
