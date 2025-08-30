@@ -927,8 +927,7 @@ export default function BatchWithdrawal() {
               </div>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li>
-                  • Your request will be reviewed by our team within 1-3
-                  business days
+                  • Your request will be reviewed by our team within 24 hours
                 </li>
                 <li>• You'll receive an email notification once processed</li>
                 <li>

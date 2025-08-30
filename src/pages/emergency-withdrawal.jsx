@@ -106,11 +106,16 @@ export default function EmergencyWithdrawal() {
 
     const daysRemaining = batch.days_remaining || 0;
     const videosCompleted = batch.videos_watched > 30;
-    
-    let withdrawalType, principalAmount, interestAmount, chargeAmount, netAmount, consequences;
-    
+
+    let withdrawalType,
+      principalAmount,
+      interestAmount,
+      chargeAmount,
+      netAmount,
+      consequences;
+
     const withdrawalCharge = 0.05; // 5%
-    
+
     if (daysRemaining <= 15 && videosCompleted) {
       // Early withdrawal with reduced interest
       withdrawalType = "Early Withdrawal";
@@ -123,8 +128,8 @@ export default function EmergencyWithdrawal() {
         "⚠️ You will lose 80% of your earned interest",
         `💸 Interest penalty: -$${(batch.current_interest * 0.8).toFixed(2)}`,
         "💰 5% withdrawal processing fee applies",
-        "📹 At least 30 videos completed requirement met",
-        "⏰ Withdrawal available due to ≤15 days remaining"
+        "📹 At least 20 videos completed requirement met",
+        "⏰ Withdrawal available due to ≤10 days remaining",
       ];
     } else {
       // Emergency withdrawal - principal only
@@ -138,7 +143,7 @@ export default function EmergencyWithdrawal() {
         `💸 Total interest lost: -$${batch.current_interest.toFixed(2)}`,
         "💰 5% withdrawal processing fee applies",
         "⏰ Investment period terminated early",
-        "📊 No completion bonuses or rewards"
+        "📊 No completion bonuses or rewards",
       ];
     }
 
@@ -151,7 +156,7 @@ export default function EmergencyWithdrawal() {
       consequences,
       isEmergency: daysRemaining > 15 || !videosCompleted,
       isEarly: daysRemaining <= 15 && videosCompleted,
-      totalLoss: batch.current_interest - interestAmount + chargeAmount
+      totalLoss: batch.current_interest - interestAmount + chargeAmount,
     };
   };
 
@@ -235,7 +240,7 @@ export default function EmergencyWithdrawal() {
 
   const ActiveBatchCard = ({ batch, selected, onClick }) => {
     const withdrawalInfo = getEmergencyWithdrawalInfo(batch);
-    
+
     return (
       <div
         onClick={() => onClick(batch)}
@@ -254,11 +259,13 @@ export default function EmergencyWithdrawal() {
 
         {/* Warning badge */}
         <div className="absolute top-4 right-4">
-          <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold shadow-md ${
-            withdrawalInfo?.isEmergency 
-              ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
-              : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white"
-          }`}>
+          <div
+            className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold shadow-md ${
+              withdrawalInfo?.isEmergency
+                ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white"
+            }`}
+          >
             {withdrawalInfo?.isEmergency ? (
               <>
                 <AlertTriangle className="h-3 w-3" />
@@ -456,7 +463,8 @@ export default function EmergencyWithdrawal() {
                   No Active Batches Found
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  You don't have any active investment batches available for emergency withdrawal.
+                  You don't have any active investment batches available for
+                  emergency withdrawal.
                 </p>
                 <button
                   onClick={() => navigate("/dashboard")}
@@ -475,7 +483,10 @@ export default function EmergencyWithdrawal() {
                     </span>
                   </div>
                   <p className="text-xs text-red-700">
-                    Emergency withdrawals result in significant financial penalties. You will lose most or all of your earned interest plus pay a 5% processing fee. Consider waiting for batch completion if possible.
+                    Emergency withdrawals result in significant financial
+                    penalties. You will lose most or all of your earned interest
+                    plus pay a 5% processing fee. Consider waiting for batch
+                    completion if possible.
                   </p>
                 </div>
 
@@ -519,9 +530,13 @@ export default function EmergencyWithdrawal() {
               return (
                 <>
                   <div className="text-center mb-8">
-                    <div className={`p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center ${
-                      withdrawalInfo.isEmergency ? 'bg-red-100' : 'bg-yellow-100'
-                    }`}>
+                    <div
+                      className={`p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center ${
+                        withdrawalInfo.isEmergency
+                          ? "bg-red-100"
+                          : "bg-yellow-100"
+                      }`}
+                    >
                       {withdrawalInfo.isEmergency ? (
                         <AlertTriangle className="h-8 w-8 text-red-600" />
                       ) : (
@@ -532,31 +547,49 @@ export default function EmergencyWithdrawal() {
                       {withdrawalInfo.withdrawalType} Consequences
                     </h2>
                     <p className="text-gray-600">
-                      Please carefully review the financial impact before proceeding
+                      Please carefully review the financial impact before
+                      proceeding
                     </p>
                   </div>
 
                   {/* Critical Warning Banner */}
-                  <div className={`p-6 rounded-xl mb-6 ${
-                    withdrawalInfo.isEmergency ? 'bg-red-50 border-2 border-red-200' : 'bg-yellow-50 border-2 border-yellow-200'
-                  }`}>
+                  <div
+                    className={`p-6 rounded-xl mb-6 ${
+                      withdrawalInfo.isEmergency
+                        ? "bg-red-50 border-2 border-red-200"
+                        : "bg-yellow-50 border-2 border-yellow-200"
+                    }`}
+                  >
                     <div className="flex items-start space-x-3">
-                      <AlertTriangle className={`h-6 w-6 mt-0.5 ${
-                        withdrawalInfo.isEmergency ? 'text-red-600' : 'text-yellow-600'
-                      }`} />
+                      <AlertTriangle
+                        className={`h-6 w-6 mt-0.5 ${
+                          withdrawalInfo.isEmergency
+                            ? "text-red-600"
+                            : "text-yellow-600"
+                        }`}
+                      />
                       <div>
-                        <h4 className={`font-bold text-lg ${
-                          withdrawalInfo.isEmergency ? 'text-red-900' : 'text-yellow-900'
-                        }`}>
-                          {withdrawalInfo.isEmergency ? '🚨 EMERGENCY WITHDRAWAL' : '⚠️ EARLY WITHDRAWAL'}
+                        <h4
+                          className={`font-bold text-lg ${
+                            withdrawalInfo.isEmergency
+                              ? "text-red-900"
+                              : "text-yellow-900"
+                          }`}
+                        >
+                          {withdrawalInfo.isEmergency
+                            ? "🚨 EMERGENCY WITHDRAWAL"
+                            : "⚠️ EARLY WITHDRAWAL"}
                         </h4>
-                        <p className={`text-sm mt-2 ${
-                          withdrawalInfo.isEmergency ? 'text-red-800' : 'text-yellow-800'
-                        }`}>
-                          {withdrawalInfo.isEmergency 
-                            ? 'This action will cause significant financial loss. You will forfeit ALL earned interest and pay processing fees. This cannot be undone.'
-                            : 'Withdrawing before completion will result in substantial interest penalties. You will lose 80% of your earned interest plus processing fees.'
-                          }
+                        <p
+                          className={`text-sm mt-2 ${
+                            withdrawalInfo.isEmergency
+                              ? "text-red-800"
+                              : "text-yellow-800"
+                          }`}
+                        >
+                          {withdrawalInfo.isEmergency
+                            ? "This action will cause significant financial loss. You will forfeit ALL earned interest and pay processing fees. This cannot be undone."
+                            : "Withdrawing before completion will result in substantial interest penalties. You will lose 80% of your earned interest plus processing fees."}
                         </p>
                       </div>
                     </div>
@@ -566,21 +599,29 @@ export default function EmergencyWithdrawal() {
                   <div className="bg-gray-50 rounded-xl p-6 mb-6">
                     <div className="flex items-center space-x-2 mb-4">
                       <Calculator className="h-6 w-6 text-gray-600" />
-                      <h4 className="font-bold text-gray-900">Financial Impact Breakdown</h4>
+                      <h4 className="font-bold text-gray-900">
+                        Financial Impact Breakdown
+                      </h4>
                     </div>
                     <div className="space-y-4">
                       {/* Current Value */}
                       <div className="bg-blue-50 rounded-lg p-4">
-                        <h5 className="font-semibold text-blue-900 mb-3">Current Investment Value</h5>
+                        <h5 className="font-semibold text-blue-900 mb-3">
+                          Current Investment Value
+                        </h5>
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <span className="text-blue-700 block">Principal Amount:</span>
+                            <span className="text-blue-700 block">
+                              Principal Amount:
+                            </span>
                             <div className="font-bold text-blue-900 text-lg">
                               ${withdrawalInfo.principalAmount.toLocaleString()}
                             </div>
                           </div>
                           <div>
-                            <span className="text-blue-700 block">Interest Earned:</span>
+                            <span className="text-blue-700 block">
+                              Interest Earned:
+                            </span>
                             <div className="font-bold text-green-600 text-lg">
                               +${selectedBatch.current_interest.toFixed(2)}
                             </div>
@@ -588,9 +629,15 @@ export default function EmergencyWithdrawal() {
                         </div>
                         <div className="mt-3 pt-3 border-t border-blue-200">
                           <div className="flex justify-between">
-                            <span className="text-blue-700 font-medium">Total Current Value:</span>
+                            <span className="text-blue-700 font-medium">
+                              Total Current Value:
+                            </span>
                             <span className="font-bold text-blue-900 text-lg">
-                              ${(withdrawalInfo.principalAmount + selectedBatch.current_interest).toFixed(2)}
+                              $
+                              {(
+                                withdrawalInfo.principalAmount +
+                                selectedBatch.current_interest
+                              ).toFixed(2)}
                             </span>
                           </div>
                         </div>
@@ -598,26 +645,44 @@ export default function EmergencyWithdrawal() {
 
                       {/* What You'll Receive */}
                       <div className="bg-red-50 rounded-lg p-4">
-                        <h5 className="font-semibold text-red-900 mb-3">What You'll Actually Receive</h5>
+                        <h5 className="font-semibold text-red-900 mb-3">
+                          What You'll Actually Receive
+                        </h5>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-700">Principal Amount:</span>
-                            <span className="font-medium">${withdrawalInfo.principalAmount.toLocaleString()}</span>
+                            <span className="text-gray-700">
+                              Principal Amount:
+                            </span>
+                            <span className="font-medium">
+                              ${withdrawalInfo.principalAmount.toLocaleString()}
+                            </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-700">Interest Payment:</span>
-                            <span className={`font-medium ${withdrawalInfo.interestAmount > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <span className="text-gray-700">
+                              Interest Payment:
+                            </span>
+                            <span
+                              className={`font-medium ${
+                                withdrawalInfo.interestAmount > 0
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
                               ${withdrawalInfo.interestAmount.toFixed(2)}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-700">Processing Fee (5%):</span>
+                            <span className="text-gray-700">
+                              Processing Fee (5%):
+                            </span>
                             <span className="font-medium text-red-600">
                               -${withdrawalInfo.chargeAmount.toFixed(2)}
                             </span>
                           </div>
                           <div className="border-t border-red-200 pt-2 flex justify-between">
-                            <span className="font-bold text-red-900">Net Amount:</span>
+                            <span className="font-bold text-red-900">
+                              Net Amount:
+                            </span>
                             <span className="font-bold text-red-900 text-lg">
                               ${withdrawalInfo.netAmount.toFixed(2)}
                             </span>
@@ -628,7 +693,9 @@ export default function EmergencyWithdrawal() {
                       {/* Total Loss */}
                       <div className="bg-red-100 border-2 border-red-300 rounded-lg p-4">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-red-900">Total Financial Loss:</span>
+                          <span className="font-bold text-red-900">
+                            Total Financial Loss:
+                          </span>
                           <span className="font-bold text-red-900 text-xl">
                             -${withdrawalInfo.totalLoss.toFixed(2)}
                           </span>
@@ -648,8 +715,13 @@ export default function EmergencyWithdrawal() {
                     </h4>
                     <ul className="space-y-3">
                       {withdrawalInfo.consequences.map((consequence, index) => (
-                        <li key={index} className="flex items-start space-x-3 text-sm bg-gray-50 p-3 rounded-lg">
-                          <span className="text-red-600 font-bold mt-0.5">•</span>
+                        <li
+                          key={index}
+                          className="flex items-start space-x-3 text-sm bg-gray-50 p-3 rounded-lg"
+                        >
+                          <span className="text-red-600 font-bold mt-0.5">
+                            •
+                          </span>
                           <span>{consequence}</span>
                         </li>
                       ))}
@@ -658,23 +730,34 @@ export default function EmergencyWithdrawal() {
 
                   {/* Batch Status */}
                   <div className="bg-blue-50 rounded-xl p-4 mb-6">
-                    <h4 className="font-semibold text-blue-900 mb-3">Current Batch Status:</h4>
+                    <h4 className="font-semibold text-blue-900 mb-3">
+                      Current Batch Status:
+                    </h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-blue-700">Videos Watched:</span>
-                        <div className="font-medium">{selectedBatch.videos_watched}/60</div>
+                        <div className="font-medium">
+                          {selectedBatch.videos_watched}/60
+                        </div>
                       </div>
                       <div>
                         <span className="text-blue-700">Days Remaining:</span>
-                        <div className="font-medium">{selectedBatch.days_remaining || 0} days</div>
+                        <div className="font-medium">
+                          {selectedBatch.days_remaining || 0} days
+                        </div>
                       </div>
                       <div>
                         <span className="text-blue-700">Completion:</span>
-                        <div className="font-medium">{selectedBatch.completion_percentage?.toFixed(1) || 0}%</div>
+                        <div className="font-medium">
+                          {selectedBatch.completion_percentage?.toFixed(1) || 0}
+                          %
+                        </div>
                       </div>
                       <div>
                         <span className="text-blue-700">Interest Rate:</span>
-                        <div className="font-medium">{selectedBatch.interest_rate}%</div>
+                        <div className="font-medium">
+                          {selectedBatch.interest_rate}%
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -693,9 +776,12 @@ export default function EmergencyWithdrawal() {
                           I understand and acknowledge the consequences
                         </span>
                         <p className="text-xs text-red-700 mt-1">
-                          I understand that this emergency withdrawal will result in a financial loss of ${withdrawalInfo.totalLoss.toFixed(2)}, 
-                          including forfeited interest and processing fees. I acknowledge that this action cannot be reversed 
-                          and I will not be able to recover the lost interest.
+                          I understand that this emergency withdrawal will
+                          result in a financial loss of $
+                          {withdrawalInfo.totalLoss.toFixed(2)}, including
+                          forfeited interest and processing fees. I acknowledge
+                          that this action cannot be reversed and I will not be
+                          able to recover the lost interest.
                         </p>
                       </div>
                     </label>
@@ -714,10 +800,10 @@ export default function EmergencyWithdrawal() {
                       disabled={!acknowledged}
                       className={`px-4 py-2 sm:px-8 sm:py-3 rounded-lg font-medium text-white transition-colors flex items-center space-x-2 ${
                         acknowledged
-                          ? withdrawalInfo.isEmergency 
-                            ? 'bg-red-600 hover:bg-red-700' 
-                            : 'bg-yellow-600 hover:bg-yellow-700'
-                          : 'bg-gray-300 cursor-not-allowed'
+                          ? withdrawalInfo.isEmergency
+                            ? "bg-red-600 hover:bg-red-700"
+                            : "bg-yellow-600 hover:bg-yellow-700"
+                          : "bg-gray-300 cursor-not-allowed"
                       }`}
                     >
                       <span>I Accept the Loss</span>
@@ -760,13 +846,20 @@ export default function EmergencyWithdrawal() {
                 <div>
                   <span className="text-gray-600 block">Processing Fee</span>
                   <div className="font-bold text-red-600">
-                    -${getEmergencyWithdrawalInfo(selectedBatch)?.chargeAmount.toFixed(2)} (5%)
+                    -$
+                    {getEmergencyWithdrawalInfo(
+                      selectedBatch
+                    )?.chargeAmount.toFixed(2)}{" "}
+                    (5%)
                   </div>
                 </div>
                 <div>
                   <span className="text-gray-600 block">Net Amount</span>
                   <div className="font-bold text-xl text-green-600">
-                    ${getEmergencyWithdrawalInfo(selectedBatch)?.netAmount.toFixed(2)}
+                    $
+                    {getEmergencyWithdrawalInfo(
+                      selectedBatch
+                    )?.netAmount.toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -784,12 +877,13 @@ export default function EmergencyWithdrawal() {
                 type="text"
                 value={walletAddress}
                 onChange={(e) => setWalletAddress(e.target.value)}
-                placeholder="Enter your USDT wallet address (TRC20 or ERC20)"
+                placeholder="Enter your USDT wallet address BEP20"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
               />
               <p className="text-gray-600 text-sm mt-2">
-                ⚠️ <strong>Important:</strong> Double-check this address carefully. Cryptocurrency transactions cannot be reversed. 
-                We support both TRC20 and ERC20 USDT addresses.
+                ⚠️ <strong>Important:</strong> Double-check this address
+                carefully. Cryptocurrency transactions cannot be reversed. We
+                support only BEP20 USDT address.
               </p>
             </div>
 
@@ -802,10 +896,14 @@ export default function EmergencyWithdrawal() {
                 </span>
               </div>
               <ul className="text-xs text-yellow-800 space-y-1">
-                <li>• Emergency withdrawals are processed within 1-3 business days</li>
+                <li>• Emergency withdrawals are processed within 24 hours</li>
                 <li>• You will receive email confirmation once processed</li>
-                <li>• This action terminates your investment batch permanently</li>
-                <li>• Lost interest cannot be recovered even if you reinvest</li>
+                <li>
+                  • This action terminates your investment batch permanently
+                </li>
+                <li>
+                  • Lost interest cannot be recovered even if you reinvest
+                </li>
               </ul>
             </div>
 
@@ -839,7 +937,8 @@ export default function EmergencyWithdrawal() {
                 Security Verification
               </h2>
               <p className="text-gray-600">
-                We'll send a verification code to secure this emergency withdrawal
+                We'll send a verification code to secure this emergency
+                withdrawal
               </p>
             </div>
 
@@ -851,8 +950,9 @@ export default function EmergencyWithdrawal() {
                 </h3>
               </div>
               <p className="text-gray-600 text-sm">
-                Due to the high-risk nature of emergency withdrawals, we require additional verification. 
-                A 6-digit code will be sent to your registered email address.
+                Due to the high-risk nature of emergency withdrawals, we require
+                additional verification. A 6-digit code will be sent to your
+                registered email address.
               </p>
             </div>
 
@@ -949,8 +1049,13 @@ export default function EmergencyWithdrawal() {
                 </span>
               </div>
               <p className="text-xs text-red-700">
-                By submitting this code, you confirm the emergency withdrawal of ${getEmergencyWithdrawalInfo(selectedBatch)?.netAmount.toFixed(2)} 
-                to wallet address: <span className="font-mono">{walletAddress}</span>
+                By submitting this code, you confirm the emergency withdrawal of
+                $
+                {getEmergencyWithdrawalInfo(selectedBatch)?.netAmount.toFixed(
+                  2
+                )}
+                to wallet address:{" "}
+                <span className="font-mono">{walletAddress}</span>
               </p>
             </div>
 
@@ -993,7 +1098,8 @@ export default function EmergencyWithdrawal() {
                 Emergency Withdrawal Submitted
               </h2>
               <p className="text-gray-600">
-                Your emergency withdrawal request has been submitted for processing
+                Your emergency withdrawal request has been submitted for
+                processing
               </p>
             </div>
 
@@ -1039,12 +1145,16 @@ export default function EmergencyWithdrawal() {
             <div className="bg-blue-50 rounded-xl p-6 mb-8">
               <div className="flex items-center space-x-3 mb-3">
                 <Info className="h-5 w-5 text-blue-600" />
-                <h3 className="font-semibold text-gray-900">Processing Information</h3>
+                <h3 className="font-semibold text-gray-900">
+                  Processing Information
+                </h3>
               </div>
               <ul className="text-sm text-gray-600 space-y-2">
-                <li>• Emergency withdrawals are processed within 1-3 business days</li>
+                <li>• Emergency withdrawals are processed within 24 hours</li>
                 <li>• You'll receive email updates on the processing status</li>
-                <li>• Funds will be sent to your provided USDT wallet address</li>
+                <li>
+                  • Funds will be sent to your provided USDT wallet address
+                </li>
                 <li>• Your investment batch has been permanently terminated</li>
                 <li>• You can track the status in your withdrawal history</li>
               </ul>
@@ -1060,11 +1170,23 @@ export default function EmergencyWithdrawal() {
               </div>
               <div className="text-xs text-red-700">
                 <p className="mb-1">
-                  <strong>Total Loss:</strong> ${getEmergencyWithdrawalInfo(selectedBatch)?.totalLoss.toFixed(2)}
+                  <strong>Total Loss:</strong> $
+                  {getEmergencyWithdrawalInfo(selectedBatch)?.totalLoss.toFixed(
+                    2
+                  )}
                 </p>
                 <p>
-                  This includes ${(selectedBatch.current_interest - (getEmergencyWithdrawalInfo(selectedBatch)?.interestAmount || 0)).toFixed(2)} in forfeited interest 
-                  and ${getEmergencyWithdrawalInfo(selectedBatch)?.chargeAmount.toFixed(2)} in processing fees.
+                  This includes $
+                  {(
+                    selectedBatch.current_interest -
+                    (getEmergencyWithdrawalInfo(selectedBatch)
+                      ?.interestAmount || 0)
+                  ).toFixed(2)}{" "}
+                  in forfeited interest and $
+                  {getEmergencyWithdrawalInfo(
+                    selectedBatch
+                  )?.chargeAmount.toFixed(2)}{" "}
+                  in processing fees.
                 </p>
               </div>
             </div>
