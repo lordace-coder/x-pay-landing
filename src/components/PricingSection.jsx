@@ -65,7 +65,7 @@ export const CreateBatch = () => {
   const totalProfit = investmentAmount * 0.5;
   const dailyProfit = totalProfit / 30;
   const totalReturn = investmentAmount + totalProfit;
-  const videosRequired = 60;
+  const videosRequired = 30;
 
   useEffect(() => {
     db.getDocument("settings", "5f4ef303-3624-409e-ae3d-1e3d892ed180").then(
@@ -359,7 +359,7 @@ export const CreateBatch = () => {
                           {videosRequired}
                         </div>
                         <div className="text-xs text-purple-600 font-medium">
-                          Videos (2/day)
+                          Videos (1/day)
                         </div>
                       </div>
 
