@@ -737,7 +737,8 @@ export default function EmergencyWithdrawal() {
                       <div>
                         <span className="text-blue-700">Videos Watched:</span>
                         <div className="font-medium">
-                          {selectedBatch.videos_watched}/60
+                          {selectedBatch.videos_watched}/
+                          {selectedBatch.total_videos_required}
                         </div>
                       </div>
                       <div>

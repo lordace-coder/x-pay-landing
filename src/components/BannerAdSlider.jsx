@@ -213,17 +213,18 @@ const BannerAdSlider = ({
 
           {/* CTA Button */}
           {currentAd && (
-            <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3">
+            <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2">
               <button
                 onClick={() => handleCTAClick(currentAd)}
-                className="group bg-white/90 hover:bg-white text-gray-800 px-2.5 py-1.5 
-                          sm:px-3 sm:py-1.5 rounded-full font-medium text-xs sm:text-sm
-                          hover:shadow-lg transition-all duration-200 
-                          flex items-center gap-1.5"
+                className="group bg-white/90 hover:bg-white text-gray-800 
+                          px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-full 
+                          font-medium text-[10px] sm:text-xs
+                          hover:shadow-sm transition-all duration-200 
+                          flex items-center gap-1"
               >
                 <span>{currentAd.cta_text || "Learn More"}</span>
                 <ExternalLink
-                  size={12}
+                  size={10}
                   className="transition-transform group-hover:translate-x-0.5"
                 />
               </button>
