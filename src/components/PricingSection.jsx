@@ -75,18 +75,16 @@ export const CreateBatch = () => {
     );
   }, []);
 
-  const handleSliderChange = (e) => {
-    setIsSliding(true);
-    setInvestmentAmount(Number.parseInt(e.target.value));
-    setTimeout(() => setIsSliding(false), 200);
-  };
-
   const handleInputChange = (e) => {
     const value = Math.max(
       MIN_INVESTMENT_AMOUNT,
       Number.parseInt(e.target.value) || MIN_INVESTMENT_AMOUNT
     );
     setInvestmentAmount(value);
+  };
+
+  const setQuickAmount = (amount) => {
+    setInvestmentAmount(amount);
   };
 
   const handleLoginRedirect = () => navigate("/login");
@@ -180,7 +178,7 @@ export const CreateBatch = () => {
   return (
     <>
       <section
-        className="relative py-8 md:py-16 lg:py-20 min-h-screen overflow-hidden"
+        className="relative py-6 md:py-12 lg:py-16 min-h-screen overflow-hidden"
         id="create-batch"
       >
         {/* Animated background elements */}
@@ -190,10 +188,10 @@ export const CreateBatch = () => {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-300/10 to-indigo-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          {/* Enhanced Header */}
-          <div className="text-center mb-8 md:mb-12 lg:mb-16">
-            <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 backdrop-blur-sm rounded-full border border-blue-200/50 mb-4 sm:mb-6 lg:mb-8 shadow-lg hover:shadow-xl transition-all duration-300 group">
+        <div className="container mx-auto px-3 sm:px-4 relative z-10">
+          {/* Header adjustments */}
+          <div className="text-center mb-6 md:mb-8 lg:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-100/80 to-indigo-100/80 backdrop-blur-sm rounded-full border border-blue-200/50 mb-3 sm:mb-4 shadow-lg hover:shadow-xl transition-all duration-300 group">
               <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
               </div>
@@ -238,7 +236,7 @@ export const CreateBatch = () => {
 
           {/* Enhanced Main card */}
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-12 shadow-2xl hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
+            <div className="bg-white/90 backdrop-blur-xl border border-white/60 rounded-2xl sm:rounded-3xl p-3 sm:p-4 lg:p-6 shadow-2xl hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
               {/* Card background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-50"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-200/30 to-transparent rounded-bl-full"></div>
@@ -326,8 +324,8 @@ export const CreateBatch = () => {
                     </div>
 
                     {/* Enhanced Stats Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-12">
-                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-blue-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                      <div className="group text-center p-2 sm:p-3 bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-xl border border-blue-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
                           <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
@@ -339,7 +337,7 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-green-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                      <div className="group text-center p-2 sm:p-3 bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-green-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
                           <Target className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
@@ -351,7 +349,7 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-purple-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                      <div className="group text-center p-2 sm:p-3 bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-purple-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
                           <Play className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
@@ -363,7 +361,7 @@ export const CreateBatch = () => {
                         </div>
                       </div>
 
-                      <div className="group text-center p-3 sm:p-4 lg:p-6 bg-gradient-to-br from-orange-50/80 to-orange-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-orange-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                      <div className="group text-center p-2 sm:p-3 bg-gradient-to-br from-orange-50/80 to-orange-100/80 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-orange-200/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3 lg:mb-4 group-hover:scale-110 transition-transform shadow-lg">
                           <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
@@ -376,71 +374,51 @@ export const CreateBatch = () => {
                       </div>
                     </div>
 
-                    {/* Enhanced Slider */}
-                    <div className="mb-6 sm:mb-8 lg:mb-10">
-                      <label className="block text-gray-700 font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
-                        Investment Amount (${MIN_INVESTMENT_AMOUNT} - $1,000)
+                    {/* Replace Slider with Enhanced Input Section */}
+                    <div className="mb-4 sm:mb-6">
+                      <label className="block text-gray-700 font-semibold mb-3 text-sm sm:text-base">
+                        Enter Investment Amount (Min: ${MIN_INVESTMENT_AMOUNT})
                       </label>
-                      <div className="relative p-4 sm:p-5 lg:p-6 bg-gradient-to-r from-gray-50/50 to-blue-50/50 rounded-xl sm:rounded-2xl border border-gray-200/50">
-                        <input
-                          type="range"
-                          min={MIN_INVESTMENT_AMOUNT}
-                          max="1000"
-                          value={investmentAmount}
-                          onChange={handleSliderChange}
-                          disabled={!batchCreationActive}
-                          className="w-full h-4 bg-gray-200 rounded-lg appearance-none cursor-pointer custom-slider"
-                          style={{
-                            background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${
-                              ((investmentAmount - MIN_INVESTMENT_AMOUNT) /
-                                (1000 - MIN_INVESTMENT_AMOUNT)) *
-                              100
-                            }%, #e5e7eb ${
-                              ((investmentAmount - MIN_INVESTMENT_AMOUNT) /
-                                (1000 - MIN_INVESTMENT_AMOUNT)) *
-                              100
-                            }%, #e5e7eb 100%)`,
-                          }}
-                        />
-                        <div className="flex justify-between text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 font-medium">
-                          <span>${MIN_INVESTMENT_AMOUNT}</span>
-                          <span>$500</span>
-                          <span>$1,000</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Enhanced Manual Input */}
-                    <div className="mb-6 sm:mb-8 lg:mb-10">
-                      <label className="block text-gray-700 font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
-                        Or enter exact amount
-                      </label>
-                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        <div className="flex-1">
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <DollarSign className="h-5 w-5 text-gray-400" />
+                          </div>
                           <input
                             type="number"
                             value={investmentAmount}
                             onChange={handleInputChange}
                             min={MIN_INVESTMENT_AMOUNT}
-                            className="w-full px-4 sm:px-5 lg:px-6 py-3 sm:py-4 border border-gray-300 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base sm:text-lg font-semibold bg-white/80 backdrop-blur-sm"
-                            placeholder="Enter investment amount"
-                            disabled={!batchCreationActive}
+                            className="w-full pl-10 pr-4 py-3 sm:py-4 text-lg sm:text-xl font-bold border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 backdrop-blur-sm"
+                            placeholder="Enter amount"
                           />
                         </div>
+
+                        {/* Quick Selection Buttons */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {[100, 500, 1000, 5000].map((amount) => (
+                            <button
+                              key={amount}
+                              onClick={() => setQuickAmount(amount)}
+                              className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-200 transition-all duration-200"
+                            >
+                              ${amount.toLocaleString()}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Min Amount Button */}
                         <button
-                          onClick={() =>
-                            setInvestmentAmount(MIN_INVESTMENT_AMOUNT)
-                          }
-                          className="px-4 sm:px-5 lg:px-6 py-3 sm:py-4 text-sm text-blue-600 border border-blue-200 rounded-lg sm:rounded-xl hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold whitespace-nowrap"
-                          disabled={!batchCreationActive}
+                          onClick={() => setQuickAmount(MIN_INVESTMENT_AMOUNT)}
+                          className="w-full px-4 py-2 text-xs font-medium text-blue-600 rounded-lg border border-blue-200 hover:bg-blue-50 transition-all duration-200"
                         >
-                          Min (${MIN_INVESTMENT_AMOUNT})
+                          Set Minimum (${MIN_INVESTMENT_AMOUNT})
                         </button>
                       </div>
                     </div>
 
                     {/* Enhanced Info Box */}
-                    <div className="mb-6 sm:mb-8 lg:mb-10 p-4 sm:p-5 lg:p-6 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-200/50 rounded-xl sm:rounded-2xl shadow-inner">
+                    <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border border-blue-200/50 rounded-xl">
                       <div className="flex items-start gap-3 sm:gap-4">
                         <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
                           <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -528,7 +506,7 @@ export const CreateBatch = () => {
                 )}
 
                 {/* Enhanced Footer Stats */}
-                <div className="mt-6 sm:mt-8 lg:mt-12 pt-4 sm:pt-6 lg:pt-8 border-t border-gray-200/50">
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200/50">
                   <div className="grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6 text-center">
                     <div className="group">
                       <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
@@ -564,14 +542,10 @@ export const CreateBatch = () => {
 
       {/* Enhanced Payment Modal */}
       {showPayModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-md"
-            onClick={() => setShowPayModal(false)}
-          />
-          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Fixed header */}
-            <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 border-b border-gray-100 flex-shrink-0">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-3">
+          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Modal header */}
+            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl flex items-center justify-center">
                   <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -588,8 +562,8 @@ export const CreateBatch = () => {
               </button>
             </div>
 
-            {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 lg:space-y-6">
+            {/* Modal content */}
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
               {/* Payment Method Selection */}
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-2 sm:mb-3 block">
@@ -661,7 +635,7 @@ export const CreateBatch = () => {
             </div>
 
             {/* Fixed footer with buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-5 lg:p-6 border-t border-gray-100 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row gap-2 p-3 sm:p-4 border-t border-gray-100 flex-shrink-0">
               <button
                 onClick={() => setShowPayModal(false)}
                 className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-sm sm:text-base"
@@ -681,12 +655,8 @@ export const CreateBatch = () => {
 
       {/* Enhanced Proof Modal */}
       {showProofModal && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-md"
-            onClick={() => setShowProofModal(false)}
-          />
-          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-3">
+          <div className="relative w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-hidden flex flex-col">
             {/* Fixed header */}
             <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -706,7 +676,7 @@ export const CreateBatch = () => {
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-3 sm:space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
               {/* Amount and Method */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
@@ -810,7 +780,7 @@ export const CreateBatch = () => {
             </div>
 
             {/* Fixed footer with buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-4 sm:p-5 lg:p-6 border-t border-gray-100 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row gap-2 p-3 sm:p-4 border-t border-gray-100 flex-shrink-0">
               <button
                 onClick={() => setShowProofModal(false)}
                 className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors font-medium text-sm sm:text-base"
@@ -837,36 +807,6 @@ export const CreateBatch = () => {
       )}
 
       <style>{`
-        .custom-slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 28px;
-          width: 28px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #3b82f6, #6366f1);
-          cursor: pointer;
-          border: 4px solid #ffffff;
-          box-shadow: 0 4px 12px rgba(59,130,246,0.4);
-          transition: all 0.2s ease;
-        }
-        .custom-slider::-webkit-slider-thumb:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 16px rgba(59,130,246,0.5);
-        }
-        .custom-slider::-moz-range-thumb {
-          height: 28px;
-          width: 28px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #3b82f6, #6366f1);
-          cursor: pointer;
-          border: 4px solid #ffffff;
-          box-shadow: 0 4px 12px rgba(59,130,246,0.4);
-          transition: all 0.2s ease;
-        }
-        .custom-slider::-moz-range-thumb:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 16px rgba(59,130,246,0.5);
-        }
-        
         @keyframes fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -886,3 +826,4 @@ export const CreateBatch = () => {
 };
 
 export default CreateBatch;
+  
