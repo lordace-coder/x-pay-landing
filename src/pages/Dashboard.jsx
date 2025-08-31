@@ -1009,11 +1009,10 @@ export default function XPayDashboard() {
             </div>
 
             <h4 className="text-xl sm:text-3xl font-bold mb-2 sm:mb-3">
-              Earn More Tokens
+              Earn More
             </h4>
             <p className="text-sm sm:text-lg opacity-90 mb-4 sm:mb-6 max-w-2xl">
-              Purchase extra X-Pay tokens to boost your daily profit and earn
-              more.
+              Invest to boost your daily profit and earn more.
             </p>
 
             <button

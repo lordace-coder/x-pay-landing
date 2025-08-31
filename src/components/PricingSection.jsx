@@ -202,10 +202,10 @@ export const CreateBatch = () => {
             </div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-900 via-indigo-700 to-purple-700 bg-clip-text text-transparent mb-4 sm:mb-6 lg:mb-8 leading-tight">
-              Create Your
+              Start Your
               <br />
               <span className="relative">
-                Investment Batch
+                Investment Journey
                 <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transform scale-x-0 animate-pulse"></div>
               </span>
             </h2>
@@ -468,19 +468,18 @@ export const CreateBatch = () => {
                           <>
                             <div className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-b-2 border-white"></div>
                             <span className="hidden sm:inline">
-                              Preparing Your Batch...
+                              Processing Investment...
                             </span>
-                            <span className="sm:hidden">Preparing...</span>
+                            <span className="sm:hidden">Processing...</span>
                           </>
                         ) : (
                           <>
                             <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
                             <span className="hidden sm:inline">
-                              Create ${investmentAmount.toLocaleString()}{" "}
-                              Investment Batch
+                              Invest ${investmentAmount.toLocaleString()}
                             </span>
                             <span className="sm:hidden">
-                              Create ${investmentAmount.toLocaleString()} Batch
+                              Invest ${investmentAmount.toLocaleString()}
                             </span>
                             <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-2 transition-transform" />
                           </>
