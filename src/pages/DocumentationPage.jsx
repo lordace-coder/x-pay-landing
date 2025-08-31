@@ -19,7 +19,7 @@ const features = [
     title: "Engagement Protocol",
     subtitle: "Daily Interaction Requirements",
     description:
-      "Complete daily engagement activities to activate your investment returns at 3.3% of total capital.",
+      "Complete daily engagement activities to activate your investment returns at 1.666% of total capital.",
     details: [
       "One daily content interactions required",
       "Automated reward calculation system",
