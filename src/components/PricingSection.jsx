@@ -826,4 +826,3 @@ export const CreateBatch = () => {
 };
 
 export default CreateBatch;
-  

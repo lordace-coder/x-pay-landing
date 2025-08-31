@@ -32,7 +32,7 @@ const features = [
     subtitle: "Flexible Withdrawal System",
     description:
       "Access your daily earnings through our profit wallet with immediate withdrawal capabilities.",
-    details: ["30-day capital lock period", "98% capital return guarantee"],
+    details: ["30-day capital lock period", "50% capital return guarantee"],
   },
   {
     icon: <Mail className="w-6 h-6" />,
