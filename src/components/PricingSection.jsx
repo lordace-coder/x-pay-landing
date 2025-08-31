@@ -27,7 +27,7 @@ import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
 import db from "../services/cocobase";
-export const MIN_INVESTMENT_AMOUNT = 15;
+export const MIN_INVESTMENT_AMOUNT = 20;
 // Mock implementations for missing dependencies
 const WALLET_BOOK = {
   USDT_BEP20: {
