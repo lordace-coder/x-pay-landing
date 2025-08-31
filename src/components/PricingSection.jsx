@@ -386,7 +386,7 @@ export const CreateBatch = () => {
                           </div>
                           <input
                             type="number"
-                            value={investmentAmount}
+                            defaultValue={investmentAmount}
                             onChange={handleInputChange}
                             min={MIN_INVESTMENT_AMOUNT}
                             className="w-full pl-10 pr-4 py-3 sm:py-4 text-lg sm:text-xl font-bold border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 backdrop-blur-sm"
