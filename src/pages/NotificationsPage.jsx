@@ -38,86 +38,69 @@ export default function XPayNotifications() {
   const [loadingPayments, setLoadingPayments] = useState(false);
   const [copiedRef, setCopiedRef] = useState(null);
 
-  // Fetch transactions
+  // Initial data fetch for both payments and transactions
   useEffect(() => {
-    if (activeTab === "transactions") {
-      const cachedTransactions = getDashboardData("transactions");
-      if (cachedTransactions !== null) {
-        // Use cached data (even if empty array)
-        setTransactions(
-          Array.isArray(cachedTransactions) ? cachedTransactions : []
-        );
-      } else {
-        // Only fetch if we haven't cached anything yet
+    const fetchData = async () => {
+      try {
+        // Start loading both
+        setLoadingPayments(true);
         setLoading(true);
-        authFetch(BASEURL + "/api/payments/transactions")
-          .then((e) => e.json())
+
+        // Fetch payments
+        const paymentsPromise = authFetch(`${BASEURL}/api/payments/my-payments`)
+          .then((res) => res.json())
+          .then((data) => {
+            setPayments(Array.isArray(data) ? data : []);
+          });
+
+        // Check cache for transactions first
+        const transactionsPromise = authFetch(
+          `${BASEURL}/api/payments/transactions`
+        )
+          .then((res) => res.json())
           .then((data) => {
             const transactionData = Array.isArray(data) ? data : [];
             setTransactions(transactionData);
             setDashboardData("transactions", transactionData);
-          })
-          .catch((error) => {
-            console.error("Error fetching transactions:", error);
-            const emptyTransactions = [];
-            setTransactions(emptyTransactions);
-            setDashboardData("transactions", emptyTransactions);
-          })
-          .finally(() => {
-            setLoading(false);
           });
+
+        // Wait for both to complete
+        await Promise.all([paymentsPromise, transactionsPromise]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoadingPayments(false);
+        setLoading(false);
       }
-    }
-  }, [activeTab, authFetch, getDashboardData, setDashboardData]);
+    };
 
-  // Fetch payments
-  useEffect(() => {
-    if (activeTab === "payments") {
-      setLoadingPayments(true);
-      authFetch(BASEURL + "/api/payments/my-payments")
-        .then((e) => e.json())
-        .then((data) => {
-          setPayments(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching payments:", error);
-        })
-        .finally(() => {
-          setLoadingPayments(false);
-        });
-    }
-  }, [activeTab, authFetch]);
+    fetchData();
+  }, []);
 
-  // Refresh current tab data
-  const refreshCurrentTab = () => {
-    if (activeTab === "payments") {
-      setLoadingPayments(true);
-      authFetch(BASEURL + "/api/payments/my-payments")
-        .then((e) => e.json())
-        .then((data) => {
-          setPayments(data);
-        })
-        .catch((error) => {
-          console.error("Error refreshing payments:", error);
-        })
-        .finally(() => {
-          setLoadingPayments(false);
-        });
-    } else {
-      setLoading(true);
-      authFetch(BASEURL + "/api/payments/transactions")
-        .then((e) => e.json())
-        .then((data) => {
-          setTransactions(Array.isArray(data) ? data : []);
-          setDashboardData("transactions", Array.isArray(data) ? data : []);
-        })
-        .catch((error) => {
-          console.error("Error refreshing transactions:", error);
-          setTransactions([]);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+  // Refresh function for both tabs
+  const refreshCurrentTab = async () => {
+    try {
+      if (activeTab === "payments") {
+        setLoadingPayments(true);
+        const response = await authFetch(`${BASEURL}/api/payments/my-payments`);
+        const data = await response.json();
+        setPayments(Array.isArray(data) ? data : []);
+        setLoadingPayments(false);
+      } else {
+        setLoading(true);
+        const response = await authFetch(
+          `${BASEURL}/api/payments/transactions`
+        );
+        const data = await response.json();
+        const transactionData = Array.isArray(data) ? data : [];
+        setTransactions(transactionData);
+        setDashboardData("transactions", transactionData);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(`Error refreshing ${activeTab}:`, error);
+      setLoadingPayments(false);
+      setLoading(false);
     }
   };
 
@@ -192,7 +175,7 @@ export default function XPayNotifications() {
       </header>
 
       {/* Main Content - Full width on mobile */}
-      <main className="w-full px-2 sm:px-4 py-2 sm:py-4 max-w-7xl mx-auto">
+      <main className="w-full md:w-[90vw] px-2 sm:px-4 py-2 sm:py-4 max-w-7xl mx-auto">
         {/* Tab Navigation - Full width and improved mobile design */}
         <div className="bg-white rounded-lg sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="flex border-b border-gray-200">
@@ -393,9 +376,9 @@ export default function XPayNotifications() {
                     >
                       <div className="flex justify-between items-start gap-3">
                         <div className="space-y-1 min-w-0 flex-1">
-                          <h4 className="text-sm sm:text-base font-semibold text-gray-900">
+                          <p className="text-sm sm:text-base font-semibold text-gray-900">
                             {transaction.title}
-                          </h4>
+                          </p>
                           <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
                             {transaction.description}
                           </p>

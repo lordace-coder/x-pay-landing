@@ -129,9 +129,9 @@ export default function RecentActivity() {
                   <div className="flex justify-between items-start gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                           {payment.payment_method}
-                        </h4>
+                        </p>
                         <span
                           className={`self-start text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
                             payment.status === "approved"
@@ -202,9 +202,9 @@ export default function RecentActivity() {
                 >
                   <div className="flex justify-between items-start gap-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 truncate">
+                      <p className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 truncate">
                         {transaction.title}
-                      </h4>
+                      </p>
                       <div className="flex items-center text-[10px] text-gray-500">
                         <Clock className="h-3 w-3 mr-1" />
                         {formatTimeAgo(transaction.timestamp)}
