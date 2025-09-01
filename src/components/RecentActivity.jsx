@@ -30,7 +30,7 @@ export default function RecentActivity() {
   useEffect(() => {
     if (activeTab === "transactions") {
       setLoading(true);
-      authFetch(BASEURL + "/tokens/transactions")
+      authFetch(BASEURL + "/api/payments/transactions")
         .then((res) => res.json())
         .then((data) =>
           setRecentTransactions(Array.isArray(data) ? data.slice(0, 5) : [])

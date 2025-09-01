@@ -105,7 +105,7 @@ export default function XPayNotifications() {
         });
     } else {
       setLoading(true);
-      authFetch(BASEURL + "/tokens/transactions")
+      authFetch(BASEURL + "/api/payments/transactions")
         .then((e) => e.json())
         .then((data) => {
           setTransactions(Array.isArray(data) ? data : []);
