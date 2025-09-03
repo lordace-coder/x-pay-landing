@@ -47,8 +47,10 @@ import { BASEURL } from "../utils/utils";
 import ReferralModal from "../components/RefModal";
 import { toast } from "react-toastify";
 import BannerAdSlider from "../components/BannerAdSlider";
+import UserCountDisplay from "../components/GlobalAppStats";
 
 export default function XPayDashboard() {
+  const [userCount, setUserCount] = useState(0);
   const [videosWatched, setVideosWatched] = useState({});
   const [batchData, setBatchData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -71,7 +73,24 @@ export default function XPayDashboard() {
 
   useEffect(() => {
     handleVerificationCheck();
+    getUserCount()
   }, [userData]);
+
+  const getUserCount = async () => {
+
+
+    const q = getDashboardData("user-count")
+    if (q && q != null) {
+      setUserCount(q)
+    } else {
+      const req = await authFetch(BASEURL + "/admin/stats")
+      const data = await req.json()
+      setUserCount(data.total_users)
+      setDashboardData("user-count", data.total_users)
+    }
+
+
+  }
 
   const handleVerificationCheck = async () => {
     const verificationStatus = await fetchVerificationStatus(accessToken);
@@ -343,36 +362,32 @@ export default function XPayDashboard() {
 
     return (
       <div
-        className={`relative overflow-hidden border-2 border-transparent rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${
-          isWithdrawn
-            ? "bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100"
-            : "bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50"
-        }`}
+        className={`relative overflow-hidden border-2 border-transparent rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${isWithdrawn
+          ? "bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100"
+          : "bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50"
+          }`}
       >
         {/* Background elements */}
         <div
-          className={`absolute top-0 right-0 w-20 h-20 rounded-full -mr-10 -mt-10 ${
-            isWithdrawn
-              ? "bg-gradient-to-br from-gray-300/20 to-slate-300/20"
-              : "bg-gradient-to-br from-yellow-300/20 to-orange-300/20"
-          }`}
+          className={`absolute top-0 right-0 w-20 h-20 rounded-full -mr-10 -mt-10 ${isWithdrawn
+            ? "bg-gradient-to-br from-gray-300/20 to-slate-300/20"
+            : "bg-gradient-to-br from-yellow-300/20 to-orange-300/20"
+            }`}
         ></div>
         <div
-          className={`absolute bottom-0 left-0 w-16 h-16 rounded-full -ml-8 -mb-8 ${
-            isWithdrawn
-              ? "bg-gradient-to-tr from-slate-300/20 to-gray-300/20"
-              : "bg-gradient-to-tr from-amber-300/20 to-yellow-300/20"
-          }`}
+          className={`absolute bottom-0 left-0 w-16 h-16 rounded-full -ml-8 -mb-8 ${isWithdrawn
+            ? "bg-gradient-to-tr from-slate-300/20 to-gray-300/20"
+            : "bg-gradient-to-tr from-amber-300/20 to-yellow-300/20"
+            }`}
         ></div>
 
         {/* Status badge */}
         <div className="absolute top-4 right-4">
           <div
-            className={`flex items-center space-x-1 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md ${
-              isWithdrawn
-                ? "bg-gradient-to-r from-gray-500 to-slate-500"
-                : "bg-gradient-to-r from-green-500 to-emerald-500"
-            }`}
+            className={`flex items-center space-x-1 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md ${isWithdrawn
+              ? "bg-gradient-to-r from-gray-500 to-slate-500"
+              : "bg-gradient-to-r from-green-500 to-emerald-500"
+              }`}
           >
             {isWithdrawn ? (
               <>
@@ -393,11 +408,10 @@ export default function XPayDashboard() {
         <div className="relative">
           <div className="flex items-center space-x-3 mb-4">
             <div
-              className={`p-3 rounded-xl shadow-md ${
-                isWithdrawn
-                  ? "bg-gradient-to-br from-gray-400 to-slate-400"
-                  : "bg-gradient-to-br from-yellow-400 to-orange-400"
-              }`}
+              className={`p-3 rounded-xl shadow-md ${isWithdrawn
+                ? "bg-gradient-to-br from-gray-400 to-slate-400"
+                : "bg-gradient-to-br from-yellow-400 to-orange-400"
+                }`}
             >
               {isWithdrawn ? (
                 <Wallet className="h-6 w-6 text-white" />
@@ -418,11 +432,10 @@ export default function XPayDashboard() {
           </div>
 
           <div
-            className={`backdrop-blur-sm rounded p-4 mb-4 ${
-              isWithdrawn
-                ? "bg-white/50 border border-gray-200/50"
-                : "bg-white/70 border border-yellow-200/50"
-            }`}
+            className={`backdrop-blur-sm rounded p-4 mb-4 ${isWithdrawn
+              ? "bg-white/50 border border-gray-200/50"
+              : "bg-white/70 border border-yellow-200/50"
+              }`}
           >
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -441,11 +454,10 @@ export default function XPayDashboard() {
             </div>
 
             <div
-              className={`mt-3 pt-3 ${
-                isWithdrawn
-                  ? "border-t border-gray-200/50"
-                  : "border-t border-yellow-200/50"
-              }`}
+              className={`mt-3 pt-3 ${isWithdrawn
+                ? "border-t border-gray-200/50"
+                : "border-t border-yellow-200/50"
+                }`}
             >
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 text-sm">
@@ -481,18 +493,16 @@ export default function XPayDashboard() {
           {/* Progress bar */}
           <div className="mb-4">
             <div
-              className={`w-full rounded-full h-3 overflow-hidden ${
-                isWithdrawn
-                  ? "bg-gradient-to-r from-gray-200 to-slate-200"
-                  : "bg-gradient-to-r from-yellow-200 to-orange-200"
-              }`}
+              className={`w-full rounded-full h-3 overflow-hidden ${isWithdrawn
+                ? "bg-gradient-to-r from-gray-200 to-slate-200"
+                : "bg-gradient-to-r from-yellow-200 to-orange-200"
+                }`}
             >
               <div
-                className={`h-3 rounded-full w-full shadow-sm ${
-                  isWithdrawn
-                    ? "bg-gradient-to-r from-gray-400 via-slate-400 to-gray-400"
-                    : "bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 animate-pulse"
-                }`}
+                className={`h-3 rounded-full w-full shadow-sm ${isWithdrawn
+                  ? "bg-gradient-to-r from-gray-400 via-slate-400 to-gray-400"
+                  : "bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 animate-pulse"
+                  }`}
               />
             </div>
           </div>
@@ -720,9 +730,8 @@ export default function XPayDashboard() {
                 title="Refresh dashboard data"
               >
                 <RefreshCw
-                  className={`h-5 w-5 ${
-                    loading || batchLoading ? "animate-spin" : ""
-                  }`}
+                  className={`h-5 w-5 ${loading || batchLoading ? "animate-spin" : ""
+                    }`}
                 />
               </button>
 
@@ -1022,6 +1031,7 @@ export default function XPayDashboard() {
               Purchase Now
             </button>
           </div>
+          <UserCountDisplay userCount={userCount} />
         </div>
       </div>
 
