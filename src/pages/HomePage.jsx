@@ -632,7 +632,7 @@ const HowItWorks = function () {
                 2
               </span>
               <h3 className="fs-5 mb-4">Watch Daily Videos </h3>
-              <p>Log in and watch 2 short videos daily.</p>
+              <p>Log in and watch 1 short videos daily.</p>
             </div>
           </div>
           <div
