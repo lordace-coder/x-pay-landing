@@ -16,7 +16,7 @@ import { BASEURL } from "../utils/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const EmailVerification = () => {
-  const { user, verifyEmail, fetchVerificationStatus } = useAuth();
+  const { user, verifyEmail, } = useAuth();
 
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [isChangingEmail, setIsChangingEmail] = useState(false);
@@ -128,9 +128,9 @@ const EmailVerification = () => {
       setIsLoading(true);
       const res = await verifyEmail(email, otpCode);
 
-      if (res.next_step === "verify_phone") {
-        navigate("/verify_phone");
-      }
+
+
+      navigate("/dashboard")
     } catch (err) {
       console.error("Verify email error:", err);
       toast.error(err.message); // <-- shows "Invalid or expired OTP"
@@ -274,11 +274,10 @@ const EmailVerification = () => {
               <button
                 onClick={handleVerifyEmail}
                 disabled={isLoading || otp.join("").length !== 4}
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
-                  otp.join("").length === 4 && !isLoading
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${otp.join("").length === 4 && !isLoading
                     ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                  }`}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
@@ -355,11 +354,10 @@ const EmailVerification = () => {
                   disabled={
                     isLoading || !newEmail || !/\S+@\S+\.\S+/.test(newEmail)
                   }
-                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
-                    newEmail && /\S+@\S+\.\S+/.test(newEmail) && !isLoading
+                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${newEmail && /\S+@\S+\.\S+/.test(newEmail) && !isLoading
                       ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   {isLoading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

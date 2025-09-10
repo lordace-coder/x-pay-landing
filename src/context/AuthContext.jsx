@@ -154,7 +154,7 @@ const AuthProvider = ({ children }) => {
       throw new Error(data.detail || "Verification failed");
     }
 
-    fetchVerificationStatus();
+    // fetchVerificationStatus(localStorage.getItem("xpay_token"));
     return data;
   };
 
