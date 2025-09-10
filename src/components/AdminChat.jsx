@@ -7,7 +7,7 @@ const AdminChatPopup = () => {
       <div
         onClick={() => {
           window.open(
-            "https://chat.whatsapp.com/CvaWKR0y7eoLKSrZQuO5bc?mode=ems_copy_c",
+            "https://wa.me/+4407352663651?text=Hello%2C%20I%20need%20assistance%20with%20XPay.",
             "_blank"
           );
         }}
