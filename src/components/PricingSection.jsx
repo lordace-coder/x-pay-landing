@@ -65,9 +65,9 @@ export const CreateBatch = () => {
   const [submitting, setSubmitting] = useState(false);
 
   // Calculations
-const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
+  const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
 
-  const dailyProfit = totalProfit / (isStandard ?  30 : 15);
+  const dailyProfit = totalProfit / (isStandard ? 30 : 15);
   const totalReturn = investmentAmount + totalProfit;
   const videosRequired = isStandard ? 30 : 15;
 
@@ -79,11 +79,14 @@ const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
   }, []);
 
   useEffect(() => {
-    const savedChoice = localStorage.getItem("isStandard");
-    if (savedChoice === null) {
-      setshowDurationModal(true);
-    } else {
-      setIsStandard(savedChoice === "true");
+    // Check if the user is on /purchase-tokens
+    if (window.location.pathname === "/purchase-tokens") {
+      const savedChoice = localStorage.getItem("isStandard");
+      if (savedChoice === null) {
+        setshowDurationModal(true);
+      } else {
+        setIsStandard(savedChoice === "true");
+      }
     }
   }, []);
 
@@ -334,39 +337,40 @@ const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
                 ) : (
                   <>
                     {/* Enhanced Title */}
-                   <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-        <div className="inline-flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-            <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
-          </div>
-          <div className="text-left">
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-              Select Investment Amount
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Choose your investment to start earning
-            </p>
+                    <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+                      <div className="inline-flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                            Select Investment Amount
+                          </h3>
+                          <p className="text-sm sm:text-base text-gray-600">
+                            Choose your investment to start earning
+                          </p>
 
-            {/* Current Plan + Settings */}
-            <div className="mt-2 flex items-center gap-2 text-gray-700">
-              <span className="text-sm sm:text-base font-medium">
-                Current Plan:{" "}
-                <span className="text-indigo-600 font-semibold">
-                  {isStandard ? "Standard (30 Days)" : "Custom (15 Days)"}
-                </span>
-              </span>
-              <button
-                onClick={() => setshowDurationModal(true)}
-                className="p-2 rounded-lg hover:bg-gray-100 transition"
-                title="Change Plan"
-              >
-                <Settings className="w-5 h-5 text-gray-600 hover:text-indigo-600" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+                          {/* Current Plan + Settings */}
+                          <div className="mt-2 flex items-center gap-2 text-gray-700">
+                            <span className="text-sm sm:text-base font-medium">
+                              Current Plan:{" "}
+                              <span className="text-indigo-600 font-semibold">
+                                {isStandard
+                                  ? "Standard (30 Days)"
+                                  : "Custom (15 Days)"}
+                              </span>
+                            </span>
+                            <button
+                              onClick={() => setshowDurationModal(true)}
+                              className="p-2 rounded-lg hover:bg-gray-100 transition"
+                              title="Change Plan"
+                            >
+                              <Settings className="w-5 h-5 text-gray-600 hover:text-indigo-600" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Enhanced Amount display */}
                     <div className="text-center mb-6 sm:mb-8 lg:mb-12">
