@@ -352,19 +352,19 @@ export const CreateBatch = () => {
 
                           {/* Current Plan + Settings */}
                           <div className="mt-2 flex items-center gap-2 text-gray-700">
-                            <span className="text-sm sm:text-base font-medium">
-                              Current Plan:{" "}
-                              <span className="text-indigo-600 font-semibold">
-                                {isStandard
-                                  ? "Standard (30 Days)"
-                                  : "Custom (15 Days)"}
-                              </span>
-                            </span>
                             <button
                               onClick={() => setshowDurationModal(true)}
                               className="p-2 rounded-lg hover:bg-gray-100 transition"
                               title="Change Plan"
                             >
+                              <span className="text-sm sm:text-base font-medium">
+                                Current Plan:{" "}
+                                <span className="text-indigo-600 font-semibold">
+                                  {isStandard
+                                    ? "Standard (30 Days)"
+                                    : "Custom (15 Days)"}
+                                </span>
+                              </span>
                               <Settings className="w-5 h-5 text-gray-600 hover:text-indigo-600" />
                             </button>
                           </div>
