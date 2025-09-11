@@ -57,7 +57,7 @@ export const CreateBatch = () => {
   const [showProofModal, setShowProofModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("USDT_BEP20");
   const [showDurationModal, setshowDurationModal] = useState(false);
-  const [isStandard, setIsStandard] = useState(null);
+  const [isStandard, setIsStandard] = useState(true);
   // Submit-proof form state
   const [proofImage, setProofImage] = useState(null);
   const [referenceNumber, setReferenceNumber] = useState("");
@@ -65,7 +65,7 @@ export const CreateBatch = () => {
   const [submitting, setSubmitting] = useState(false);
 
   // Calculations
-  const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
+  const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.20);
 
   const dailyProfit = totalProfit / (isStandard ? 30 : 15);
   const totalReturn = investmentAmount + totalProfit;
@@ -149,7 +149,7 @@ export const CreateBatch = () => {
         form.append("reference_number", referenceNumber.trim());
       if (description.trim()) form.append("description", description.trim());
 
-      const res = await authFetch(`${BASEURL}/api/payments/submit-proof`, {
+      const res = await authFetch(`https://xpay-api.fly.dev/api/payments/submit-proof${isStandard ? '?investment_type=meduim' : ""}`, {
         method: "POST",
         body: form,
       });
@@ -239,7 +239,7 @@ export const CreateBatch = () => {
                     <Zap className="w-6 h-6" />
                   </div>
                   <div className="text-left">
-                    <p className="font-semibold text-gray-900">Custom Plan</p>
+                    <p className="font-semibold text-gray-900">Meduim Plan</p>
                     <p className="text-sm text-gray-500">15 Days Duration</p>
                   </div>
                   <span className="ml-auto text-green-600 font-bold">15d</span>
@@ -354,15 +354,15 @@ export const CreateBatch = () => {
                           <div className="mt-2 flex items-center gap-2 text-gray-700">
                             <button
                               onClick={() => setshowDurationModal(true)}
-                              className="p-2 rounded-lg hover:bg-gray-100 transition"
+                              className="p-2 rounded-lg flex gap-3 hover:bg-gray-100 transition"
                               title="Change Plan"
                             >
                               <span className="text-sm sm:text-base font-medium">
-                                Current Plan:{" "}
+                                Select Investment Plan:{" "}
                                 <span className="text-indigo-600 font-semibold">
                                   {isStandard
                                     ? "Standard (30 Days)"
-                                    : "Custom (15 Days)"}
+                                    : "Meduim (15 Days)"}
                                 </span>
                               </span>
                               <Settings className="w-5 h-5 text-gray-600 hover:text-indigo-600" />
@@ -380,9 +380,8 @@ export const CreateBatch = () => {
                             Investment Amount
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${
-                              isSliding ? "scale-110 drop-shadow-lg" : ""
-                            }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
+                              }`}
                           >
                             ${investmentAmount.toLocaleString()}
                           </div>
@@ -400,9 +399,8 @@ export const CreateBatch = () => {
                             Total Return
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${
-                              isSliding ? "scale-110 drop-shadow-lg" : ""
-                            }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
+                              }`}
                           >
                             ${totalReturn.toLocaleString()}
                           </div>
@@ -659,11 +657,10 @@ export const CreateBatch = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setPaymentMethod("USDT_BEP20")}
-                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${
-                      paymentMethod === "USDT_BEP20"
-                        ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
-                        : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
-                    }`}
+                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${paymentMethod === "USDT_BEP20"
+                      ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
+                      : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
+                      }`}
                   >
                     <div className="font-bold text-base sm:text-lg">USDT</div>
                     <div className="text-sm text-slate-500">Network: BEP20</div>
