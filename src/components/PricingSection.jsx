@@ -67,7 +67,7 @@ export const CreateBatch = () => {
   // Calculations
 const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
 
-  const dailyProfit = totalProfit / 30;
+  const dailyProfit = totalProfit / (isStandard ?  30 : 15);
   const totalReturn = investmentAmount + totalProfit;
   const videosRequired = isStandard ? 30 : 15;
 
