@@ -19,6 +19,7 @@ import {
   Users,
   Star,
   Zap,
+  Settings,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -41,6 +42,7 @@ export const CreateBatch = () => {
   const [batchCreationActive] = useState(true);
   const [creating, setCreating] = useState(false);
   const [address, setAddress] = useState(null);
+
   const [investmentAmount, setInvestmentAmount] = useState(
     MIN_INVESTMENT_AMOUNT
   );
@@ -54,7 +56,8 @@ export const CreateBatch = () => {
   const [showPayModal, setShowPayModal] = useState(false);
   const [showProofModal, setShowProofModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("USDT_BEP20");
-
+  const [showDurationModal, setshowDurationModal] = useState(false);
+  const [isStandard, setIsStandard] = useState(null);
   // Submit-proof form state
   const [proofImage, setProofImage] = useState(null);
   const [referenceNumber, setReferenceNumber] = useState("");
@@ -62,19 +65,36 @@ export const CreateBatch = () => {
   const [submitting, setSubmitting] = useState(false);
 
   // Calculations
-  const totalProfit = investmentAmount * 0.5;
+const totalProfit = investmentAmount * (isStandard ? 0.5 : 0.25);
+
   const dailyProfit = totalProfit / 30;
   const totalReturn = investmentAmount + totalProfit;
-  const videosRequired = 30;
+  const videosRequired = isStandard ? 30 : 15;
 
   useEffect(() => {
-    db.listDocuments("settings").then(
-      (d) => {
-        const setting = d[0]
-        setAddress(setting.data.wallet);
-      }
-    );
+    db.listDocuments("settings").then((d) => {
+      const setting = d[0];
+      setAddress(setting.data.wallet);
+    });
   }, []);
+
+  useEffect(() => {
+    const savedChoice = localStorage.getItem("isStandard");
+    if (savedChoice === null) {
+      setshowDurationModal(true);
+    } else {
+      setIsStandard(savedChoice === "true");
+    }
+  }, []);
+
+  // function to handel choice
+  const handleChoice = (choice) => {
+    setIsStandard(choice);
+    localStorage.setItem("isStandard", choice); // persist choice
+    setshowDurationModal(false);
+  };
+
+  const DURATION = isStandard ? 30 : 15;
 
   const handleInputChange = (e) => {
     const value = Math.max(
@@ -176,12 +196,56 @@ export const CreateBatch = () => {
     }
   };
 
+  console.log(DURATION);
+
   return (
     <>
       <section
         className="relative py-6 md:py-12 lg:py-16 min-h-screen overflow-hidden"
         id="create-batch"
       >
+        {showDurationModal && (
+          <div className="fixed inset-0 flex  items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+            <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl  p-4 w-[420px] shadow-2xl">
+              <h2 className="text-xl font-extrabold text-center mb-6 py-3 text-gray-800">
+                Set Your Investment Duration
+              </h2>
+
+              <div className="grid grid-cols-1 gap-3 ">
+                {/* Standard Option */}
+                <button
+                  onClick={() => handleChoice(true)}
+                  className="flex items-center gap-4 p-2 rounded border-2 border-transparent hover:border-blue-500 shadow-md transition-all bg-white"
+                >
+                  <div className="bg-blue-100 text-blue-600 p-3 rounded-xl">
+                    <Calendar className="w-6 h-6" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-gray-900">Standard Plan</p>
+                    <p className="text-sm text-gray-500">30 Days Duration</p>
+                  </div>
+                  <span className="ml-auto text-blue-600 font-bold">30d</span>
+                </button>
+
+                {/* Custom Option */}
+                <button
+                  onClick={() => handleChoice(false)}
+                  className="flex items-center gap-4 p-2 rounded border-2 border-transparent hover:border-green-500 shadow-md transition-all bg-white"
+                >
+                  <div className="bg-green-100 text-green-600 p-3 rounded-xl">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-semibold text-gray-900">Custom Plan</p>
+                    <p className="text-sm text-gray-500">15 Days Duration</p>
+                  </div>
+                  <span className="ml-auto text-green-600 font-bold">15d</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-indigo-600/20 rounded-full blur-3xl animate-pulse"></div>
@@ -213,7 +277,7 @@ export const CreateBatch = () => {
 
             <p className="text-sm sm:text-base lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6 lg:mb-8 px-2">
               Join thousands of investors earning guaranteed returns. Watch just
-              1 video daily for 30 days and earn{" "}
+              1 video daily for {DURATION} days and earn{" "}
               <span className="font-bold text-green-600">50% profit</span> on
               your investment plus get your original amount back.
             </p>
@@ -270,21 +334,39 @@ export const CreateBatch = () => {
                 ) : (
                   <>
                     {/* Enhanced Title */}
-                    <div className="text-center mb-6 sm:mb-8 lg:mb-12">
-                      <div className="inline-flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
-                        </div>
-                        <div className="text-left">
-                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                            Select Investment Amount
-                          </h3>
-                          <p className="text-sm sm:text-base text-gray-600">
-                            Choose your investment to start earning
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                   <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+        <div className="inline-flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 lg:mb-8">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+            <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+          </div>
+          <div className="text-left">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+              Select Investment Amount
+            </h3>
+            <p className="text-sm sm:text-base text-gray-600">
+              Choose your investment to start earning
+            </p>
+
+            {/* Current Plan + Settings */}
+            <div className="mt-2 flex items-center gap-2 text-gray-700">
+              <span className="text-sm sm:text-base font-medium">
+                Current Plan:{" "}
+                <span className="text-indigo-600 font-semibold">
+                  {isStandard ? "Standard (30 Days)" : "Custom (15 Days)"}
+                </span>
+              </span>
+              <button
+                onClick={() => setshowDurationModal(true)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition"
+                title="Change Plan"
+              >
+                <Settings className="w-5 h-5 text-gray-600 hover:text-indigo-600" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
                     {/* Enhanced Amount display */}
                     <div className="text-center mb-6 sm:mb-8 lg:mb-12">
@@ -294,8 +376,9 @@ export const CreateBatch = () => {
                             Investment Amount
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
-                              }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${
+                              isSliding ? "scale-110 drop-shadow-lg" : ""
+                            }`}
                           >
                             ${investmentAmount.toLocaleString()}
                           </div>
@@ -304,7 +387,7 @@ export const CreateBatch = () => {
                         <div className="flex flex-col items-center">
                           <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-gray-400 mb-1 sm:mb-2 rotate-90 sm:rotate-0" />
                           <div className="text-xs text-gray-500 font-medium">
-                            30 Days
+                            {DURATION} Days
                           </div>
                         </div>
 
@@ -313,8 +396,9 @@ export const CreateBatch = () => {
                             Total Return
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
-                              }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${
+                              isSliding ? "scale-110 drop-shadow-lg" : ""
+                            }`}
                           >
                             ${totalReturn.toLocaleString()}
                           </div>
@@ -344,7 +428,7 @@ export const CreateBatch = () => {
                           ${totalProfit.toFixed(0)}
                         </div>
                         <div className="text-xs text-green-600 font-medium">
-                          Total Profit (50%)
+                          Total Profit {isStandard ? "(30d)" : "(15d)"}
                         </div>
                       </div>
 
@@ -365,7 +449,7 @@ export const CreateBatch = () => {
                           <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                         </div>
                         <div className="text-lg sm:text-xl lg:text-2xl font-bold text-orange-900 mb-1">
-                          30
+                          {DURATION}
                         </div>
                         <div className="text-xs text-orange-600 font-medium">
                           Days Duration
@@ -434,7 +518,8 @@ export const CreateBatch = () => {
                             </li>
                             <li className="flex items-center gap-2">
                               <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0"></div>
-                              ${dailyProfit.toFixed(2)} daily profit for 30 days
+                              ${dailyProfit.toFixed(2)} daily profit for{" "}
+                              {DURATION} days
                             </li>
                             <li className="flex items-center gap-2">
                               <div className="w-1.5 h-1.5 bg-purple-500 rounded-full flex-shrink-0"></div>
@@ -570,10 +655,11 @@ export const CreateBatch = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setPaymentMethod("USDT_BEP20")}
-                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${paymentMethod === "USDT_BEP20"
+                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${
+                      paymentMethod === "USDT_BEP20"
                         ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
                         : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
-                      }`}
+                    }`}
                   >
                     <div className="font-bold text-base sm:text-lg">USDT</div>
                     <div className="text-sm text-slate-500">Network: BEP20</div>
