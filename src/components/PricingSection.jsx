@@ -68,9 +68,10 @@ export const CreateBatch = () => {
   const videosRequired = 30;
 
   useEffect(() => {
-    db.getDocument("settings", "5f4ef303-3624-409e-ae3d-1e3d892ed180").then(
+    db.listDocuments("settings").then(
       (d) => {
-        setAddress(d.data.wallet);
+        const setting = d[0]
+        setAddress(setting.data.wallet);
       }
     );
   }, []);
@@ -293,9 +294,8 @@ export const CreateBatch = () => {
                             Investment Amount
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${
-                              isSliding ? "scale-110 drop-shadow-lg" : ""
-                            }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
+                              }`}
                           >
                             ${investmentAmount.toLocaleString()}
                           </div>
@@ -313,9 +313,8 @@ export const CreateBatch = () => {
                             Total Return
                           </div>
                           <div
-                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${
-                              isSliding ? "scale-110 drop-shadow-lg" : ""
-                            }`}
+                            className={`text-2xl sm:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent transition-all duration-300 ${isSliding ? "scale-110 drop-shadow-lg" : ""
+                              }`}
                           >
                             ${totalReturn.toLocaleString()}
                           </div>
@@ -571,11 +570,10 @@ export const CreateBatch = () => {
                 <div className="grid grid-cols-1 gap-3">
                   <button
                     onClick={() => setPaymentMethod("USDT_BEP20")}
-                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${
-                      paymentMethod === "USDT_BEP20"
+                    className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 ${paymentMethod === "USDT_BEP20"
                         ? "border-blue-500 ring-2 ring-blue-200 bg-blue-50 shadow-lg"
                         : "border-slate-200 hover:bg-slate-50 hover:shadow-md"
-                    }`}
+                      }`}
                   >
                     <div className="font-bold text-base sm:text-lg">USDT</div>
                     <div className="text-sm text-slate-500">Network: BEP20</div>
