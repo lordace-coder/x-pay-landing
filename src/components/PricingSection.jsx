@@ -149,7 +149,7 @@ export const CreateBatch = () => {
         form.append("reference_number", referenceNumber.trim());
       if (description.trim()) form.append("description", description.trim());
 
-      const res = await authFetch(`https://xpay-api.fly.dev/api/payments/submit-proof${isStandard ? '?investment_type=meduim' : ""}`, {
+      const res = await authFetch(`https://xpay-api.fly.dev/api/payments/submit-proof${!isStandard ? '?investment_type=medium' : ""}`, {
         method: "POST",
         body: form,
       });
