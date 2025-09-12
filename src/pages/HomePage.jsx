@@ -476,15 +476,7 @@ const Features = function () {
                             confidence and convenience."
                           </p>
                         </div>
-                        <div className="align-self-start">
-                          <a
-                            className="glightbox btn btn-play d-inline-flex align-items-center gap-2"
-                            href="https://www.youtube.com/watch?v=DQx96G4yHd8"
-                            data-gallery="video"
-                          >
-                            <i className="bi bi-play-fill"></i> Watch the Video
-                          </a>
-                        </div>
+
                       </div>
                     </div>
                   </div>
