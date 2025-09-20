@@ -23,7 +23,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Navigation = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -65,19 +65,17 @@ const Navigation = () => {
         }}
         className={`
           w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200
-          ${
-            isActive
-              ? "bg-emerald-50 text-emerald-700"
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          ${isActive
+            ? "bg-emerald-50 text-emerald-700"
+            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
           }
           ${collapsed ? "justify-center" : "justify-start"}
         `}
         title={collapsed ? item.label : ""}
       >
         <Icon
-          className={`h-5 w-5 ${collapsed ? "" : "mr-3"} flex-shrink-0 ${
-            isActive ? "text-emerald-600" : ""
-          }`}
+          className={`h-5 w-5 ${collapsed ? "" : "mr-3"} flex-shrink-0 ${isActive ? "text-emerald-600" : ""
+            }`}
         />
         {!collapsed && <span className="truncate">{item.label}</span>}
       </button>
@@ -160,9 +158,8 @@ const Navigation = () => {
           }}
         >
           <div
-            className={`flex items-center ${
-              sidebarCollapsed ? "justify-center" : "space-x-3"
-            }`}
+            className={`flex items-center ${sidebarCollapsed ? "justify-center" : "space-x-3"
+              }`}
           >
             <button
               onClick={logout}
@@ -198,9 +195,8 @@ const Navigation = () => {
 
       {/* Spacer for main content - only adds margin when sidebar is visible */}
       <div
-        className={`hidden lg:block transition-all duration-300 ${
-          sidebarCollapsed ? "w-16" : "w-64"
-        }`}
+        className={`hidden lg:block transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-64"
+          }`}
       />
     </>
   );
