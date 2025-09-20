@@ -1047,10 +1047,10 @@ export default function XPayDashboard() {
             </div>
             <div>
               <div className="font-semibold text-gray-900 text-sm sm:text-base">
-                Investment Platform
+                X-Pay Platform
               </div>
               <div className="text-xs sm:text-sm text-gray-500">
-                © 2024 All rights reserved
+                © 2025 All rights reserved
               </div>
             </div>
           </div>
