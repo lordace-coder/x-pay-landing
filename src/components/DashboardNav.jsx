@@ -31,7 +31,7 @@ const Navigation = () => {
     { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     {
       id: "tokens",
-      label: "X-Pay Tokens",
+      label: "Create New Batch",
       icon: DollarSign,
       href: "/purchase-tokens",
     },
