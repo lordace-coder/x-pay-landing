@@ -27,6 +27,7 @@ import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
 import ReferralModal from "../components/RefModal";
+import { useNavigate } from "react-router-dom";
 
 // Password strength checker function
 const checkPasswordStrength = (password) => {
@@ -60,7 +61,7 @@ const ChangePassword = () => {
   });
   const [copySuccess, setCopySuccess] = useState(false);
   const [showRef, setShowRef] = useState(false);
-
+  const navigate = useNavigate()
   const refUrl =
     typeof window !== "undefined" && user
       ? window.location.origin + "/register?ref=" + user.id
@@ -232,8 +233,8 @@ Be part of a secure and transparent investment ecosystem that prioritizes your f
 
   const handleWithdrawNavigation = () => {
     // Navigate to withdrawal page - replace with your actual navigation logic
-    console.log("Navigate to withdrawal page");
-    // Example: router.push('/withdraw') or window.location.href = '/withdraw'
+   
+    navigate("/ref-withdrawal")
   };
 
   const showReferalModal = () => {

@@ -30,7 +30,7 @@ const ReferralWithdrawal = () => {
   const [otpRequested, setOtpRequested] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [walletCopied, setWalletCopied] = useState(false);
-  
+
   const { authFetch, user } = useAuth();
 
   // Sample wallet for copy functionality
@@ -47,7 +47,7 @@ const ReferralWithdrawal = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "otp") {
       // Only allow numbers and limit to 6 digits
       const numericValue = value.replace(/[^0-9]/g, "").slice(0, 6);
@@ -63,7 +63,8 @@ const ReferralWithdrawal = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await authFetch(`${BASEURL}/auth/request-withdrawal-otp`, {
+      const response = await authFetch(`${BASEURL}/batch-withdrawals/request-otp
+`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,9 +75,9 @@ const ReferralWithdrawal = () => {
         setOtpRequested(true);
         setStep(2);
         setCountdown(300); // 5 minutes countdown
-        setMessage({ 
-          type: "success", 
-          text: "OTP sent successfully! Check your phone for the verification code." 
+        setMessage({
+          type: "success",
+          text: "OTP sent successfully! Check your phone for the verification code."
         });
       } else {
         const errorData = await response.json();
@@ -86,9 +87,9 @@ const ReferralWithdrawal = () => {
         });
       }
     } catch (error) {
-      setMessage({ 
-        type: "error", 
-        text: "Network error. Please check your connection and try again." 
+      setMessage({
+        type: "error",
+        text: "Network error. Please check your connection and try again."
       });
     } finally {
       setIsLoading(false);
@@ -108,9 +109,10 @@ const ReferralWithdrawal = () => {
 
     // Basic wallet address validation (BEP20/Ethereum format)
     if (!formData.wallet_address.match(/^0x[a-fA-F0-9]{40}$/)) {
-      setMessage({ 
-        type: "error", 
-        text: "Please enter a valid BEP20 USDT wallet address (starts with 0x)" 
+      alert("Invalid wallet address please check and confirm then try again")
+      setMessage({
+        type: "error",
+        text: "Please enter a valid BEP20 USDT wallet address (starts with 0x)"
       });
       return;
     }
@@ -119,22 +121,19 @@ const ReferralWithdrawal = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await authFetch(`${BASEURL}/auth/withdraw-referral-bonus`, {
-        method: "POST",
+      const response = await authFetch(`${BASEURL}/batch-withdrawals/referral-bonus/${formData.wallet_address}/${formData.otp}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          otp: formData.otp,
-          wallet_address: formData.wallet_address,
-        }),
+
       });
 
       if (response.ok) {
         setStep(3);
-        setMessage({ 
-          type: "success", 
-          text: "Withdrawal request submitted successfully!" 
+        setMessage({
+          type: "success",
+          text: "Withdrawal request submitted successfully!"
         });
       } else {
         const errorData = await response.json();
@@ -144,9 +143,9 @@ const ReferralWithdrawal = () => {
         });
       }
     } catch (error) {
-      setMessage({ 
-        type: "error", 
-        text: "Network error. Please try again." 
+      setMessage({
+        type: "error",
+        text: "Network error. Please try again."
       });
     } finally {
       setIsLoading(false);
@@ -168,7 +167,7 @@ const ReferralWithdrawal = () => {
         document.execCommand("copy");
         setWalletCopied(true);
         setTimeout(() => setWalletCopied(false), 2000);
-      } catch (fallbackErr) {}
+      } catch (fallbackErr) { }
       document.body.removeChild(textArea);
     }
   };
@@ -236,19 +235,17 @@ const ReferralWithdrawal = () => {
             {[1, 2, 3].map((stepNum) => (
               <div key={stepNum} className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                    step >= stepNum
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= stepNum
                       ? "bg-emerald-600 text-white shadow-lg"
                       : "bg-gray-200 text-gray-500"
-                  }`}
+                    }`}
                 >
                   {stepNum}
                 </div>
                 {stepNum < 3 && (
                   <div
-                    className={`w-8 h-0.5 mx-2 transition-all ${
-                      step > stepNum ? "bg-emerald-600" : "bg-gray-200"
-                    }`}
+                    className={`w-8 h-0.5 mx-2 transition-all ${step > stepNum ? "bg-emerald-600" : "bg-gray-200"
+                      }`}
                   />
                 )}
               </div>
@@ -258,11 +255,10 @@ const ReferralWithdrawal = () => {
           {/* Alert Messages */}
           {message.text && (
             <div
-              className={`flex items-start gap-3 p-4 rounded-xl border ${
-                message.type === "success"
+              className={`flex items-start gap-3 p-4 rounded-xl border ${message.type === "success"
                   ? "bg-green-50 border-green-200 text-green-800"
                   : "bg-red-50 border-red-200 text-red-800"
-              }`}
+                }`}
             >
               {message.type === "success" ? (
                 <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -306,11 +302,10 @@ const ReferralWithdrawal = () => {
                   <button
                     onClick={requestOTP}
                     disabled={isLoading || !user?.referral_balance || user.referral_balance < 50}
-                    className={`w-full py-4 px-6 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 ${
-                      user?.referral_balance >= 50
+                    className={`w-full py-4 px-6 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 ${user?.referral_balance >= 50
                         ? "bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl"
                         : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    }`}
+                      }`}
                   >
                     {isLoading ? (
                       <>
@@ -442,7 +437,7 @@ const ReferralWithdrawal = () => {
                       <ArrowLeft className="w-4 h-4" />
                       Back
                     </button>
-                    
+
                     <button
                       onClick={submitWithdrawal}
                       disabled={isLoading || !formData.otp || !formData.wallet_address}
@@ -487,7 +482,7 @@ const ReferralWithdrawal = () => {
                       Withdrawal Request Submitted!
                     </h2>
                     <p className="text-gray-600 text-sm">
-                      Your withdrawal request has been processed successfully. You'll receive your funds within 24-48 hours.
+                      Your withdrawal request has been processed successfully. You'll receive your funds within 15 days.
                     </p>
                   </div>
 
@@ -506,7 +501,7 @@ const ReferralWithdrawal = () => {
                     >
                       Make Another Withdrawal
                     </button>
-                    
+
                     <button
                       onClick={() => window.history.back()}
                       className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
