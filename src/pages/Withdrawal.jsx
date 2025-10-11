@@ -37,6 +37,7 @@ export default function BatchWithdrawal() {
   const [withdrawalData, setWithdrawalData] = useState(null);
   const [showOtp, setShowOtp] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
+  const [walletAddress, setWalletAddress] = useState("");
 
   const { authFetch } = useAuth();
   const navigate = useNavigate();
@@ -126,8 +127,13 @@ export default function BatchWithdrawal() {
   };
 
   const submitWithdrawal = async () => {
-    if (!otp || otp.length < 4) {
-      toast.error("Please enter a valid OTP");
+    if (!otp || otp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    if (!walletAddress || walletAddress.trim().length === 0) {
+      toast.error("Please enter your USDT wallet address");
       return;
     }
 
@@ -142,8 +148,7 @@ export default function BatchWithdrawal() {
           },
           body: JSON.stringify({
             batch_uuid: selectedBatch.batch_uuid,
-            usdt_wallet_address:
-              selectedBatch.usdt_wallet_address || "WALLET_ADDRESS_PLACEHOLDER",
+            usdt_wallet_address: walletAddress.trim(),
           }),
         }
       );
@@ -807,32 +812,64 @@ export default function BatchWithdrawal() {
             </div>
 
             <div className="max-w-md mx-auto">
-              <div className="relative mb-6">
-                <input
-                  type={showOtp ? "text" : "password"}
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter 6-digit code"
-                  className="w-full px-4 py-4 text-center text-lg font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  maxLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowOtp(!showOtp)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showOtp ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
+              {/* Wallet Address Input */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  USDT Wallet Address (TRC20)
+                </label>
+                <div className="relative">
+                  <Wallet className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={walletAddress}
+                    onChange={(e) => setWalletAddress(e.target.value)}
+                    placeholder="Enter your USDT TRC20 wallet address"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  Make sure to enter your correct TRC20 USDT wallet address.
+                  Double-check before submitting.
+                </p>
+              </div>
+
+              {/* OTP Input */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Verification Code
+                </label>
+                <div className="relative">
+                  <input
+                    type={showOtp ? "text" : "password"}
+                    value={otp}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      if (value.length <= 6) {
+                        setOtp(value);
+                      }
+                    }}
+                    placeholder="Enter 6-digit code"
+                    className="w-full px-4 py-4 text-center text-lg font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    maxLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOtp(!showOtp)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showOtp ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="text-center mb-8">
                 <button
                   onClick={requestOTP}
-                  disabled={loading || otpTimer > 540} // Disable if recently sent (within 1 minute)
+                  disabled={loading || otpTimer > 540}
                   className="text-blue-600 hover:text-blue-800 text-sm font-medium disabled:text-gray-400 disabled:cursor-not-allowed flex items-center space-x-1 mx-auto"
                 >
                   <RefreshCw className="h-4 w-4" />
@@ -850,7 +887,9 @@ export default function BatchWithdrawal() {
               </button>
               <button
                 onClick={submitWithdrawal}
-                disabled={loading || !otp || otp.length < 4}
+                disabled={
+                  loading || !otp || otp.length !== 6 || !walletAddress.trim()
+                }
                 className="px-4 py-2 sm:px-8 sm:py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {loading ? (
