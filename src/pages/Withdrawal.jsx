@@ -815,7 +815,7 @@ export default function BatchWithdrawal() {
               {/* Wallet Address Input */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  USDT Wallet Address (TRC20)
+                  USDT Wallet Address (Bep20)
                 </label>
                 <div className="relative">
                   <Wallet className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -823,12 +823,12 @@ export default function BatchWithdrawal() {
                     type="text"
                     value={walletAddress}
                     onChange={(e) => setWalletAddress(e.target.value)}
-                    placeholder="Enter your USDT TRC20 wallet address"
+                    placeholder="Enter your USDT Bep20 wallet address"
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
-                  Make sure to enter your correct TRC20 USDT wallet address.
+                  Make sure to enter your correct Bep20 USDT wallet address.
                   Double-check before submitting.
                 </p>
               </div>
