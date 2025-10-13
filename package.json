@@ -13,7 +13,7 @@
     "@srexi/purecounterjs": "^1.5.0",
     "@tailwindcss/vite": "^4.1.8",
     "aos": "^2.3.4",
-    "cocobase": "^0.3.3",
+    "cocobase": "^0.3.0",
     "glightbox": "^3.3.1",
     "gsap": "^3.13.0",
     "imagesloaded": "^5.0.0",
