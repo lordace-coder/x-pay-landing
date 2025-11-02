@@ -6,11 +6,10 @@ import {
   Pause,
   Play,
 } from "lucide-react";
-import { BASEURL } from "../utils/utils";
+import db from "../services/cocobase";
 
 // Internal configuration - can be overridden via props if needed
 const BannerAdSlider = ({
-  apiUrl = BASEURL + "/ads/random-banners", // Replace with your actual BASEURL
   adsCount = 4,
   autoSlide = true,
   slideInterval = 5000,
@@ -36,22 +35,17 @@ const BannerAdSlider = ({
 
   // Fetch ads from API
   const fetchAds = useCallback(async () => {
-    if (!apiUrl || apiUrl === "YOUR_BASEURL_HERE/ads/random-banners") {
-      console.warn(
-        "Please update the apiUrl in BannerAdSlider component with your actual API URL"
-      );
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`${apiUrl}?count=${adsCount}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch ads: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = await db.listDocuments("ad_requests", {
+        limit: adsCount,
+        filters: {
+          is_confirmed: true,
+        },
+      });
+
       setFetchedAds(data);
       console.log("Banner ads loaded:", data.length);
     } catch (err) {
@@ -60,7 +54,7 @@ const BannerAdSlider = ({
     } finally {
       setIsLoading(false);
     }
-  }, [apiUrl, adsCount]);
+  }, [adsCount]);
 
   // Initial fetch on mount
   useEffect(() => {
@@ -71,7 +65,8 @@ const BannerAdSlider = ({
   useEffect(() => {
     activeAds.forEach((ad) => {
       const img = new Image();
-      img.src = ad.media_url;
+      img.src = ad.data.media_url;
+      console.log("a url is ", ad.data.media_url);
       img.onload = () => {
         setImageLoaded((prev) => ({ ...prev, [ad.id]: true }));
         setImageDimensions((prev) => ({
@@ -80,7 +75,7 @@ const BannerAdSlider = ({
         }));
       };
       img.onerror = () => {
-        console.error(`Failed to load image: ${ad.media_url}`);
+        console.error(`Failed to load image: ${ad.data.media_url}`);
       };
     });
   }, [activeAds]);
@@ -187,8 +182,8 @@ const BannerAdSlider = ({
                 {imageLoaded[ad.id] ? (
                   <div className="w-full h-full flex items-center justify-center bg-gray-50 p-2">
                     <img
-                      src={ad.media_url}
-                      alt={ad.title || `Advertisement ${ad.id}`}
+                      src={ad.data.media_url}
+                      alt={ad.data.title || `Advertisement ${ad.id}`}
                       className="max-w-full max-h-full object-contain cursor-pointer hover:scale-105 transition-transform duration-300 rounded"
                       onClick={() => handleCTAClick(ad)}
                       style={{

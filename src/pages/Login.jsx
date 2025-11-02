@@ -9,6 +9,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/img/xpay-logo.png";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import db from "../services/cocobase";
 // import imgbg from "./../assets/images/Water.jpg";
 
 export default function Login() {
@@ -23,31 +24,20 @@ export default function Login() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const res = await login(email, password);
-      // console.log("Login response:", res);
+      await db.login(email, password);
 
-      if (!res.success) {
-        toast.error(res.message);
+      const user = db.user;
+
+      console.log(user, "  user");
+
+      if (!user.data.is_email_verified) {
+        console.log("verified");
+        navigate("/verify_email", { state: { email } });
         return;
       }
+      console.log("verified pre dashboard");
 
-      const user = res.data;
-
-      // toast.success("Login successful!");
-
-      if (!user.verification_status.fully_verified) {
-        if (!user.verification_status.email_verified) {
-          navigate("/verify_email", { state: { email } });
-          return;
-        }
-
-        if (!user.verification_status.phone_verified) {
-          navigate("/verify_phone", { state: { email } });
-          return;
-        }
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     } catch (error) {
       toast.error("An error occurred: " + error.message);
     } finally {

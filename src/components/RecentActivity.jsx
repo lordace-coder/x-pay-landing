@@ -19,7 +19,6 @@ function formatTimeAgo(inputTime) {
 
 export default function RecentActivity() {
   const navigate = useNavigate();
-  const { authFetch } = useAuth();
   const [activeTab, setActiveTab] = useState("payments");
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -30,35 +29,35 @@ export default function RecentActivity() {
   useEffect(() => {
     if (activeTab === "transactions") {
       setLoading(true);
-      authFetch(BASEURL + "/api/payments/transactions")
-        .then((res) => res.json())
-        .then((data) =>
-          setRecentTransactions(Array.isArray(data) ? data.slice(0, 5) : [])
-        )
-        .catch((err) => {
-          setRecentTransactions([]);
-          console.error("Failed to load transactions", err);
-        })
-        .finally(() => setLoading(false));
+      // authFetch(BASEURL + "/api/payments/transactions")
+      //   .then((res) => res.json())
+      //   .then((data) =>
+      //     setRecentTransactions(Array.isArray(data) ? data.slice(0, 5) : [])
+      //   )
+      //   .catch((err) => {
+      //     setRecentTransactions([]);
+      //     console.error("Failed to load transactions", err);
+      //   })
+      //   .finally(() => setLoading(false));
     }
-  }, [activeTab, authFetch]);
+  }, [activeTab, ]);
 
   // Fetch payments
   useEffect(() => {
     if (activeTab === "payments") {
       setLoadingPayments(true);
-      authFetch(BASEURL + "/api/payments/my-payments")
-        .then((res) => res.json())
-        .then((data) =>
-          setPayments(Array.isArray(data) ? data.slice(0, 5) : [])
-        )
-        .catch((err) => {
-          setPayments([]);
-          console.error("Failed to load payments", err);
-        })
-        .finally(() => setLoadingPayments(false));
+      // authFetch(BASEURL + "/api/payments/my-payments")
+      //   .then((res) => res.json())
+      //   .then((data) =>
+      //     setPayments(Array.isArray(data) ? data.slice(0, 5) : [])
+      //   )
+      //   .catch((err) => {
+      //     setPayments([]);
+      //     console.error("Failed to load payments", err);
+      //   })
+      //   .finally(() => setLoadingPayments(false));
     }
-  }, [activeTab, authFetch]);
+  }, [activeTab]);
 
   return (
     <div className="trans_4 rounded-lg sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">

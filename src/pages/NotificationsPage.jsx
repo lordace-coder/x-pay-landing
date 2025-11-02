@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
+import db from "../services/cocobase";
 
 // Helper to get "time ago" string
 function formatTimeAgo(inputTime) {
@@ -29,7 +30,6 @@ function formatTimeAgo(inputTime) {
 
 export default function XPayNotifications() {
   const navigate = useNavigate();
-  const { authFetch } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const [activeTab, setActiveTab] = useState("payments");
   const [transactions, setTransactions] = useState([]);
@@ -46,26 +46,32 @@ export default function XPayNotifications() {
         setLoadingPayments(true);
         setLoading(true);
 
-        // Fetch payments
-        const paymentsPromise = authFetch(`${BASEURL}/api/payments/my-payments`)
-          .then((res) => res.json())
-          .then((data) => {
-            setPayments(Array.isArray(data) ? data : []);
-          });
+        //todo check cache for payments first
 
-        // Check cache for transactions first
-        const transactionsPromise = authFetch(
-          `${BASEURL}/api/payments/transactions`
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            const transactionData = Array.isArray(data) ? data : [];
-            setTransactions(transactionData);
-            setDashboardData("transactions", transactionData);
-          });
+        const paymentsPromise = db.listDocuments("payment_proofs", {
+          filters: {
+            user_id: db.user.id,
+          },
+        });
 
-        // Wait for both to complete
-        await Promise.all([paymentsPromise, transactionsPromise]);
+        // todo check cache for transactions first
+        const transactionsPromise = db.listDocuments("transactions", {
+          filters: {
+            user_id: db.user.id,
+          },
+        });
+
+        // // Wait for both to complete
+        const [paymentsData, transactionsData] = await Promise.all([
+          paymentsPromise,
+          transactionsPromise,
+        ]);
+
+        setPayments(paymentsData);
+        setDashboardData("payments", paymentsData);
+
+        setTransactions(transactionsData);
+        setDashboardData("transactions", transactionsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -82,19 +88,19 @@ export default function XPayNotifications() {
     try {
       if (activeTab === "payments") {
         setLoadingPayments(true);
-        const response = await authFetch(`${BASEURL}/api/payments/my-payments`);
-        const data = await response.json();
-        setPayments(Array.isArray(data) ? data : []);
+        // const response = await authFetch(`${BASEURL}/api/payments/my-payments`);
+        // const data = await response.json();
+        // setPayments(Array.isArray(data) ? data : []);
         setLoadingPayments(false);
       } else {
         setLoading(true);
-        const response = await authFetch(
-          `${BASEURL}/api/payments/transactions`
-        );
-        const data = await response.json();
-        const transactionData = Array.isArray(data) ? data : [];
-        setTransactions(transactionData);
-        setDashboardData("transactions", transactionData);
+        // const response = await authFetch(
+        //   `${BASEURL}/api/payments/transactions`
+        // );
+        // const data = await response.json();
+        // const transactionData = Array.isArray(data) ? data : [];
+        // setTransactions(transactionData);
+        // setDashboardData("transactions", transactionData);
         setLoading(false);
       }
     } catch (error) {
@@ -249,89 +255,93 @@ export default function XPayNotifications() {
                     </p>
                   </div>
                 )}
-                {payments.map((payment) => (
-                  <div
-                    key={payment.id}
-                    className="p-3 sm:p-4 bg-green-50 hover:bg-white rounded-lg border border-green-200 transition-all duration-200 hover:shadow-md"
-                  >
-                    <div className="flex justify-between items-start gap-3">
-                      <div className="space-y-1 min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-sm sm:text-base font-semibold text-gray-900 truncate">
-                            {payment.payment_method}
-                          </p>
-                          <span
-                            className={`text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full ${
-                              payment.status === "approved"
-                                ? "bg-green-200 text-green-800"
-                                : payment.status === "pending"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {payment.status.charAt(0).toUpperCase() +
-                              payment.status.slice(1)}
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
-                          {payment.description || "No description"}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-2 text-2xs sm:text-xs text-gray-500">
-                          <div className="flex items-center">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {formatTimeAgo(payment.created_at)}
+                {payments.map((data) => {
+                  const p = data;
+                  const payment = data.data;
+                  return (
+                    <div
+                      key={p.id}
+                      className="p-3 sm:p-4 bg-green-50 hover:bg-white rounded-lg border border-green-200 transition-all duration-200 hover:shadow-md"
+                    >
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="space-y-1 min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-sm sm:text-base font-semibold text-gray-900 truncate">
+                              {payment.payment_method}
+                            </p>
+                            <span
+                              className={`text-2xs sm:text-xs font-bold px-2 py-0.5 rounded-full ${
+                                payment.status === "approved"
+                                  ? "bg-green-200 text-green-800"
+                                  : payment.status === "pending"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {payment.status.charAt(0).toUpperCase() +
+                                payment.status.slice(1)}
+                            </span>
                           </div>
-                          {payment.reference_number && (
-                            <div className="flex items-center bg-gray-100 px-2 py-0.5 rounded">
-                              <span className="font-mono text-gray-700 truncate max-w-20 sm:max-w-none">
-                                Ref: {payment.reference_number}
-                              </span>
-                              <button
-                                onClick={() =>
-                                  copyToClipboard(payment.reference_number)
-                                }
-                                className="ml-1 p-0.5 hover:text-blue-600"
-                                title="Copy reference"
-                              >
-                                {copiedRef === payment.reference_number ? (
-                                  <Check className="h-3 w-3" />
-                                ) : (
-                                  <Copy className="h-3 w-3" />
-                                )}
-                              </button>
+                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                            {payment.description || "No description"}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 text-2xs sm:text-xs text-gray-500">
+                            <div className="flex items-center">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {formatTimeAgo(payment.created_at)}
                             </div>
+                            {payment.reference_number && (
+                              <div className="flex items-center bg-gray-100 px-2 py-0.5 rounded">
+                                <span className="font-mono text-gray-700 truncate max-w-20 sm:max-w-none">
+                                  Ref: {payment.reference_number}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    copyToClipboard(payment.reference_number)
+                                  }
+                                  className="ml-1 p-0.5 hover:text-blue-600"
+                                  title="Copy reference"
+                                >
+                                  {copiedRef === payment.reference_number ? (
+                                    <Check className="h-3 w-3" />
+                                  ) : (
+                                    <Copy className="h-3 w-3" />
+                                  )}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right flex flex-col items-end gap-1 flex-shrink-0">
+                          <p className="text-base sm:text-lg font-bold text-green-700">
+                            +$
+                            {payment.amount.toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                            })}
+                          </p>
+                          {payment.proof_image_path && (
+                            <a
+                              href={payment.proof_image_path}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs sm:text-sm text-blue-600 underline hover:text-blue-800 transition-colors"
+                            >
+                              View Proof
+                            </a>
                           )}
                         </div>
                       </div>
-                      <div className="text-right flex flex-col items-end gap-1 flex-shrink-0">
-                        <p className="text-base sm:text-lg font-bold text-green-700">
-                          +$
-                          {payment.amount.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                          })}
-                        </p>
-                        {payment.proof_image_path && (
-                          <a
-                            href={payment.proof_image_path}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs sm:text-sm text-blue-600 underline hover:text-blue-800 transition-colors"
-                          >
-                            View Proof
-                          </a>
-                        )}
-                      </div>
+                      {payment.admin_notes && (
+                        <div className="mt-2 text-2xs sm:text-xs text-gray-600 bg-gray-100 rounded-lg p-2">
+                          <span className="font-semibold text-gray-700">
+                            Admin Notes:
+                          </span>{" "}
+                          {payment.admin_notes}
+                        </div>
+                      )}
                     </div>
-                    {payment.admin_notes && (
-                      <div className="mt-2 text-2xs sm:text-xs text-gray-600 bg-gray-100 rounded-lg p-2">
-                        <span className="font-semibold text-gray-700">
-                          Admin Notes:
-                        </span>{" "}
-                        {payment.admin_notes}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
                 {!loadingPayments && payments.length === 0 && (
                   <div className="text-center py-12 sm:py-16">
                     <Clock className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
@@ -369,39 +379,43 @@ export default function XPayNotifications() {
                 )}
                 {!loading &&
                   transactions.length > 0 &&
-                  transactions.map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="p-3 sm:p-4 bg-blue-50 hover:bg-white rounded-lg border border-blue-200 transition-all duration-200 hover:shadow-md"
-                    >
-                      <div className="flex justify-between items-start gap-3">
-                        <div className="space-y-1 min-w-0 flex-1">
-                          <p className="text-sm sm:text-base font-semibold text-gray-900">
-                            {transaction.title}
-                          </p>
-                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
-                            {transaction.description}
-                          </p>
-                          <div className="flex items-center text-2xs sm:text-xs text-gray-500">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {formatTimeAgo(transaction.timestamp)}
+                  transactions.map((data) => {
+                    const t = data;
+                    const transaction = data.data;
+                    return (
+                      <div
+                        key={t.id}
+                        className="p-3 sm:p-4 bg-blue-50 hover:bg-white rounded-lg border border-blue-200 transition-all duration-200 hover:shadow-md"
+                      >
+                        <div className="flex justify-between items-start gap-3">
+                          <div className="space-y-1 min-w-0 flex-1">
+                            <p className="text-sm sm:text-base font-semibold text-gray-900">
+                              {transaction.title}
+                            </p>
+                            <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                              {transaction.description}
+                            </p>
+                            <div className="flex items-center text-2xs sm:text-xs text-gray-500">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {formatTimeAgo(transaction.timestamp)}
+                            </div>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p
+                              className={`text-base sm:text-lg font-bold ${
+                                transaction.amount > 0
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {transaction.amount > 0 ? "+" : "-"}$
+                              {Math.abs(transaction.amount).toFixed(2)}
+                            </p>
                           </div>
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <p
-                            className={`text-base sm:text-lg font-bold ${
-                              transaction.amount > 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {transaction.amount > 0 ? "+" : "-"}$
-                            {Math.abs(transaction.amount).toFixed(2)}
-                          </p>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             )}
           </div>

@@ -17,7 +17,6 @@ function Xpay_Batches() {
   const [batchData, setBatchData] = useState(null);
   const [batchLoading, setBatchLoading] = useState(false);
   const navigate = useNavigate();
-  const { authFetch } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
 
   useEffect(() => {
@@ -38,11 +37,11 @@ function Xpay_Batches() {
           return;
         }
       }
-      const res = await authFetch(BASEURL + "/investment/batches");
-      const data = await res.json();
-      setBatchData(data);
-      setDashboardData("batchData", data);
-      setDashboardData("batchLastFetch", Date.now());
+      // const res = await authFetch(BASEURL + "/investment/batches");
+      // const data = await res.json();
+      // setBatchData(data);
+      // setDashboardData("batchData", data);
+      // setDashboardData("batchLastFetch", Date.now());
     } catch (err) {
       console.error("Failed to fetch batch data:", err);
       toast.error("Failed to fetch investment data. Please try again later.");

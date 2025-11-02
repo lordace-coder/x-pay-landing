@@ -43,7 +43,6 @@ export default function EmergencyWithdrawal() {
   const [walletAddress, setWalletAddress] = useState("");
   const [acknowledged, setAcknowledged] = useState(false);
 
-  const { authFetch } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const preSelectedBatch = searchParams.get("batch");
@@ -80,18 +79,18 @@ export default function EmergencyWithdrawal() {
   const fetchActiveBatches = async () => {
     try {
       setBatchesLoading(true);
-      const response = await authFetch(`${BASEURL}/investment/batches`);
-      const data = await response.json();
+      // const response = await authFetch(`${BASEURL}/investment/batches`);
+      // const data = await response.json();
 
-      if (data.success || data.batches) {
-        // Filter for active batches only
-        const activeOnly = (data.batches || []).filter(
-          (batch) => batch.status === "active" && !batch.has_pending_withdrawal
-        );
-        setActiveBatches(activeOnly);
-      } else {
-        toast.error("Failed to fetch active batches");
-      }
+      // if (data.success || data.batches) {
+      //   // Filter for active batches only
+      //   const activeOnly = (data.batches || []).filter(
+      //     (batch) => batch.status === "active" && !batch.has_pending_withdrawal
+      //   );
+      //   setActiveBatches(activeOnly);
+      // } else {
+      //   toast.error("Failed to fetch active batches");
+      // }
     } catch (error) {
       console.error("Error fetching active batches:", error);
       toast.error("Failed to load withdrawal data");
@@ -163,23 +162,23 @@ export default function EmergencyWithdrawal() {
   const requestOTP = async () => {
     try {
       setLoading(true);
-      const response = await authFetch(
-        `${BASEURL}/batch-withdrawals/request-otp`,
-        {
-          method: "POST",
-        }
-      );
+      // const response = await authFetch(
+      //   `${BASEURL}/batch-withdrawals/request-otp`,
+      //   {
+      //     method: "POST",
+      //   }
+      // );
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (response.ok) {
-        setOtpRequested(true);
-        setOtpTimer(600); // 10 minutes
-        setStep(5);
-        toast.success("OTP sent to your email successfully!");
-      } else {
-        toast.error(data.detail || "Failed to send OTP");
-      }
+      // if (response.ok) {
+      //   setOtpRequested(true);
+      //   setOtpTimer(600); // 10 minutes
+      //   setStep(5);
+      //   toast.success("OTP sent to your email successfully!");
+      // } else {
+      //   toast.error(data.detail || "Failed to send OTP");
+      // }
     } catch (error) {
       console.error("Error requesting OTP:", error);
       toast.error("Failed to send OTP. Please try again.");
@@ -201,29 +200,29 @@ export default function EmergencyWithdrawal() {
 
     try {
       setLoading(true);
-      const response = await authFetch(
-        `${BASEURL}/batch-withdrawals/?otp_data=${otp}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            batch_uuid: selectedBatch.batch_uuid,
-            usdt_wallet_address: walletAddress,
-          }),
-        }
-      );
+      // const response = await authFetch(
+      //   `${BASEURL}/batch-withdrawals/?otp_data=${otp}`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       batch_uuid: selectedBatch.batch_uuid,
+      //       usdt_wallet_address: walletAddress,
+      //     }),
+      //   }
+      // );
 
-      const data = await response.json();
+      // const data = await response.json();
 
-      if (response.ok) {
-        setWithdrawalData(data);
-        setStep(6);
-        toast.success("Emergency withdrawal request submitted successfully!");
-      } else {
-        toast.error(data.detail || "Failed to submit withdrawal request");
-      }
+      // if (response.ok) {
+      //   setWithdrawalData(data);
+      //   setStep(6);
+      //   toast.success("Emergency withdrawal request submitted successfully!");
+      // } else {
+      //   toast.error(data.detail || "Failed to submit withdrawal request");
+      // }
     } catch (error) {
       console.error("Error submitting withdrawal:", error);
       toast.error("Failed to submit withdrawal. Please try again.");

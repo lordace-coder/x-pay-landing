@@ -6,7 +6,6 @@ import { useAuth } from "../context/AuthContext";
 
 const ReferralModal = ({ isOpen, onClose }) => {
   // Default fallback data if none provided
-  const { authFetch } = useAuth();
   const [data, setdata] = useState([]);
   const copyReferralLink = () => {
     const referralLink = "https://invest.yoursite.com/ref/user123";
@@ -24,10 +23,10 @@ const ReferralModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const getReferralData = async () => {
       try {
-        const response = await authFetch(`${BASEURL}/auth/my-referrals`); // Replace with your API endpoint
-        const result = await response.json();
-        console.log(result);
-        setdata(result);
+        // const response = await authFetch(`${BASEURL}/auth/my-referrals`); // Replace with your API endpoint
+        // const result = await response.json();
+        // console.log(result);
+        // setdata(result);
       } catch (error) {
         console.error("Error fetching referral data:", error);
       }

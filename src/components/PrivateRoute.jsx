@@ -3,12 +3,13 @@ import { useAuth } from "../context/AuthContext";
 import BannerAdSlider from "./BannerAdSlider";
 import { useRef } from "react";
 import DashboardNav from "./DashboardNav";
+import db from "../services/cocobase";
 
 const PrivateRoute = ({ children }) => {
-  const { user } = useAuth();
   const location = useLocation();
   const navCountRef = useRef(0);
 
+  const user = db.user;
   return (
     <>
       <DashboardNav />

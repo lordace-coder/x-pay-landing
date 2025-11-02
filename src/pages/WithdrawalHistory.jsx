@@ -45,14 +45,14 @@ export default function WithdrawalHistory() {
   const fetchWithdrawalHistory = async () => {
     try {
       setLoading(true);
-      const response = await authFetch(`${BASEURL}/batch-withdrawals/`);
-      const data = await response.json();
+      // const response = await authFetch(`${BASEURL}/batch-withdrawals/`);
+      // const data = await response.json();
       
-      if (Array.isArray(data)) {
-        setWithdrawalRequests(data);
-      } else {
-        setWithdrawalRequests([]);
-      }
+      // if (Array.isArray(data)) {
+      //   setWithdrawalRequests(data);
+      // } else {
+      //   setWithdrawalRequests([]);
+      // }
     } catch (error) {
       console.error("Error fetching withdrawal history:", error);
       toast.error("Failed to load withdrawal history");

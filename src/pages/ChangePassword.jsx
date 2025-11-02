@@ -51,7 +51,7 @@ const ChangePassword = () => {
   const [message, setMessage] = useState({ type: "", text: "" });
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [referrals, setReferrals] = useState({});
-  const { authFetch, user, logout } = useAuth();
+  const {  user, logout } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const [userInfo, setUserInfo] = useState({
     email: user?.email || "",
@@ -69,11 +69,11 @@ const ChangePassword = () => {
 
   const getReferralData = async () => {
     try {
-      const response = await authFetch(`${BASEURL}/auth/my-referrals`);
-      const result = await response.json();
-      console.log(result, "referrals");
-      setReferrals(result);
-      setDashboardData("referralData");
+      // const response = await authFetch(`${BASEURL}/auth/my-referrals`);
+      // const result = await response.json();
+      // console.log(result, "referrals");
+      // setReferrals(result);
+      // setDashboardData("referralData");
     } catch (error) {
       console.error("Error fetching referral data:", error);
     }
@@ -193,25 +193,25 @@ Be part of a secure and transparent investment ecosystem that prioritizes your f
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await authFetch(BASEURL + "/auth/change-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // const response = await authFetch(BASEURL + "/auth/change-password", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (response.ok) {
-        setMessage({ type: "success", text: "Password changed successfully!" });
-        setFormData({ old_password: "", new_password: "" });
-        setPasswordStrength(0);
-      } else {
-        const errorData = await response.json();
-        setMessage({
-          type: "error",
-          text: errorData.message || "Failed to change password",
-        });
-      }
+      // if (response.ok) {
+      //   setMessage({ type: "success", text: "Password changed successfully!" });
+      //   setFormData({ old_password: "", new_password: "" });
+      //   setPasswordStrength(0);
+      // } else {
+      //   const errorData = await response.json();
+      //   setMessage({
+      //     type: "error",
+      //     text: errorData.message || "Failed to change password",
+      //   });
+      // }
     } catch (error) {
       setMessage({ type: "error", text: "Network error. Please try again." });
     } finally {

@@ -12,7 +12,6 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoId, setVideoId] = useState(null);
-  const { authFetch } = useAuth();
 
   const handleWatchVideo = async () => {
     try {
@@ -46,18 +45,18 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
   };
 
   const onFetchVideo = async (_) => {
-    const data = await (await authFetch(BASEURL + "/videos/today")).json();
-    setVideoId(data.video_id);
-    return data;
+    // // const data = await (await authFetch(BASEURL + "/videos/today")).json();
+    // setVideoId(data.video_id);
+    // return data;
   };
 
   const markVideoComplete = async () => {
     videoAdRef.current.hideAd();
     try {
-      const req = await authFetch(
-        BASEURL + `/videos/videos/${videoId}/complete`,
-        { method: "post" }
-      );
+      // const req = await authFetch(
+      //   BASEURL + `/videos/videos/${videoId}/complete`,
+      //   { method: "post" }
+      // );
     } catch (error) {}
 
     try {

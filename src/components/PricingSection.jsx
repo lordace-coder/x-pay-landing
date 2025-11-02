@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   TrendingUp,
   CheckCircle2,
@@ -28,6 +28,7 @@ import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
 import db from "../services/cocobase";
+import { uploadFile } from "cocobase";
 
 // Mock implementations for missing dependencies
 const WALLET_BOOK = {
@@ -45,15 +46,12 @@ export const CreateBatch = () => {
 
   const [MIN_INVESTMENT_AMOUNT, setMinInvestmentAmount] = useState(20);
 
-  const [investmentAmount, setInvestmentAmount] = useState(
-    MIN_INVESTMENT_AMOUNT
-  );
+  const [investmentAmount, setInvestmentAmount] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
 
-  // Using mock implementations
-  const { user, authFetch } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
+  const input_ref = useRef();
   // Payment flow state
   const [showPayModal, setShowPayModal] = useState(false);
   const [showProofModal, setShowProofModal] = useState(false);
@@ -78,6 +76,7 @@ export const CreateBatch = () => {
       const setting = d[0];
       setAddress(setting.data.wallet);
       setMinInvestmentAmount(setting.data.min_investment);
+      setInvestmentAmount(setting.data.min_investment);
     });
   }, []);
 
@@ -112,6 +111,9 @@ export const CreateBatch = () => {
 
   const setQuickAmount = (amount) => {
     setInvestmentAmount(amount);
+    if (input_ref.current) {
+      input_ref.current.value = amount;
+    }
   };
 
   const handleLoginRedirect = () => navigate("/login");
@@ -139,36 +141,39 @@ export const CreateBatch = () => {
       toast.error(`Amount must be at least $${MIN_INVESTMENT_AMOUNT}.`);
       return;
     }
-
+    var imgUrl;
     try {
       setSubmitting(true);
 
+      try {
+        console.log("image is ", proofImage);
+
+        const uploaded_img = await uploadFile(db, proofImage);
+        imgUrl = uploaded_img.url;
+      } catch (error) {
+        toast.error("Image upload failed ");
+      }
+      if (!imgUrl) {
+        return;
+      }
       const form = new FormData();
       form.append("amount", String(investmentAmount));
       form.append("payment_method", WALLET_BOOK[paymentMethod].label);
-      form.append("proof_image", proofImage);
-
+      form.append("proof_image_path", imgUrl);
+      form.append("user_id", db.user.id);
+      form.append("status", "PENDING");
       if (referenceNumber.trim())
         form.append("reference_number", referenceNumber.trim());
       if (description.trim()) form.append("description", description.trim());
 
-      const res = await authFetch(
-        `https://xpay-api.fly.dev/api/payments/submit-proof${
-          !isStandard ? "?investment_type=medium" : ""
-        }`,
-        {
-          method: "POST",
-          body: form,
-        }
-      );
+      const formAsObject = Object.fromEntries(form.entries());
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        toast.error(err?.detail?.[0]?.msg || "Unable to submit payment proof.");
-        return;
+      try {
+        await db.createDocument("payment_proofs", formAsObject);
+      } catch (error) {
+        toast.error("Failed to submit payment proof: " + error);
       }
 
-      const data = await res.json();
       toast.success("Payment proof submitted. Awaiting admin review.");
       setShowProofModal(false);
 
@@ -176,7 +181,6 @@ export const CreateBatch = () => {
       setReferenceNumber("");
       setDescription("");
 
-      console.log("Payment proof response:", data);
     } catch (e) {
       console.error(e);
       toast.error("Network error while submitting payment proof.");
@@ -481,6 +485,7 @@ export const CreateBatch = () => {
                           </div>
                           <input
                             type="number"
+                            ref={input_ref}
                             defaultValue={investmentAmount}
                             onChange={handleInputChange}
                             min={MIN_INVESTMENT_AMOUNT}
