@@ -20,7 +20,8 @@ const VideoAdComponent = forwardRef((props, ref) => {
   const videoRef = useRef(null);
 
   // Get video URL from props or use default
-  const videoUrl = props.videoUrl?.video_url;
+  console.log(props.videoUrl, " props");
+  const videoUrl = props.videoUrl?.url;
   const actionUrl = props.videoUrl?.action_url;
 
   // Calculate if user can close (after 70% watched)
@@ -48,7 +49,7 @@ const VideoAdComponent = forwardRef((props, ref) => {
       const currentTime = video.currentTime;
       const duration = video.duration;
       setCurrentTime(currentTime);
-      
+
       if (duration > 0) {
         const percentage = currentTime / duration;
         setWatchedPercentage(percentage);
@@ -114,12 +115,12 @@ const VideoAdComponent = forwardRef((props, ref) => {
     setWatchedPercentage(0);
     setIsLoading(true);
     setVideoError(false);
-    
+
     // Call onAdStart callback if provided
     if (props.onAdStart) {
       props.onAdStart();
     }
-    
+
     // Auto-play when video is ready
     setTimeout(() => {
       if (videoRef.current) {
@@ -142,7 +143,9 @@ const VideoAdComponent = forwardRef((props, ref) => {
   const closePopup = () => {
     if (!canClose) {
       const remainingTime = Math.ceil((0.7 - watchedPercentage) * duration);
-      toast(`Watch ${remainingTime} more seconds to close`, { type: "warning" });
+      toast(`Watch ${remainingTime} more seconds to close`, {
+        type: "warning",
+      });
       return;
     }
 
@@ -150,12 +153,12 @@ const VideoAdComponent = forwardRef((props, ref) => {
     setIsPlaying(false);
     setCurrentTime(0);
     setWatchedPercentage(0);
-    
+
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
     }
-    
+
     // Call onAdClose callback if provided
     if (props.onAdClose) {
       props.onAdClose();
@@ -189,13 +192,13 @@ const VideoAdComponent = forwardRef((props, ref) => {
   const handleVideoClick = () => {
     if (actionUrl) {
       // Open action URL in new tab when video is clicked
-      window.open(actionUrl, '_blank', 'noopener,noreferrer');
-      
+      window.open(actionUrl, "_blank", "noopener,noreferrer");
+
       // Track click if callback provided
       if (props.onAdClick) {
         props.onAdClick(actionUrl);
       }
-      
+
       toast("Redirecting to advertiser...", { type: "info" });
     }
   };
@@ -212,7 +215,7 @@ const VideoAdComponent = forwardRef((props, ref) => {
   if (!isPopupOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black/95 flex items-center justify-center z-[9999] p-2 sm:p-4"
       onClick={(e) => {
         // Close if clicking backdrop and can close
@@ -230,7 +233,13 @@ const VideoAdComponent = forwardRef((props, ref) => {
               ? "bg-red-600 hover:bg-red-700 text-white shadow-lg"
               : "bg-gray-600 text-gray-400 cursor-not-allowed opacity-50"
           }`}
-          title={canClose ? "Close ad" : `Watch ${Math.ceil((0.7 - watchedPercentage) * duration)}s more to close`}
+          title={
+            canClose
+              ? "Close ad"
+              : `Watch ${Math.ceil(
+                  (0.7 - watchedPercentage) * duration
+                )}s more to close`
+          }
         >
           <X size={20} />
         </button>
@@ -257,7 +266,7 @@ const VideoAdComponent = forwardRef((props, ref) => {
               <div className="text-white text-center">
                 <div className="text-xl mb-2">⚠️</div>
                 <div>Failed to load video</div>
-                <button 
+                <button
                   onClick={() => {
                     setVideoError(false);
                     if (videoRef.current) {
@@ -291,7 +300,7 @@ const VideoAdComponent = forwardRef((props, ref) => {
 
           {/* Click to visit overlay */}
           {actionUrl && (
-            <div 
+            <div
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                          bg-black/60 text-white px-4 py-2 rounded-lg opacity-0 hover:opacity-100 
                          transition-opacity duration-300 pointer-events-none text-sm"
@@ -312,7 +321,9 @@ const VideoAdComponent = forwardRef((props, ref) => {
               </div>
               <div className="flex justify-between text-xs text-white mt-1">
                 <span>{formatTime(currentTime)}</span>
-                <span className="text-gray-300">{Math.round(watchedPercentage * 100)}% watched</span>
+                <span className="text-gray-300">
+                  {Math.round(watchedPercentage * 100)}% watched
+                </span>
                 <span>{formatTime(duration)}</span>
               </div>
             </div>
@@ -370,6 +381,6 @@ const VideoAdComponent = forwardRef((props, ref) => {
   );
 });
 
-VideoAdComponent.displayName = 'VideoAdComponent';
+VideoAdComponent.displayName = "VideoAdComponent";
 
 export default VideoAdComponent;

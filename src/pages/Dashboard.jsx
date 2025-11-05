@@ -60,13 +60,7 @@ export default function XPayDashboard() {
   const [showRef, setShowRef] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
-  const {
-    logout,
-    accessToken,
-
-    verificationStatus,
-    fetchVerificationStatus,
-  } = useAuth();
+  const { logout, accessToken } = useAuth();
 
   const userData = db.user;
   const { getDashboardData, setDashboardData } = useDashboardContext();
@@ -82,12 +76,8 @@ export default function XPayDashboard() {
     if (q && q != null) {
       setUserCount(q);
     } else {
-      const res = await (
-        await fetch(
-          "https://cloud.cocobase.buzz/functions/39ebbef5-3030-426c-9b13-f4b031aa2e3a/execute"
-        )
-      ).json();
-      setUserCount(res.result.count);
+      const res = await db.functions.execute("active_users");
+      setUserCount(res.result);
       setDashboardData("user-count", res.result.count);
     }
   };
@@ -110,7 +100,6 @@ export default function XPayDashboard() {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 3000);
     } catch (err) {
-      console.error("Failed to copy: ", err);
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
       textArea.value = refUrl;
@@ -121,7 +110,6 @@ export default function XPayDashboard() {
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 3000);
       } catch (fallbackErr) {
-        console.error("Fallback copy failed: ", fallbackErr);
       }
       document.body.removeChild(textArea);
     }
@@ -153,7 +141,6 @@ export default function XPayDashboard() {
   useEffect(() => {
     if (userData) {
       setDashboardData("userData", userData);
-      getReferralData();
     }
   }, [userData]); // Only depend on userData
 
@@ -175,33 +162,27 @@ export default function XPayDashboard() {
           return;
         }
       }
+      // const res = await db.functions.execute("dashboard_stats");
 
+      const res = await db.listDocuments("investment_batches", {
+        filters: {
+          user_id: db.user.id,
+        },
+      });
       // const res = await authFetch(BASEURL + "/investment/batches");
       // const data = await res.json();
 
-      // setBatchData(data);
+      setBatchData({
+        batches: res,
+      });
 
       // // Cache the data with timestamp
-      // setDashboardData("batchData", data);
-      // setDashboardData("batchLastFetch", Date.now());
+      setDashboardData("batchData", res);
+      setDashboardData("batchLastFetch", Date.now());
     } catch (err) {
-      console.error("Failed to fetch batch data:", err);
       toast.error("Failed to fetch investment data. Please try again later.");
     } finally {
       setBatchLoading(false);
-    }
-  };
-
-  const getReferralData = async () => {
-    try {
-      setLoading(true);
-      // const res = await authFetch(BASEURL + "/auth/my-referrals");
-      // const data = await res.json();
-      // setDashboardData("referralData", data);
-    } catch (err) {
-      toast.error("Failed to fetch referral data. Please try again later.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -223,16 +204,15 @@ export default function XPayDashboard() {
         }
       }
 
-      // const res = await authFetch(BASEURL + "/videos/remaining");
-      // const data = await res.json();
+      // TODO: Replace with actual API call
+      const res = await db.functions.execute("dashboard_stats");
 
-      // setVideosWatched(data);
+      setVideosWatched(res.result);
 
       // // Cache the data with timestamp
-      // setDashboardData("videosWatched", data);
-      // setDashboardData("videosLastFetch", Date.now());
+      setDashboardData("videosWatched", res.result);
+      setDashboardData("videosLastFetch", Date.now());
     } catch (err) {
-      console.error("Failed to fetch videos left:", err);
     } finally {
       setLoading(false);
     }
@@ -246,6 +226,8 @@ export default function XPayDashboard() {
   const showReferalModal = () => {
     setShowRef(true);
   };
+
+
   // Component for active batch card
   const ActiveBatchCard = ({ batch }) => {
     const canWithdraw = batch.days_remaining <= 15 && batch.videos_watched > 30;
@@ -265,7 +247,7 @@ export default function XPayDashboard() {
           </div>
           <div className="text-right">
             <div className="text-sm font-medium text-gray-900">
-              ${batch.total_value.toFixed(2)}
+              ${(batch.invested_amount + batch.current_interest).toFixed(2)}
             </div>
             <div className="text-xs text-green-600">
               +${batch.current_interest.toFixed(2)} interest
@@ -277,7 +259,7 @@ export default function XPayDashboard() {
           <div>
             <span className="text-gray-500">Progress</span>
             <div className="font-medium">
-              {batch.completion_percentage.toFixed(1)}%
+              {((batch.videos_watched/batch.total_videos_required)*100).toFixed(1)}%
             </div>
           </div>
           <div>
@@ -344,7 +326,6 @@ export default function XPayDashboard() {
   // Component for completed batch card
   const CompletedBatchCard = ({ batch }) => {
     const isWithdrawn = batch.withdrawn;
-    console.log(batch, "batch");
 
     return (
       <div
@@ -617,17 +598,20 @@ export default function XPayDashboard() {
 
     return batchData.batches.reduce(
       (totals, batch) => ({
-        totalInvestment: totals.totalInvestment + batch.invested_amount,
+        totalInvestment: totals.totalInvestment + batch.data.invested_amount,
         totalCurrentInterest:
-          totals.totalCurrentInterest + batch.current_interest,
-        totalValue: totals.totalValue + batch.total_value,
+          totals.totalCurrentInterest + batch.data.current_interest,
+        totalValue:
+          totals.totalValue +
+          (batch.data.current_interest + batch.data.invested_amount),
         activeBatches:
-          totals.activeBatches + (batch.status === "active" ? 1 : 0),
+          totals.activeBatches + (batch.data.status === "active" ? 1 : 0),
         completedBatches:
-          totals.completedBatches + (batch.status === "completed" ? 1 : 0),
-        totalVideosWatched: totals.totalVideosWatched + batch.videos_watched,
+          totals.completedBatches + (batch.data.status === "completed" ? 1 : 0),
+        totalVideosWatched:
+          totals.totalVideosWatched + batch.data.videos_watched,
         totalVideosRequired:
-          totals.totalVideosRequired + batch.total_videos_required,
+          totals.totalVideosRequired + batch.data.total_videos_required,
       }),
       {
         totalInvestment: 0,
@@ -884,17 +868,23 @@ export default function XPayDashboard() {
             <div className="space-y-4 sm:space-y-6">
               {/* Separate completed and active batches */}
               {batchData.batches
-                .filter((batch) => batch.status === "completed")
+                .filter((batch) => batch.data.status === "completed")
                 .slice(0, 2)
                 .map((batch) => (
-                  <CompletedBatchCard key={batch.batch_uuid} batch={batch} />
+                  <CompletedBatchCard
+                    key={batch.data.batch_uuid}
+                    batch={batch.data}
+                  />
                 ))}
 
               {batchData.batches
-                .filter((batch) => batch.status === "active")
+                .filter((batch) => batch.data.status === "ACTIVE")
                 .slice(0, 3)
                 .map((batch) => (
-                  <ActiveBatchCard key={batch.batch_uuid} batch={batch} />
+                  <ActiveBatchCard
+                    key={batch.data.batch_uuid}
+                    batch={batch.data}
+                  />
                 ))}
 
               {batchData.batches.length > 3 && (

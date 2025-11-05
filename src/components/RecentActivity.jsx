@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Activity, BarChart3, ChevronRight, User, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
+import db from "../services/cocobase";
 
 // Reuse the same helper as NotificationsPage
 function formatTimeAgo(inputTime) {
@@ -19,43 +21,76 @@ function formatTimeAgo(inputTime) {
 
 export default function RecentActivity() {
   const navigate = useNavigate();
+  const { getDashboardData, setDashboardData } = useDashboardContext();
   const [activeTab, setActiveTab] = useState("payments");
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingPayments, setLoadingPayments] = useState(false);
 
+  // Initial data fetch for both payments and transactions
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Start loading both
+        setLoadingPayments(true);
+        setLoading(true);
+
+        // Check cache first
+        const cachedPayments = getDashboardData("payments");
+        const cachedTransactions = getDashboardData("transactions");
+
+        if (cachedPayments && cachedPayments.length > 0) {
+          setPayments(cachedPayments.slice(0, 5));
+          setLoadingPayments(false);
+        }
+
+        if (cachedTransactions && cachedTransactions.length > 0) {
+          setRecentTransactions(cachedTransactions.slice(0, 5));
+          setLoading(false);
+        }
+
+        // Fetch fresh data
+        const paymentsPromise = db.listDocuments("payment_proofs", {
+          filters: {
+            user_id: db.user.id,
+          },
+        });
+
+        const transactionsPromise = db.listDocuments("transactions", {
+          filters: {
+            user_id: db.user.id,
+          },
+        });
+
+        // Wait for both to complete
+        const [paymentsData, transactionsData] = await Promise.all([
+          paymentsPromise,
+          transactionsPromise,
+        ]);
+
+        // Update payments
+        setPayments(paymentsData.slice(0, 5));
+        setDashboardData("payments", paymentsData);
+
+        // Update transactions
+        setRecentTransactions(transactionsData.slice(0, 5));
+        setDashboardData("transactions", transactionsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoadingPayments(false);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // Fetch recent transactions
   useEffect(() => {
     if (activeTab === "transactions") {
       setLoading(true);
-      // authFetch(BASEURL + "/api/payments/transactions")
-      //   .then((res) => res.json())
-      //   .then((data) =>
-      //     setRecentTransactions(Array.isArray(data) ? data.slice(0, 5) : [])
-      //   )
-      //   .catch((err) => {
-      //     setRecentTransactions([]);
-      //     console.error("Failed to load transactions", err);
-      //   })
-      //   .finally(() => setLoading(false));
-    }
-  }, [activeTab, ]);
-
-  // Fetch payments
-  useEffect(() => {
-    if (activeTab === "payments") {
-      setLoadingPayments(true);
-      // authFetch(BASEURL + "/api/payments/my-payments")
-      //   .then((res) => res.json())
-      //   .then((data) =>
-      //     setPayments(Array.isArray(data) ? data.slice(0, 5) : [])
-      //   )
-      //   .catch((err) => {
-      //     setPayments([]);
-      //     console.error("Failed to load payments", err);
-      //   })
-      //   .finally(() => setLoadingPayments(false));
     }
   }, [activeTab]);
 
@@ -120,53 +155,57 @@ export default function RecentActivity() {
             )}
             {!loadingPayments &&
               payments.length > 0 &&
-              payments.map((payment) => (
-                <div
-                  key={payment.id}
-                  className="p-2.5 sm:p-3 bg-green-50 hover:bg-white rounded-lg sm:rounded-xl border border-green-200 transition-all duration-200"
-                >
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                        <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
-                          {payment.payment_method}
-                        </p>
-                        <span
-                          className={`self-start text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                            payment.status === "approved"
-                              ? "bg-green-200 text-green-800"
-                              : payment.status === "pending"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {payment.status.charAt(0).toUpperCase() +
-                            payment.status.slice(1)}
-                        </span>
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-[10px] text-gray-500">
-                        <div className="flex items-center">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {formatTimeAgo(payment.created_at)}
-                        </div>
-                        {payment.reference_number && (
-                          <span className="bg-gray-100 px-2 py-0.5 rounded text-[10px] font-mono text-gray-700 self-start">
-                            Ref: {payment.reference_number}
+              payments.map((data) => {
+                const p = data;
+                const payment = data.data;
+                return (
+                  <div
+                    key={p.id}
+                    className="p-2.5 sm:p-3 bg-green-50 hover:bg-white rounded-lg sm:rounded-xl border border-green-200 transition-all duration-200"
+                  >
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                          <p className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                            {payment.payment_method}
+                          </p>
+                          <span
+                            className={`self-start text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                              payment.status === "approved"
+                                ? "bg-green-200 text-green-800"
+                                : payment.status === "pending"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {payment.status.charAt(0).toUpperCase() +
+                              payment.status.slice(1)}
                           </span>
-                        )}
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-[10px] text-gray-500">
+                          <div className="flex items-center">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {formatTimeAgo(p.created_at)}
+                          </div>
+                          {payment.reference_number && (
+                            <span className="bg-gray-100 px-2 py-0.5 rounded text-[10px] font-mono text-gray-700 self-start">
+                              Ref: {payment.reference_number}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-sm sm:text-base font-bold text-green-700 whitespace-nowrap">
-                        +$
-                        {payment.amount.toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                        })}
-                      </p>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm sm:text-base font-bold text-green-700 whitespace-nowrap">
+                          +$
+                          {payment.amount.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         )}
         {activeTab === "transactions" && (
@@ -194,36 +233,40 @@ export default function RecentActivity() {
             )}
             {!loading &&
               recentTransactions.length > 0 &&
-              recentTransactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="p-2.5 sm:p-3 bg-blue-50 hover:bg-white rounded-lg sm:rounded-xl border border-blue-200 transition-all duration-200"
-                >
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 truncate">
-                        {transaction.title}
-                      </p>
-                      <div className="flex items-center text-[10px] text-gray-500">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {formatTimeAgo(transaction.timestamp)}
+              recentTransactions.map((data) => {
+                const t = data;
+                const transaction = data.data;
+                return (
+                  <div
+                    key={t.id}
+                    className="p-2.5 sm:p-3 bg-blue-50 hover:bg-white rounded-lg sm:rounded-xl border border-blue-200 transition-all duration-200"
+                  >
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 truncate">
+                          {transaction.title}
+                        </p>
+                        <div className="flex items-center text-[10px] text-gray-500">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {formatTimeAgo(transaction.timestamp)}
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p
+                          className={`text-sm sm:text-base font-bold whitespace-nowrap ${
+                            transaction.amount > 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {transaction.amount > 0 ? "+" : "-"}$
+                          {Math.abs(transaction.amount).toFixed(2)}
+                        </p>
                       </div>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p
-                        className={`text-sm sm:text-base font-bold whitespace-nowrap ${
-                          transaction.amount > 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {transaction.amount > 0 ? "+" : "-"}$
-                        {Math.abs(transaction.amount).toFixed(2)}
-                      </p>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         )}
       </div>

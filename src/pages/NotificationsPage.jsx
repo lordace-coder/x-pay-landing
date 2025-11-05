@@ -288,7 +288,7 @@ export default function XPayNotifications() {
                           <div className="flex flex-wrap items-center gap-2 text-2xs sm:text-xs text-gray-500">
                             <div className="flex items-center">
                               <Clock className="h-3 w-3 mr-1" />
-                              {formatTimeAgo(payment.created_at)}
+                              {formatTimeAgo(p.created_at)}
                             </div>
                             {payment.reference_number && (
                               <div className="flex items-center bg-gray-100 px-2 py-0.5 rounded">

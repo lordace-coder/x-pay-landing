@@ -28,6 +28,7 @@ import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
 import ReferralModal from "../components/RefModal";
 import { useNavigate } from "react-router-dom";
+import db from "../services/cocobase";
 
 // Password strength checker function
 const checkPasswordStrength = (password) => {
@@ -51,7 +52,7 @@ const ChangePassword = () => {
   const [message, setMessage] = useState({ type: "", text: "" });
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [referrals, setReferrals] = useState({});
-  const {  user, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const [userInfo, setUserInfo] = useState({
     email: user?.email || "",
@@ -61,7 +62,7 @@ const ChangePassword = () => {
   });
   const [copySuccess, setCopySuccess] = useState(false);
   const [showRef, setShowRef] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const refUrl =
     typeof window !== "undefined" && user
       ? window.location.origin + "/register?ref=" + user.id
@@ -70,10 +71,11 @@ const ChangePassword = () => {
   const getReferralData = async () => {
     try {
       // const response = await authFetch(`${BASEURL}/auth/my-referrals`);
-      // const result = await response.json();
-      // console.log(result, "referrals");
-      // setReferrals(result);
-      // setDashboardData("referralData");
+      const refs = await db.functions.execute("get_referrals")
+      const result = refs.result.data;
+      console.log(result, "referrals");
+      setReferrals(result);
+      setDashboardData("referralData",result);
     } catch (error) {
       console.error("Error fetching referral data:", error);
     }
@@ -193,25 +195,24 @@ Be part of a secure and transparent investment ecosystem that prioritizes your f
     setMessage({ type: "", text: "" });
 
     try {
-      // const response = await authFetch(BASEURL + "/auth/change-password", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-
-      // if (response.ok) {
-      //   setMessage({ type: "success", text: "Password changed successfully!" });
-      //   setFormData({ old_password: "", new_password: "" });
-      //   setPasswordStrength(0);
-      // } else {
-      //   const errorData = await response.json();
-      //   setMessage({
-      //     type: "error",
-      //     text: errorData.message || "Failed to change password",
-      //   });
-      // }
+      const data = {
+        old_password: formData.old_password,
+        new_password: formData.new_password,
+      };
+      const res = await db.functions.execute("update_password", {
+        method: "POST",
+        payload: data,
+      });
+      if (res.success) {
+        setMessage({ type: "success", text: "Password changed successfully!" });
+        setFormData({ old_password: "", new_password: "" });
+        setPasswordStrength(0);
+      } else {
+        setMessage({
+          type: "error",
+          text: res.error || "Failed to change password",
+        });
+      }
     } catch (error) {
       setMessage({ type: "error", text: "Network error. Please try again." });
     } finally {
@@ -233,8 +234,8 @@ Be part of a secure and transparent investment ecosystem that prioritizes your f
 
   const handleWithdrawNavigation = () => {
     // Navigate to withdrawal page - replace with your actual navigation logic
-   
-    navigate("/ref-withdrawal")
+
+    navigate("/ref-withdrawal");
   };
 
   const showReferalModal = () => {
@@ -316,7 +317,7 @@ Be part of a secure and transparent investment ecosystem that prioritizes your f
                           </span>
                         </div>
                         <p className="text-sm font-semibold text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border">
-                          {user?.phone_number || (
+                          {user?.data.phone_number || (
                             <span className="italic text-gray-400">
                               Not set
                             </span>

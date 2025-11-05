@@ -4,9 +4,8 @@ import { useDashboardContext } from "../context/DashboardContext";
 import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 
-const ReferralModal = ({ isOpen, onClose }) => {
+const ReferralModal = ({ isOpen, onClose,data }) => {
   // Default fallback data if none provided
-  const [data, setdata] = useState([]);
   const copyReferralLink = () => {
     const referralLink = "https://invest.yoursite.com/ref/user123";
     navigator.clipboard.writeText(referralLink);
@@ -20,19 +19,7 @@ const ReferralModal = ({ isOpen, onClose }) => {
     }).format(amount);
   };
 
-  useEffect(() => {
-    const getReferralData = async () => {
-      try {
-        // const response = await authFetch(`${BASEURL}/auth/my-referrals`); // Replace with your API endpoint
-        // const result = await response.json();
-        // console.log(result);
-        // setdata(result);
-      } catch (error) {
-        console.error("Error fetching referral data:", error);
-      }
-    };
-    getReferralData();
-  }, []);
+
 
   if (!isOpen) return null;
 

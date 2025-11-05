@@ -6,6 +6,7 @@ import VideoAdComponent from "./VideoModal";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
+import db from "../services/cocobase";
 
 const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
   const videoAdRef = useRef(null);
@@ -45,9 +46,9 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
   };
 
   const onFetchVideo = async (_) => {
-    // // const data = await (await authFetch(BASEURL + "/videos/today")).json();
-    // setVideoId(data.video_id);
-    // return data;
+    const data = await db.functions.execute("get_video");
+    setVideoId(data.result.id);
+    return data.result;
   };
 
   const markVideoComplete = async () => {
