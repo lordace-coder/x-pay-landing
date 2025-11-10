@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Activity, BarChart3, ChevronRight, User, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -19,7 +19,7 @@ function formatTimeAgo(inputTime) {
   return time.toLocaleDateString();
 }
 
-export default function RecentActivity() {
+const RecentActivity = React.memo(function RecentActivity() {
   const navigate = useNavigate();
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const [activeTab, setActiveTab] = useState("payments");
@@ -28,56 +28,60 @@ export default function RecentActivity() {
   const [loading, setLoading] = useState(false);
   const [loadingPayments, setLoadingPayments] = useState(false);
 
-  // Initial data fetch for both payments and transactions
+  // Initial data fetch - only fetch on mount, use cache intelligently
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Start loading both
-        setLoadingPayments(true);
-        setLoading(true);
+      // Check cache first
+      const cachedPayments = getDashboardData("payments");
+      const cachedTransactions = getDashboardData("transactions");
+      const lastFetch = getDashboardData("activityLastFetch");
+      const now = Date.now();
 
-        // Check cache first
-        const cachedPayments = getDashboardData("payments");
-        const cachedTransactions = getDashboardData("transactions");
+      // Use cached data if less than 5 minutes old
+      const isCacheValid = lastFetch && now - lastFetch < 5 * 60 * 1000;
 
-        if (cachedPayments && cachedPayments.length > 0) {
+      if (isCacheValid) {
+        if (cachedPayments) {
           setPayments(cachedPayments.slice(0, 5));
-          setLoadingPayments(false);
         }
-
-        if (cachedTransactions && cachedTransactions.length > 0) {
+        if (cachedTransactions) {
           setRecentTransactions(cachedTransactions.slice(0, 5));
-          setLoading(false);
         }
+        return;
+      }
 
-        // Fetch fresh data
-        const paymentsPromise = db.listDocuments("payment_proofs", {
-          filters: {
-            user_id: db.user.id,
-          },
-        });
+      // Set loading states
+      setLoadingPayments(true);
+      setLoading(true);
 
-        const transactionsPromise = db.listDocuments("transactions", {
-          filters: {
-            user_id: db.user.id,
-          },
-        });
+      // Use cached data immediately while fetching fresh data
+      if (cachedPayments) {
+        setPayments(cachedPayments.slice(0, 5));
+      }
+      if (cachedTransactions) {
+        setRecentTransactions(cachedTransactions.slice(0, 5));
+      }
 
-        // Wait for both to complete
+      try {
+        // Fetch fresh data in parallel
         const [paymentsData, transactionsData] = await Promise.all([
-          paymentsPromise,
-          transactionsPromise,
+          db.listDocuments("payment_proofs", {
+            filters: { user_id: db.user.id },
+          }),
+          db.listDocuments("transactions", {
+            filters: { user_id: db.user.id },
+          }),
         ]);
 
-        // Update payments
+        // Update state and cache
         setPayments(paymentsData.slice(0, 5));
         setDashboardData("payments", paymentsData);
 
-        // Update transactions
         setRecentTransactions(transactionsData.slice(0, 5));
         setDashboardData("transactions", transactionsData);
+        setDashboardData("activityLastFetch", now);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching activity data:", error);
       } finally {
         setLoadingPayments(false);
         setLoading(false);
@@ -85,14 +89,7 @@ export default function RecentActivity() {
     };
 
     fetchData();
-  }, []);
-
-  // Fetch recent transactions
-  useEffect(() => {
-    if (activeTab === "transactions") {
-      setLoading(true);
-    }
-  }, [activeTab]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="trans_4 rounded-lg sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
@@ -272,4 +269,6 @@ export default function RecentActivity() {
       </div>
     </div>
   );
-}
+});
+
+export default RecentActivity;

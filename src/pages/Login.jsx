@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Eye,
-  EyeOff,
-  ArrowRight,
-  Mail,
-  Lock,
-  Phone,
-  Chrome,
-} from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Mail, Lock, Phone } from "lucide-react";
 
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/img/xpay-logo.png";
@@ -23,10 +15,135 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { login } = useAuth();
   const [params, setParams] = useSearchParams();
 
   const navigate = useNavigate();
+
+  // Check for auth callback parameters immediately on mount
+  useEffect(() => {
+    const currentSearch = window.location.search;
+    const urlParams = new URLSearchParams(currentSearch);
+    const token = urlParams.get("coco-super-token");
+    const error = urlParams.get("coco-error");
+
+    console.log("Initial URL check - search:", currentSearch);
+    console.log("Token:", token, "Error:", error);
+    console.log("Full URL:", window.location.href);
+
+    if (token || error) {
+      // Process auth callback
+      handleAuthCallback(token, error);
+    } else {
+      // Only handle referral if no auth params
+      handleRef();
+    }
+
+    // Add a listener to detect URL changes
+    const handleUrlChange = () => {
+      console.log("URL changed to:", window.location.href);
+    };
+
+    window.addEventListener("popstate", handleUrlChange);
+    return () => window.removeEventListener("popstate", handleUrlChange);
+  }, []);
+
+  const handleRef = () => {
+    const ref = params.get("ref");
+    if (ref) {
+      // Handle referral logic here, e.g., save to local storage or state
+      localStorage.setItem("referralCode", ref);
+      toast(`Referral code ${ref} applied!`, { type: "success" });
+    }
+  };
+
+  const handleAuthCallback = (token, error) => {
+    console.log("Processing auth callback - token:", token, "error:", error);
+    console.log("URL before processing:", window.location.href);
+
+    if (token) {
+      // Store token and proceed with authenticated flow
+      console.log("Processing token:", token);
+      db.setToken(token);
+      db.getCurrentUser()
+        .then(() => {
+          console.log("User data retrieved:", db.user);
+          console.log("URL before cleanup:", window.location.href);
+          // Clean up URL parameters after successful processing
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          console.log("URL after cleanup:", window.location.href);
+
+          if (db.user && !db.user.data.is_email_verified) {
+            console.log("Navigating to verify_email");
+            navigate("/verify_email", { state: { email: db.user.data.email } });
+          } else if (db.user) {
+            console.log("Navigating to dashboard");
+            navigate("/dashboard");
+          } else {
+            toast.error("Failed to retrieve user data. Please try again.");
+          }
+        })
+        .catch((err) => {
+          console.error("Error getting current user:", err);
+          console.log("URL before cleanup on error:", window.location.href);
+          // Clean up URL parameters even on error
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          console.log("URL after cleanup on error:", window.location.href);
+          toast.error("Authentication failed. Please try again.");
+        });
+    } else if (error) {
+      console.log("Processing error:", error);
+      console.log("URL before cleanup on error:", window.location.href);
+      // Clean up URL parameters first
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+      console.log("URL after cleanup on error:", window.location.href);
+
+      // Handle specific errors
+      switch (error) {
+        case "email_already_registered_with_password":
+          toast.error(
+            "This email is already registered. Please use password login."
+          );
+          break;
+        case "invalid_authorization_code":
+          toast.error("Authentication failed. Please try again.");
+          break;
+        default:
+          toast.error(`Authentication failed: ${error}`);
+          break;
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const res = await fetch(
+        "https://api.cocobase.buzz/auth-collections/login-google",
+        {
+          headers: {
+            "x-api-key": db.apiKey,
+          },
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.message || "Google login failed");
+      }
+    } catch (error) {
+      toast.error("Google login failed: " + error.message);
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
@@ -48,42 +165,6 @@ export default function Login() {
       toast.error("An error occurred: " + error.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    handleRef();
-  }, []);
-
-  const handleRef = () => {
-    const ref = params.get("ref");
-    if (ref) {
-      // Handle referral logic here, e.g., save to local storage or state
-      localStorage.setItem("referralCode", ref);
-      toast(`Referral code ${ref} applied!`, { type: "success" });
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const res = await fetch(
-        "https://api.cocobase.buzz/auth-collections/login-google",
-        {
-          headers: {
-            "x-api-key": db.apiKey,
-          },
-        }
-      );
-
-      const data = await res.json();
-      if (res.ok) {
-        console.log("Google login URL:", data.url);
-        // window.location.href = data.url;
-      } else {
-        throw new Error(data.message || "Google login failed");
-      }
-    } catch (error) {
-      toast.error("Google login failed: " + error.message);
     }
   };
 
@@ -113,10 +194,22 @@ export default function Login() {
             {/* Google Login Button */}
             <button
               onClick={handleGoogleLogin}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md flex items-center justify-center group"
+              disabled={isGoogleLoading}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center group"
             >
-              <Chrome className="mr-3 h-5 w-5 text-red-500" />
-              Continue with Google
+              {isGoogleLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                  <span>Connecting...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="mr-3 flex items-center justify-center w-5 h-5 bg-gradient-to-br from-blue-500 via-red-500 to-yellow-500 rounded-full">
+                    <span className="text-white font-bold text-xs">G</span>
+                  </div>
+                  Continue with Google
+                </>
+              )}
             </button>
 
             {/* Divider */}

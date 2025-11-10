@@ -9,11 +9,10 @@ import {
   Clock,
   RefreshCw,
 } from "lucide-react";
-// import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 import AdUploadSuccess from "../components/AdsUploadSuccess";
+import db from "../services/cocobase";
 
-const BASEURL = "https://xpay-api.fly.dev";
 const AdUploadPage = () => {
   const [formData, setFormData] = useState({
     advertiser_name: "",
@@ -34,7 +33,7 @@ const AdUploadPage = () => {
 
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
-  const { authFetch } = useAuth();
+
   // File validation with detailed error messages
   const validateFile = (file) => {
     const errors = {};
@@ -220,12 +219,21 @@ const AdUploadPage = () => {
 
       // Make API call using authFetch
       console.log("Uploading ad...");
-      const response = await authFetch(BASEURL + "/ads/", {
-        method: "POST",
-        body: formDataPayload,
-      });
 
-      if (response.ok) {
+      const res = await db.createDocumentWithFiles(
+        "ad_requests",
+        {
+          advertiser_name: formData.advertiser_name,
+          ad_type: formData.ad_type,
+          target_url: formData.target_url,
+          description: formData.description,
+        },
+        {
+          media_file: formData.media_file,
+        }
+      );
+
+      if (res.id) {
         setUploadStatus("success");
         // Add to upload history
         const newUpload = {
@@ -249,7 +257,7 @@ const AdUploadPage = () => {
           fileInputRef.current.value = "";
         }
       } else {
-        throw new Error(`Upload failed with status: ${response.status}`);
+        throw new Error(`Upload failed `);
       }
     } catch (error) {
       console.error("Upload failed:", error);

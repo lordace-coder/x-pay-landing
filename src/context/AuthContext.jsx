@@ -1,7 +1,6 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASEURL } from "../utils/utils";
 import LoadingComponent from "../components/Loading";
 import AdminChatPopup from "../components/AdminChat";
 import db from "../services/cocobase";
@@ -9,7 +8,6 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-const API_BASE = BASEURL;
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -40,6 +38,11 @@ const AuthProvider = ({ children }) => {
   const initAuth = async () => {
     try {
       await db.initAuth();
+      if (db.user) {
+        setUser(db.user);
+        setLoading(false);
+        return;
+      }
       const user = await db.getCurrentUser();
       console.log(user, "user");
 

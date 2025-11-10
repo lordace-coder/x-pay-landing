@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { Play, Video, Loader2 } from "lucide-react";
 
 // Import your VideoAdComponent here
@@ -8,13 +8,19 @@ import { BASEURL } from "../utils/utils";
 import { toast } from "react-toastify";
 import db from "../services/cocobase";
 
-const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
+const WatchEarnComponent = React.memo(({ availableVideos = 2, onRefresh }) => {
   const videoAdRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrl, setVideoUrl] = useState(null);
   const [videoId, setVideoId] = useState(null);
 
-  const handleWatchVideo = async () => {
+  const onFetchVideo = useCallback(async (_) => {
+    const data = await db.functions.execute("get_video");
+    setVideoId(data.result.id);
+    return data.result;
+  }, []);
+
+  const handleWatchVideo = useCallback(async () => {
     try {
       setIsLoading(true);
 
@@ -39,19 +45,13 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
       toast("Error fetching video ,Please try again", { type: "error" });
       setIsLoading(false);
     }
-  };
+  }, [onFetchVideo]);
 
-  const handleVideoClose = () => {
+  const handleVideoClose = useCallback(() => {
     setVideoUrl(null);
-  };
+  }, []);
 
-  const onFetchVideo = async (_) => {
-    const data = await db.functions.execute("get_video");
-    setVideoId(data.result.id);
-    return data.result;
-  };
-
-  const markVideoComplete = async () => {
+  const markVideoComplete = useCallback(async () => {
     videoAdRef.current.hideAd();
     try {
       // const req = await authFetch(
@@ -65,7 +65,7 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
     } catch (error) {}
 
     toast("Earned bonus for watching video", { type: "success" });
-  };
+  }, [videoId, onRefresh]);
   return (
     <div className="trans_4 rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:border-gray-200">
       {/* Header */}
@@ -142,6 +142,6 @@ const WatchEarnComponent = ({ availableVideos = 2, onRefresh }) => {
       />
     </div>
   );
-};
+});
 
 export default WatchEarnComponent;

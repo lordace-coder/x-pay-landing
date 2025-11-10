@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   TrendingUp,
   DollarSign,
@@ -66,12 +66,8 @@ export default function XPayDashboard() {
   const { getDashboardData, setDashboardData } = useDashboardContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleVerificationCheck();
-    getUserCount();
-  }, [userData]);
-
-  const getUserCount = async () => {
+  // Memoize getUserCount to prevent recreating on every render
+  const getUserCount = useCallback(async () => {
     const q = getDashboardData("user-count");
     if (q && q != null) {
       setUserCount(q);
@@ -80,21 +76,31 @@ export default function XPayDashboard() {
       setUserCount(res.result);
       setDashboardData("user-count", res.result.count);
     }
-  };
+  }, [getDashboardData, setDashboardData]);
 
-  const handleVerificationCheck = async () => {
-    if (!userData.data.is_email_verified) {
+  const handleVerificationCheck = useCallback(async () => {
+    const user = await db.getCurrentUser();
+    if (!user.data.is_email_verified) {
       toast.info("Please verify your email to continue.", { autoClose: 1500 });
       setTimeout(() => {
         navigate("/verify_email");
       }, 2000);
       return;
     }
-  };
-  const refUrl = window.location.origin + "/register?ref=" + userData.id;
+  }, [navigate]);
+
+  // Run verification and user count only once on mount
+  useEffect(() => {
+    handleVerificationCheck();
+    getUserCount();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const refUrl = useMemo(
+    () => window.location.origin + "/register?ref=" + userData.id,
+    [userData.id]
+  );
 
   // Enhanced copy functionality
-  const copyReferralLink = async () => {
+  const copyReferralLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(refUrl);
       setCopySuccess(true);
@@ -109,43 +115,44 @@ export default function XPayDashboard() {
         document.execCommand("copy");
         setCopySuccess(true);
         setTimeout(() => setCopySuccess(false), 3000);
-      } catch (fallbackErr) {
-      }
+      } catch (fallbackErr) {}
       document.body.removeChild(textArea);
     }
-  };
+  }, [refUrl]);
 
   useEffect(() => {
-    // Initialize videos data on mount
+    // Initialize videos data on mount - fetch both in parallel
     const initializeData = async () => {
       const cachedVideosData = getDashboardData("videosWatched");
       const cachedBatchData = getDashboardData("batchData");
 
+      // Use cached data if available
       if (cachedVideosData) {
         setVideosWatched(cachedVideosData);
-      } else {
-        await getVideosLeft();
       }
-
       if (cachedBatchData) {
         setBatchData(cachedBatchData);
-      } else {
-        await getBatchData();
+      }
+
+      // Only fetch if cache is missing - fetch both in parallel
+      const promises = [];
+      if (!cachedVideosData) {
+        promises.push(getVideosLeft());
+      }
+      if (!cachedBatchData) {
+        promises.push(getBatchData());
+      }
+
+      if (promises.length > 0) {
+        await Promise.all(promises);
       }
     };
 
     initializeData();
-  }, []); // Empty dependency array to run only on mount
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Separate useEffect for caching user data
-  useEffect(() => {
-    if (userData) {
-      setDashboardData("userData", userData);
-    }
-  }, [userData]); // Only depend on userData
-
-  // Function to fetch batch data
-  const getBatchData = async (forceRefresh = false) => {
+  // Function to fetch batch data - memoized to prevent recreation
+  const getBatchData = useCallback(async (forceRefresh = false) => {
     try {
       setBatchLoading(true);
 
@@ -184,9 +191,9 @@ export default function XPayDashboard() {
     } finally {
       setBatchLoading(false);
     }
-  };
+  }, [getDashboardData, setDashboardData]);
 
-  const getVideosLeft = async (forceRefresh = false) => {
+  const getVideosLeft = useCallback(async (forceRefresh = false) => {
     try {
       setLoading(true);
 
@@ -216,17 +223,16 @@ export default function XPayDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getDashboardData, setDashboardData]);
 
-  // Function to refresh all dashboard data
-  const refreshDashboardData = async () => {
+  // Memoize refresh function
+  const refreshDashboardData = useCallback(async () => {
     await Promise.all([getVideosLeft(true), getBatchData(true)]);
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const showReferalModal = () => {
     setShowRef(true);
   };
-
 
   // Component for active batch card
   const ActiveBatchCard = ({ batch }) => {
@@ -259,7 +265,11 @@ export default function XPayDashboard() {
           <div>
             <span className="text-gray-500">Progress</span>
             <div className="font-medium">
-              {((batch.videos_watched/batch.total_videos_required)*100).toFixed(1)}%
+              {(
+                (batch.videos_watched / batch.total_videos_required) *
+                100
+              ).toFixed(1)}
+              %
             </div>
           </div>
           <div>
@@ -283,7 +293,11 @@ export default function XPayDashboard() {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className="bg-[var(--bs-primary)] h-2 rounded-full transition-all duration-300"
-              style={{ width: `${batch.completion_percentage}%` }}
+              style={{
+                width: `${(
+                  batch.videos_watched / batch.total_videos_required
+                ).toFixed(2)}%`,
+              }}
             />
           </div>
         </div>
@@ -582,8 +596,8 @@ export default function XPayDashboard() {
     };
   };
 
-  // Calculate totals from batch data
-  const calculateTotals = () => {
+  // Memoize expensive calculation - only recalculate when batchData changes
+  const totals = useMemo(() => {
     if (!batchData || !batchData.batches) {
       return {
         totalInvestment: 0,
@@ -623,7 +637,7 @@ export default function XPayDashboard() {
         totalVideosRequired: 0,
       }
     );
-  };
+  }, [batchData]);
 
   // Withdrawal Warning Modal
   const WithdrawalModal = () => {
@@ -685,8 +699,6 @@ export default function XPayDashboard() {
       </div>
     );
   };
-
-  const totals = calculateTotals();
 
   return (
     <div className="min-h-screen main_img_bg lg:pl-16 text-[15px] sm:text-base">

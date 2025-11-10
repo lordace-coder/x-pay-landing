@@ -14,10 +14,9 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { BASEURL } from "../utils/utils";
 import { useNavigate, useLocation } from "react-router-dom";
+import db from "../services/cocobase";
 
 const EmailVerification = () => {
-  const { user, verifyEmail, } = useAuth();
-
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState("");
@@ -28,7 +27,7 @@ const EmailVerification = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || user.email || "";
+  const email = location.state?.email || "";
 
   // Combined effect: Check cooldown status and auto-send OTP if needed
   const sentRef = useRef(false);
@@ -91,18 +90,17 @@ const EmailVerification = () => {
   const handleSendOtp = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${BASEURL}/auth/send-email-otp/${email}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await db.functions.execute("verify_email", {
+        payload: { email: email },
+        method: "GET",
       });
 
-      const data = await res.json();
 
-      if (res.ok) {
+      if (res.success) {
         startCooldown();
-        toast.success(data.message || "Verification code sent");
+        toast.success("Verification code sent");
       } else {
-        toast.error(data.detail || "Failed to send verification code");
+        toast.error(res.error || "Failed to send verification code");
       }
     } catch (error) {
       console.error("Send OTP error:", error);
@@ -128,9 +126,7 @@ const EmailVerification = () => {
       setIsLoading(true);
       const res = await verifyEmail(email, otpCode);
 
-
-
-      navigate("/dashboard")
+      navigate("/dashboard");
     } catch (err) {
       console.error("Verify email error:", err);
       toast.error(err.message); // <-- shows "Invalid or expired OTP"
@@ -274,10 +270,11 @@ const EmailVerification = () => {
               <button
                 onClick={handleVerifyEmail}
                 disabled={isLoading || otp.join("").length !== 4}
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${otp.join("").length === 4 && !isLoading
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-4 focus:ring-gray-900/20 flex items-center justify-center group ${
+                  otp.join("").length === 4 && !isLoading
                     ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98]"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
+                }`}
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
@@ -354,10 +351,11 @@ const EmailVerification = () => {
                   disabled={
                     isLoading || !newEmail || !/\S+@\S+\.\S+/.test(newEmail)
                   }
-                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${newEmail && /\S+@\S+\.\S+/.test(newEmail) && !isLoading
+                  className={`flex-1 font-semibold py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                    newEmail && /\S+@\S+\.\S+/.test(newEmail) && !isLoading
                       ? "bg-gray-900 hover:bg-gray-800 text-white shadow-lg hover:shadow-xl"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
+                  }`}
                 >
                   {isLoading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -10,7 +10,6 @@ import {
   CheckCircle,
   Phone,
   Globe,
-  Chrome,
 } from "lucide-react";
 import PhoneInput from "react-phone-number-input";
 import en from "react-phone-number-input/locale/en.json";
@@ -20,6 +19,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import db from "../services/cocobase";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +29,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -103,11 +104,27 @@ export default function Signup() {
   };
 
   const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
     try {
-      // TODO: Implement Google OAuth login
-      toast.info("Google login coming soon!");
+      const res = await fetch(
+        "https://api.cocobase.buzz/auth-collections/login-google",
+        {
+          headers: {
+            "x-api-key": db.apiKey,
+          },
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.message || "Google login failed");
+      }
     } catch (error) {
       toast.error("Google login failed: " + error.message);
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -137,10 +154,22 @@ export default function Signup() {
             {/* Google Login Button */}
             <button
               onClick={handleGoogleLogin}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md flex items-center justify-center group"
+              disabled={isGoogleLoading}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center group"
             >
-              <Chrome className="mr-3 h-5 w-5 text-red-500" />
-              Continue with Google
+              {isGoogleLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                  <span>Connecting...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="mr-3 flex items-center justify-center w-5 h-5 bg-gradient-to-br from-blue-500 via-red-500 to-yellow-500 rounded-full">
+                    <span className="text-white font-bold text-xs">G</span>
+                  </div>
+                  Continue with Google
+                </>
+              )}
             </button>
 
             {/* Divider */}
