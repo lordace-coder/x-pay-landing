@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Phone,
   Globe,
+  Chrome,
 } from "lucide-react";
 import PhoneInput from "react-phone-number-input";
 import en from "react-phone-number-input/locale/en.json";
@@ -101,6 +102,15 @@ export default function Signup() {
     }));
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      // TODO: Implement Google OAuth login
+      toast.info("Google login coming soon!");
+    } catch (error) {
+      toast.error("Google login failed: " + error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen customebg flex items-center justify-center py-8 px-4">
       <div className="absolute inset-0 "></div>
@@ -124,6 +134,25 @@ export default function Signup() {
           </div>
 
           <div className="space-y-4">
+            {/* Google Login Button */}
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md flex items-center justify-center group"
+            >
+              <Chrome className="mr-3 h-5 w-5 text-red-500" />
+              Continue with Google
+            </button>
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">or</span>
+              </div>
+            </div>
+
             <div className="group">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Full Name

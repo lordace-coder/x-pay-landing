@@ -18,12 +18,7 @@ const AuthProvider = ({ children }) => {
 
   // On app load → check if token exists in localStorage
   useEffect(() => {
-    db.initAuth().then(() => {
-      if (db.isAuthenticated()) {
-        setUser(db.user);
-        setLoading(false);
-      }
-    });
+    initAuth();
   }, []);
 
   const login = async (email, password) => {
@@ -42,6 +37,28 @@ const AuthProvider = ({ children }) => {
     navigate("/login");
   };
 
+  const initAuth = async () => {
+    try {
+      await db.initAuth();
+      const user = await db.getCurrentUser();
+      console.log(user, "user");
+
+      if (user) setUser(user);
+      setLoading(false);
+    } catch (error) {}
+    setLoading(false);
+    logout();
+  };
+
+  const completeGoogleAuth = async (token) => {
+    try {
+      setLoading(true);
+    } catch (error) {
+      console.error("Google Auth Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -49,6 +66,7 @@ const AuthProvider = ({ children }) => {
         loading,
         signup,
         login,
+        completeGoogleAuth,
         logout,
       }}
     >
