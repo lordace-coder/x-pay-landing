@@ -80,7 +80,7 @@ export default function XPayDashboard() {
 
   const handleVerificationCheck = useCallback(async () => {
     const user = await db.getCurrentUser();
-    if (!user.data.is_email_verified) {
+    if (!user.data.is_email_verified && !user.data.given_name) {
       toast.info("Please verify your email to continue.", { autoClose: 1500 });
       setTimeout(() => {
         navigate("/verify_email");
@@ -152,78 +152,84 @@ export default function XPayDashboard() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Function to fetch batch data - memoized to prevent recreation
-  const getBatchData = useCallback(async (forceRefresh = false) => {
-    try {
-      setBatchLoading(true);
+  const getBatchData = useCallback(
+    async (forceRefresh = false) => {
+      try {
+        setBatchLoading(true);
 
-      // If not forcing refresh, check cache first
-      if (!forceRefresh) {
-        const cachedData = getDashboardData("batchData");
-        const lastFetch = getDashboardData("batchLastFetch");
-        const now = Date.now();
+        // If not forcing refresh, check cache first
+        if (!forceRefresh) {
+          const cachedData = getDashboardData("batchData");
+          const lastFetch = getDashboardData("batchLastFetch");
+          const now = Date.now();
 
-        // Use cached data if it's less than 5 minutes old
-        if (cachedData && lastFetch && now - lastFetch < 5 * 60 * 1000) {
-          setBatchData(cachedData);
-          setBatchLoading(false);
-          return;
+          // Use cached data if it's less than 5 minutes old
+          if (cachedData && lastFetch && now - lastFetch < 5 * 60 * 1000) {
+            setBatchData(cachedData);
+            setBatchLoading(false);
+            return;
+          }
         }
+        // const res = await db.functions.execute("dashboard_stats");
+
+        const res = await db.listDocuments("investment_batches", {
+          filters: {
+            user_id: db.user.id,
+          },
+        });
+        // const res = await authFetch(BASEURL + "/investment/batches");
+        // const data = await res.json();
+
+        setBatchData({
+          batches: res,
+        });
+
+        // // Cache the data with timestamp
+        setDashboardData("batchData", res);
+        setDashboardData("batchLastFetch", Date.now());
+      } catch (err) {
+        toast.error("Failed to fetch investment data. Please try again later.");
+      } finally {
+        setBatchLoading(false);
       }
-      // const res = await db.functions.execute("dashboard_stats");
+    },
+    [getDashboardData, setDashboardData]
+  );
 
-      const res = await db.listDocuments("investment_batches", {
-        filters: {
-          user_id: db.user.id,
-        },
-      });
-      // const res = await authFetch(BASEURL + "/investment/batches");
-      // const data = await res.json();
+  const getVideosLeft = useCallback(
+    async (forceRefresh = false) => {
+      try {
+        setLoading(true);
 
-      setBatchData({
-        batches: res,
-      });
+        // If not forcing refresh, check cache first
+        if (!forceRefresh) {
+          const cachedData = getDashboardData("videosWatched");
+          const lastFetch = getDashboardData("videosLastFetch");
+          const now = Date.now();
 
-      // // Cache the data with timestamp
-      setDashboardData("batchData", res);
-      setDashboardData("batchLastFetch", Date.now());
-    } catch (err) {
-      toast.error("Failed to fetch investment data. Please try again later.");
-    } finally {
-      setBatchLoading(false);
-    }
-  }, [getDashboardData, setDashboardData]);
-
-  const getVideosLeft = useCallback(async (forceRefresh = false) => {
-    try {
-      setLoading(true);
-
-      // If not forcing refresh, check cache first
-      if (!forceRefresh) {
-        const cachedData = getDashboardData("videosWatched");
-        const lastFetch = getDashboardData("videosLastFetch");
-        const now = Date.now();
-
-        // Use cached data if it's less than 5 minutes old
-        if (cachedData && lastFetch && now - lastFetch < 5 * 60 * 1000) {
-          setVideosWatched(cachedData);
-          setLoading(false);
-          return;
+          // Use cached data if it's less than 5 minutes old
+          if (cachedData && lastFetch && now - lastFetch < 5 * 60 * 1000) {
+            setVideosWatched(cachedData);
+            setLoading(false);
+            return;
+          }
         }
+
+        // TODO: Replace with actual API call
+        const res = await db.functions.execute("dashboard_stats");
+
+        setVideosWatched(res.result);
+
+        // // Cache the data with timestamp
+        setDashboardData("videosWatched", res.result);
+        setDashboardData("videosLastFetch", Date.now());
+      } catch (err) {
+      } finally {
+        setLoading(false);
       }
-
-      // TODO: Replace with actual API call
-      const res = await db.functions.execute("dashboard_stats");
-
-      setVideosWatched(res.result);
-
-      // // Cache the data with timestamp
-      setDashboardData("videosWatched", res.result);
-      setDashboardData("videosLastFetch", Date.now());
-    } catch (err) {
-    } finally {
-      setLoading(false);
-    }
-  }, [getDashboardData, setDashboardData]);
+    },
+    [getDashboardData, setDashboardData]
+  );
 
   // Memoize refresh function
   const refreshDashboardData = useCallback(async () => {
@@ -824,12 +830,12 @@ export default function XPayDashboard() {
               <span className="text-sm text-gray-500">Today's Earnings</span>
             </div>
             <div className="text-2xl font-bold text-gray-900 mb-1">
-              ${videosWatched.earned_today ?? 0}
+              ${videosWatched.stats?.earned_today ?? 0}
             </div>
             <p className="text-xs text-purple-600 flex items-center">
               <Play className="h-3 w-3 mr-1" />
-              From {videosWatched.watched_today ?? 0}{" "}
-              {(videosWatched.watched_today ?? 0) === 1 ? "video" : "videos"}{" "}
+              From {videosWatched.stats?.watched_today ?? 0}{" "}
+              {(videosWatched.stats?.watched_today ?? 0) === 1 ? "video" : "videos"}{" "}
               watched
             </p>
           </div>
@@ -848,11 +854,11 @@ export default function XPayDashboard() {
               <span className="text-sm text-gray-500">Videos Available</span>
             </div>
             <div className="text-2xl font-bold text-gray-900 mb-1">
-              {videosWatched.remaining_today ?? 0}
+              {videosWatched.stats?.remaining_today ?? 0}
             </div>
             <p className="text-xs text-orange-600 flex items-center">
               <Eye className="h-3 w-3 mr-1" />
-              {videosWatched.watched_today ?? 0} watched today
+              {videosWatched.stats?.watched_today ?? 0} watched today
             </p>
           </div>
         </div>
@@ -935,7 +941,7 @@ export default function XPayDashboard() {
             {/* Watch and Earn - Keep your current implementation */}
             <WatchEarnComponent
               onRefresh={() => getVideosLeft(true)}
-              availableVideos={videosWatched.remaining_today ?? 0}
+              availableVideos={videosWatched.stats?.remaining_today ?? 0}
             />
             {/*  */}
             {/* */}

@@ -16,11 +16,16 @@ const WatchEarnComponent = React.memo(({ availableVideos = 2, onRefresh }) => {
 
   const onFetchVideo = useCallback(async (_) => {
     const data = await db.functions.execute("get_video");
+    console.log("Fetched video data:", data.result);
+    console.log("Setting video ID:", data.result.id);
     setVideoId(data.result.id);
     return data.result;
   }, []);
 
   const handleWatchVideo = useCallback(async () => {
+    // Prevent multiple simultaneous requests
+    if (isLoading || videoUrl) return;
+
     try {
       setIsLoading(true);
 
@@ -45,27 +50,45 @@ const WatchEarnComponent = React.memo(({ availableVideos = 2, onRefresh }) => {
       toast("Error fetching video ,Please try again", { type: "error" });
       setIsLoading(false);
     }
-  }, [onFetchVideo]);
+  }, [onFetchVideo, isLoading, videoUrl]);
 
   const handleVideoClose = useCallback(() => {
     setVideoUrl(null);
+    setVideoId(null);
   }, []);
 
   const markVideoComplete = useCallback(async () => {
+    // Store videoId before clearing it
+    const currentVideoId = videoId;
+    console.log("Marking video complete. Video ID:", currentVideoId);
+
     videoAdRef.current.hideAd();
+
     try {
-      // const req = await authFetch(
-      //   BASEURL + `/videos/videos/${videoId}/complete`,
-      //   { method: "post" }
-      // );
-    } catch (error) {}
+      const res = await db.functions.execute("reward_user",{
+        payload:{
+          video_id: currentVideoId
+        }
+      });
+      if (res.success) {
+        toast("Video watched successfully!", { type: "success" });
+      } else {
+        toast("Error rewarding user. Please try again.", { type: "error" });
+        console.log("Error rewarding user:", res);
+      }
+    } catch (error) {
+      console.error("Error rewarding user:", error);
+    }
+
+    // Clear video state after rewarding
+    handleVideoClose();
 
     try {
       onRefresh();
     } catch (error) {}
 
     toast("Earned bonus for watching video", { type: "success" });
-  }, [videoId, onRefresh]);
+  }, [onRefresh, handleVideoClose, videoId]);
   return (
     <div className="trans_4 rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:border-gray-200">
       {/* Header */}

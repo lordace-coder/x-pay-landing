@@ -5,4 +5,5 @@ const db = new Cocobase({
   projectId: "77956f8d-12a4-4933-bd97-e414df9c693b",
 });
 
+
 export default db;

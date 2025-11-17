@@ -47,6 +47,8 @@ import PureCounter from "@srexi/purecounterjs";
 import logo from "../assets/img/xpay-logo.png";
 import Pricing from "../components/PricingSection";
 import { useAuth } from "../context/AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
+import db from "../services/cocobase";
 // HEADER
 const Header = function () {
   const { user } = useAuth();
@@ -214,6 +216,8 @@ const Hero = function () {
     <section className="hero__v6 section" id="home">
       <div className="container">
         <div className="row">
+         
+
           <div className="col-lg-6 mb-4 mb-lg-0">
             <div className="row">
               <div className="col-lg-11">
@@ -476,7 +480,6 @@ const Features = function () {
                             confidence and convenience."
                           </p>
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -1396,6 +1399,7 @@ export default function HomePage() {
   return (
     <div className="site-wrap">
       <Header />
+
       <main>
         <Hero />
         {/* X-PAY Introduction Section */}

@@ -10,10 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.2",
     "@srexi/purecounterjs": "^1.5.0",
     "@tailwindcss/vite": "^4.1.8",
     "aos": "^2.3.4",
-    "cocobase": "^1.1.4",
+    "cocobase": "^1.3.2",
     "glightbox": "^3.3.1",
     "gsap": "^3.13.0",
     "imagesloaded": "^5.0.0",

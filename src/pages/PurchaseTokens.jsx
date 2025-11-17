@@ -32,14 +32,9 @@ export default function PurchaseTokens() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          "https://cloud.cocobase.buzz/functions/f8d3a1d1-506b-4e7d-9cf7-8718a9a3265b/execute"
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        setData(result.result);
+        const res = await db.functions.execute("can_invest");
+
+        setData(res.result);
         setError(null);
       } catch (err) {
         setError(err.message || "Failed to fetch investment window status");

@@ -11,15 +11,14 @@ import {
   Phone,
   Globe,
 } from "lucide-react";
-import PhoneInput from "react-phone-number-input";
-import en from "react-phone-number-input/locale/en.json";
-import { getCountryCallingCode } from "react-phone-number-input";
+
 import logo from "../assets/img/xpay-logo.png";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BASEURL } from "../utils/utils";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import db from "../services/cocobase";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,36 +39,18 @@ export default function Signup() {
     setIsLoading(true);
 
     const data = {
-      email,
+      
       full_name: fullName,
-      password,
       phone_number: phoneNumber,
     };
     try {
       if (ref) {
-        data.ref = ref;
+        data.referred_by = ref;
       }
-      const res = await fetch(BASEURL + "/auth/", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (res.ok) {
-        // const completed = await login(email, password);
-
-        const data = await res.json();
-        toast.success(`${data.message}`);
-
-        console.log(data);
-
-        navigate(`/login`);
-      } else {
-        const err = await res.json();
-        toast("An Error occured please try again. " + err.detail, {
-          type: "error",
-        });
-      }
+      await db.auth.signup(email, password, data);
+      toast.success("Account created successfully! Please verify your email.");
+      navigate("/verify_email", { state: { email } });
+     
     } catch (error) {
       toast("An Error occured " + error, { type: "error" });
     } finally {
@@ -103,31 +84,6 @@ export default function Signup() {
     }));
   };
 
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const res = await fetch(
-        "https://api.cocobase.buzz/auth-collections/login-google",
-        {
-          headers: {
-            "x-api-key": db.apiKey,
-          },
-        }
-      );
-
-      const data = await res.json();
-      if (res.ok) {
-        window.location.href = data.url;
-      } else {
-        throw new Error(data.message || "Google login failed");
-      }
-    } catch (error) {
-      toast.error("Google login failed: " + error.message);
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen customebg flex items-center justify-center py-8 px-4">
       <div className="absolute inset-0 "></div>
@@ -152,25 +108,27 @@ export default function Signup() {
 
           <div className="space-y-4">
             {/* Google Login Button */}
-            <button
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-xl border border-gray-300 transition-all duration-200 transform hover:scale-[1.01] hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center group"
-            >
-              {isGoogleLoading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                  <span>Connecting...</span>
-                </div>
-              ) : (
-                <>
-                  <div className="mr-3 flex items-center justify-center w-5 h-5 bg-gradient-to-br from-blue-500 via-red-500 to-yellow-500 rounded-full">
-                    <span className="text-white font-bold text-xs">G</span>
-                  </div>
-                  Continue with Google
-                </>
-              )}
-            </button>
+            <GoogleLogin
+              onSuccess={async (res) => {
+                const idToken = res?.credential;
+                if (!idToken) return;
+                try {
+                  await db.auth.loginWithGoogle(idToken, "web");
+                  toast.success("Google Login Successful");
+                } catch (e) {
+                  const error = `${e}`.replace("Error: Request failed:", "");
+                  const err_json = JSON.parse(error);
+                  console.log(error);
+                  toast("Google Login Failed: " + err_json.error.detail, {
+                    type: "error",
+                    autoClose: false,
+                  });
+                }
+              }}
+              onError={() => {
+                toast.error("Google Login Failed");
+              }}
+            />
 
             {/* Divider */}
             <div className="relative">

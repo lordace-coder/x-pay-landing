@@ -20,34 +20,39 @@ const VideoAdComponent = forwardRef((props, ref) => {
   const videoRef = useRef(null);
 
   // Get video URL from props or use default
-  console.log(props.videoUrl, " props");
   const videoUrl = props.videoUrl?.url;
   const actionUrl = props.videoUrl?.action_url;
-
-  // Calculate if user can close (after 70% watched)
-  const canClose = watchedPercentage >= 0.7;
-
-  // Expose functions to parent component
-  useImperativeHandle(ref, () => ({
-    showAd: () => {
-      openPopup();
-    },
-    hideAd: () => {
-      if (canClose) {
-        closePopup();
-      }
-    },
-    isAdOpen: () => isPopupOpen,
-    canCloseAd: () => canClose,
-  }));
-
+  console.log("Video URL in VideoAdComponent:", videoUrl);
+  // Set video source when videoUrl changes
   useEffect(() => {
+    if (videoRef.current && videoUrl) {
+      console.log("VideoURL changed:", videoUrl);
+      setVideoError(false);
+      videoRef.current.src = videoUrl;
+      videoRef.current.load();
+    }
+  }, [videoUrl]);
+
+  // Attach event listeners when popup is open
+  useEffect(() => {
+    if (!isPopupOpen) return;
+
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {
+      console.warn("Video ref not available when popup opened");
+      return;
+    }
+
+    console.log("Attaching video event listeners");
 
     const handleTimeUpdate = () => {
       const currentTime = video.currentTime;
       const duration = video.duration;
+
+      if (currentTime % 5 < 0.5) { // Log every ~5 seconds
+        console.log("Time update - Current:", currentTime.toFixed(2), "Duration:", duration.toFixed(2));
+      }
+
       setCurrentTime(currentTime);
 
       if (duration > 0) {
@@ -57,27 +62,42 @@ const VideoAdComponent = forwardRef((props, ref) => {
     };
 
     const handleLoadedMetadata = () => {
+      console.log("Video metadata loaded. Duration:", video.duration);
       setDuration(video.duration);
-      setIsLoading(false);
       setVideoError(false);
     };
 
-    const handleLoadStart = () => {
-      setIsLoading(true);
-      setVideoError(false);
+    const handleLoadedData = () => {
+      console.log("Video data loaded and ready");
     };
 
-    const handleError = () => {
+    const handleError = (e) => {
+      console.error("Video error occurred:", e);
+      console.error("Video src:", video.src);
+      console.error("Video error details:", video.error);
       setIsLoading(false);
       setVideoError(true);
       toast("Error loading video ad", { type: "error" });
     };
 
-    const handleCanPlay = () => {
+    const handlePlaying = () => {
+      console.log("Video is playing");
       setIsLoading(false);
+      setIsPlaying(true);
+    };
+
+    const handlePause = () => {
+      console.log("Video paused");
+      setIsPlaying(false);
+    };
+
+    const handleWaiting = () => {
+      console.log("Video is buffering");
+      setIsLoading(true);
     };
 
     const handleEnded = () => {
+      console.log("Video ended");
       setIsPlaying(false);
       setWatchedPercentage(1);
       // Call onAdComplete callback if provided
@@ -89,46 +109,74 @@ const VideoAdComponent = forwardRef((props, ref) => {
 
     video.addEventListener("timeupdate", handleTimeUpdate);
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
-    video.addEventListener("loadstart", handleLoadStart);
+    video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("error", handleError);
-    video.addEventListener("canplay", handleCanPlay);
+    video.addEventListener("playing", handlePlaying);
+    video.addEventListener("pause", handlePause);
+    video.addEventListener("waiting", handleWaiting);
     video.addEventListener("ended", handleEnded);
 
     return () => {
+      console.log("Removing video event listeners");
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      video.removeEventListener("loadstart", handleLoadStart);
+      video.removeEventListener("loadeddata", handleLoadedData);
       video.removeEventListener("error", handleError);
-      video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("playing", handlePlaying);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("waiting", handleWaiting);
       video.removeEventListener("ended", handleEnded);
     };
   }, [isPopupOpen, props.onAdComplete]);
 
   const openPopup = () => {
     if (!videoUrl) {
+      console.error("No video URL provided");
       toast("No video URL provided", { type: "error" });
       return;
     }
 
+    console.log("Opening video popup with URL:", videoUrl);
     setIsPopupOpen(true);
     setCurrentTime(0);
     setWatchedPercentage(0);
-    setIsLoading(true);
     setVideoError(false);
+    setIsLoading(false);
 
     // Call onAdStart callback if provided
     if (props.onAdStart) {
       props.onAdStart();
     }
 
-    // Auto-play when video is ready
+    // Wait for the video element to be rendered, then load and play
     setTimeout(() => {
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0;
-        const playPromise = videoRef.current.play();
+      if (!videoRef.current) {
+        console.warn("Video ref not available");
+        return;
+      }
+
+      const video = videoRef.current;
+      console.log("Video element ready. Current src:", video.src);
+      console.log("Video ready state:", video.readyState);
+
+      // Ensure the video has the correct source
+      if (!video.src || video.src !== videoUrl) {
+        console.log("Setting video source in openPopup:", videoUrl);
+        video.src = videoUrl;
+        video.load();
+      }
+
+      // Play the video once it's ready
+      const attemptPlay = () => {
+        video.currentTime = 0;
+        console.log("Attempting to play. Ready state:", video.readyState);
+
+        const playPromise = video.play();
+
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
+              console.log("Video playing successfully");
               setIsPlaying(true);
             })
             .catch((error) => {
@@ -136,9 +184,25 @@ const VideoAdComponent = forwardRef((props, ref) => {
               setIsPlaying(false);
             });
         }
+      };
+
+      // If video is ready, play immediately
+      if (video.readyState >= 3) {
+        attemptPlay();
+      } else {
+        // Wait for canplay event
+        video.addEventListener('canplay', attemptPlay, { once: true });
       }
-    }, 300);
+    }, 200);
   };
+
+  const canClose = watchedPercentage >= 0.7; // Can close after watching 70%
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    showAd: openPopup,
+    hideAd: closePopup,
+  }));
 
   const closePopup = () => {
     if (!canClose) {
@@ -253,10 +317,13 @@ const VideoAdComponent = forwardRef((props, ref) => {
 
         {/* Video Container */}
         <div className="relative bg-black">
-          {/* Loading Spinner */}
+          {/* Buffering Spinner */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+                <div className="text-white text-sm mt-2">Buffering...</div>
+              </div>
             </div>
           )}
 
@@ -288,13 +355,10 @@ const VideoAdComponent = forwardRef((props, ref) => {
             onContextMenu={(e) => e.preventDefault()}
             controlsList="nodownload nofullscreen noremoteplayback"
             disablePictureInPicture
-            preload="metadata"
+            preload="auto"
             playsInline
             style={{ maxHeight: "calc(100vh - 120px)" }}
           >
-            <source src={videoUrl} type="video/mp4" />
-            <source src={videoUrl} type="video/webm" />
-            <source src={videoUrl} type="video/ogg" />
             Your browser does not support the video tag.
           </video>
 
@@ -382,5 +446,4 @@ const VideoAdComponent = forwardRef((props, ref) => {
 });
 
 VideoAdComponent.displayName = "VideoAdComponent";
-
-export default VideoAdComponent;
+export default VideoAdComponent
